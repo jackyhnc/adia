@@ -8043,6 +8043,41 @@ struct SuggestedSessionTemplatesTests {
     @Test func globalfoodpolicyAssignmentTemplateExists() {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("global food policy paper") })
     }
+    // MARK: - behavioralfinance templates
+    @Test func behavioralfinanceStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("behavioral finance for my exam") })
+    }
+    @Test func behavioralfinanceAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("behavioral finance paper") })
+    }
+    // MARK: - cryptocurrencyeconomics templates
+    @Test func cryptocurrencyeconomicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("cryptocurrency economics for my exam") })
+    }
+    @Test func cryptocurrencyeconomicsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("cryptocurrency economics paper") })
+    }
+    // MARK: - constitutionalcomparativelaw templates
+    @Test func constitutionalcomparativelawStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("comparative constitutional law for my exam") })
+    }
+    @Test func constitutionalcomparativelawAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("comparative constitutional law paper") })
+    }
+    // MARK: - internationalhumanitarianlaw templates
+    @Test func internationalhumanitarianlawStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("international humanitarian law for my exam") })
+    }
+    @Test func internationalhumanitarianlawAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("international humanitarian law paper") })
+    }
+    // MARK: - islamiclaw templates
+    @Test func islamiclawStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("islamic law for my exam") })
+    }
+    @Test func islamiclawAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("islamic law paper") })
+    }
     // MARK: - Count guard (≥1317)
     @Test func templateCountAtLeast1307() {
         #expect(SuggestedSessionTemplates.all.count >= 1307, "template catalog must have ≥1307 entries after mediatheory/theaterstudies/developmentstudies/entertainmentlaw/bankinglaw additions")
@@ -8055,5 +8090,8 @@ struct SuggestedSessionTemplatesTests {
     }
     @Test func templateCountAtLeast1337() {
         #expect(SuggestedSessionTemplates.all.count >= 1337, "template catalog must have ≥1337 entries after energyeconomics/laboreconomics/marinegeology/educationpolicy/globalfoodpolicy additions")
+    }
+    @Test func templateCountAtLeast1347() {
+        #expect(SuggestedSessionTemplates.all.count >= 1347, "template catalog must have ≥1347 entries after behavioralfinance/cryptocurrencyeconomics/constitutionalcomparativelaw/internationalhumanitarianlaw/islamiclaw additions")
     }
 }

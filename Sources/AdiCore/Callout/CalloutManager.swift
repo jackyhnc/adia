@@ -6765,6 +6765,34 @@ public final class CalloutManager {
             || (lower.contains("high frequency trading") && (lower.contains("class") || lower.contains("course") || lower.contains("algo") || lower.contains("strategy"))) {
             return "computationalfinance"
         }
+        // behavioralfinance — positioned BEFORE finance so behavioral finance class, prospect theory
+        // in financial markets, overconfidence bias in trading, calendar anomalies, herding, noise
+        // trader risk, and irrational exuberance route here. Distinct from behavioraleconomics (nudge
+        // theory/choice architecture/consumer behavior) and finance (CFA/DCF/LBO). "loss aversion"
+        // alone stays in behavioraleconomics unless paired with investing/portfolio/market context.
+        if lower.contains("behavioral finance") || lower.contains("behavioural finance")
+            || lower.contains("behavioral finance class") || lower.contains("behavioral finance course")
+            || lower.contains("behavioral finance exam") || lower.contains("behavioral finance paper")
+            || lower.contains("behavioral finance textbook") || lower.contains("behavioral finance assignment")
+            || lower.contains("behavioural finance class") || lower.contains("behavioural finance course")
+            || word("behavioral finance") || word("behavioural finance")
+            || lower.contains("prospect theory") && (lower.contains("invest") || lower.contains("market") || lower.contains("portfolio") || lower.contains("finance") || lower.contains("stock") || lower.contains("class") || lower.contains("exam"))
+            || lower.contains("loss aversion") && (lower.contains("invest") || lower.contains("portfolio") || lower.contains("finance") || lower.contains("market") || lower.contains("trading") || lower.contains("class") && lower.contains("finance"))
+            || lower.contains("overconfidence bias") && (lower.contains("invest") || lower.contains("market") || lower.contains("trading") || lower.contains("finance") || lower.contains("class") || lower.contains("exam"))
+            || lower.contains("noise trader") && (lower.contains("class") || lower.contains("exam") || lower.contains("finance") || lower.contains("market"))
+            || lower.contains("irrational exuberance") && (lower.contains("class") || lower.contains("exam") || lower.contains("finance") || lower.contains("market") || lower.contains("course"))
+            || lower.contains("market anomaly") && (lower.contains("class") || lower.contains("exam") || lower.contains("finance") || lower.contains("behavioral"))
+            || lower.contains("market anomalies") && (lower.contains("class") || lower.contains("exam") || lower.contains("finance") || lower.contains("behavioral"))
+            || lower.contains("january effect") && (lower.contains("class") || lower.contains("finance") || lower.contains("market") || lower.contains("exam"))
+            || lower.contains("momentum effect") && (lower.contains("class") || lower.contains("finance") || lower.contains("market") || lower.contains("exam"))
+            || lower.contains("herding behavior") && (lower.contains("invest") || lower.contains("market") || lower.contains("finance") || lower.contains("class") || lower.contains("exam"))
+            || lower.contains("investor herding") && (lower.contains("class") || lower.contains("exam") || lower.contains("finance") || lower.contains("market"))
+            || lower.contains("mental accounting") && (lower.contains("invest") || lower.contains("portfolio") || lower.contains("finance") || lower.contains("market") || lower.contains("class") && lower.contains("finance"))
+            || lower.contains("disposition effect") && (lower.contains("class") || lower.contains("exam") || lower.contains("finance") || lower.contains("invest") || lower.contains("market"))
+            || lower.contains("limits to arbitrage") && (lower.contains("class") || lower.contains("exam") || lower.contains("finance") || lower.contains("market"))
+            || lower.contains("shiller") && (lower.contains("finance") || lower.contains("market") || lower.contains("class") || lower.contains("exam") || lower.contains("irrational")) {
+            return "behavioralfinance"
+        }
         // finance — positioned before budget so professional exam/analysis terms (CPA, CFA, DCF, LBO,
         // financial modeling, balance sheet) route here instead of the generic budget/financial branch.
         if lower.contains("financial statements") || lower.contains("financial statement")
@@ -14175,6 +14203,32 @@ public final class CalloutManager {
             || lower.contains("immigration selection policy") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")) {
             return "immigrationpolicy"
         }
+        // cryptocurrencyeconomics — positioned BEFORE cryptolaw so tokenomics, DeFi protocols,
+        // blockchain consensus economics, Bitcoin halving cycles, staking yields, MEV, AMMs, and
+        // crypto market microstructure route here. Distinct from cryptolaw (Howey test/SEC/CFTC/
+        // DAO legal status) and computer science blockchain courses (technical implementation).
+        if lower.contains("crypto economics class") || lower.contains("crypto economics course")
+            || lower.contains("crypto economics exam") || lower.contains("crypto economics paper")
+            || lower.contains("cryptocurrency economics class") || lower.contains("cryptocurrency economics course")
+            || lower.contains("cryptocurrency economics exam") || lower.contains("cryptocurrency economics paper")
+            || word("cryptocurrency economics") || word("crypto economics")
+            || lower.contains("tokenomics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("design") || lower.contains("paper") || lower.contains("assignment"))
+            || lower.contains("defi") && (lower.contains("economics") || lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("protocol"))
+            || lower.contains("decentralized finance") && (lower.contains("economics") || lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("protocol"))
+            || lower.contains("amm") && (lower.contains("defi") || lower.contains("economics") || lower.contains("liquidity") || lower.contains("class") || lower.contains("exam"))
+            || lower.contains("automated market maker") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("defi") || lower.contains("liquidity"))
+            || lower.contains("mev") && (lower.contains("blockchain") || lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("mining"))
+            || lower.contains("maximal extractable value") && (lower.contains("class") || lower.contains("exam") || lower.contains("blockchain") || lower.contains("economics"))
+            || lower.contains("bitcoin halving") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("course") || lower.contains("paper"))
+            || lower.contains("staking yield") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("defi"))
+            || lower.contains("staking rewards") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("defi"))
+            || lower.contains("proof of stake") && (lower.contains("economics") || lower.contains("class") || lower.contains("exam") || lower.contains("incentive") || lower.contains("game theory"))
+            || lower.contains("proof of work") && (lower.contains("economics") || lower.contains("class") || lower.contains("exam") || lower.contains("mining") || lower.contains("incentive"))
+            || lower.contains("blockchain consensus") && (lower.contains("economics") || lower.contains("class") || lower.contains("exam") || lower.contains("game theory") || lower.contains("incentive"))
+            || lower.contains("liquidity mining") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("defi"))
+            || lower.contains("yield farming") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("defi") || lower.contains("course")) {
+            return "cryptocurrencyeconomics"
+        }
         // cryptolaw — positioned AFTER immigrationpolicy and BEFORE taxlaw so cryptocurrency and
         // blockchain law class, SEC vs CFTC crypto jurisdiction, DAO governance, smart contract
         // enforceability, NFT intellectual property, and AML/KYC for crypto exchanges route here.
@@ -14278,6 +14332,31 @@ public final class CalloutManager {
             || lower.contains("akhil amar") && (lower.contains("class") || lower.contains("constitutional") || lower.contains("course") || lower.contains("exam") || lower.contains("theory"))
             || lower.contains("jack balkin") && (lower.contains("class") || lower.contains("constitutional") || lower.contains("course") || lower.contains("exam") || lower.contains("theory")) {
             return "constitutionaltheory"
+        }
+        // constitutionalcomparativelaw — positioned AFTER constitutionaltheory and BEFORE taxlaw so
+        // comparative constitutional law class, constitutional design comparisons, Kelsenian abstract
+        // review vs Marbury concrete review, rights entrenchment, constitutional court models, and
+        // constitutional amendment formulas route here. Distinct from constitutionaltheory
+        // (originalism/living-constitutionalism interpretation methods) and constitutionallaw
+        // (U.S. doctrine — Commerce Clause, First Amendment analysis).
+        if lower.contains("comparative constitutional law") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("seminar"))
+            || word("comparative constitutional law")
+            || lower.contains("comparative constitutionalism") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("constitutional design") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("comparative") || lower.contains("paper"))
+            || lower.contains("constitutional court") && (lower.contains("class") || lower.contains("comparative") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("constitutional courts") && (lower.contains("class") || lower.contains("comparative") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("kelsenian") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("constitutional") || lower.contains("review"))
+            || lower.contains("abstract review") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("constitutional") || lower.contains("comparative"))
+            || lower.contains("concrete review") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("constitutional") || lower.contains("comparative"))
+            || lower.contains("constitutional amendment") && (lower.contains("comparative") || lower.contains("design")) && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("rights entrenchment") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("constitutional") || lower.contains("comparative"))
+            || lower.contains("judicial independence") && (lower.contains("comparative") || lower.contains("constitutional court")) && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("judicial review") && (lower.contains("comparative") || lower.contains("constitutional court")) && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("constitutional entrenchment") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("parliamentary sovereignty") && (lower.contains("comparative") || lower.contains("constitutional")) && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("presidential vs parliamentary") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("constitutional") || lower.contains("comparative"))
+            || lower.contains("semi-presidential") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("constitutional") || lower.contains("comparative")) {
+            return "constitutionalcomparativelaw"
         }
         // taxlaw — positioned AFTER corporatelaw and BEFORE neurolaw so federal income tax law class,
         // capital gains analysis, deductions, and tax policy coursework route here rather than the
@@ -14443,6 +14522,32 @@ public final class CalloutManager {
             || lower.contains("construction delay claim") || lower.contains("subcontractor claims") && lower.contains("construction") {
             return "constructionlaw"
         }
+        // internationalhumanitarianlaw — positioned BEFORE internationallaw so IHL class, Geneva
+        // Conventions, LOAC, distinction/proportionality/military necessity principles, ICRC, POW
+        // treatment, and war crimes prosecution route here. Distinct from humanrights (peacetime
+        // human rights law/ICCPR/ECHR) and internationallaw (general PIL/treaty law/VCLT).
+        if lower.contains("international humanitarian law") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("seminar"))
+            || lower.contains("ihl class") || lower.contains("ihl course") || lower.contains("ihl exam")
+            || lower.contains("ihl paper") || lower.contains("ihl seminar")
+            || word("ihl") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("law") || lower.contains("armed"))
+            || lower.contains("law of armed conflict") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("seminar"))
+            || lower.contains("loac class") || lower.contains("loac course") || lower.contains("loac exam")
+            || word("loac") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("law"))
+            || lower.contains("geneva convention") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("ihl") || lower.contains("loac"))
+            || lower.contains("geneva conventions") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("ihl"))
+            || lower.contains("additional protocol") && (lower.contains("ihl") || lower.contains("loac") || lower.contains("armed conflict") || lower.contains("humanitarian law")) && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("principle of distinction") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("ihl") || lower.contains("loac") || lower.contains("humanitarian"))
+            || lower.contains("military necessity") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("ihl") || lower.contains("loac") || lower.contains("humanitarian"))
+            || lower.contains("proportionality") && (lower.contains("ihl") || lower.contains("loac") || lower.contains("armed conflict") || lower.contains("humanitarian law")) && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("protected persons") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("ihl") || lower.contains("loac") || lower.contains("geneva"))
+            || lower.contains("prisoner of war") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("ihl") || lower.contains("loac") || lower.contains("geneva"))
+            || lower.contains("icrc") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("ihl") || lower.contains("humanitarian") || lower.contains("law"))
+            || lower.contains("war crimes") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("ihl") || lower.contains("loac") || lower.contains("humanitarian"))
+            || lower.contains("combatant status") && (lower.contains("class") || lower.contains("exam") || lower.contains("ihl") || lower.contains("loac") || lower.contains("armed conflict"))
+            || lower.contains("unlawful combatant") && (lower.contains("class") || lower.contains("exam") || lower.contains("ihl") || lower.contains("loac") || lower.contains("law"))
+            || lower.contains("hague law") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("ihl") || lower.contains("loac") || lower.contains("armed conflict")) {
+            return "internationalhumanitarianlaw"
+        }
         // internationallaw — positioned BEFORE the general legal catchall so public international
         // law, PIL, ICJ, UNCLOS, VCLT, and treaty law route to a dedicated pool. Distinct from
         // internationalrelations (IR theory) and tradelaw (WTO/tariffs).
@@ -14491,6 +14596,36 @@ public final class CalloutManager {
             || lower.contains("transaction costs") && (lower.contains("law") || lower.contains("legal") || lower.contains("coase") || lower.contains("law and economics")) && (lower.contains("class") || lower.contains("exam") || lower.contains("paper"))
             || lower.contains("chicago school of law") || lower.contains("chicago school law and economics") {
             return "lawandeconomics"
+        }
+        // islamiclaw — positioned BEFORE the general legal catchall so Islamic law class, sharia,
+        // fiqh, usul al-fiqh, madhab jurisprudence (Hanafi/Maliki/Shafi'i/Hanbali), qiyas, maslaha,
+        // ijtihad, hudud, and Islamic contract law route here. Distinct from comparativereligion
+        // (theology/religious studies) and internationalhumanitarianlaw (LOAC/Geneva).
+        if lower.contains("islamic law class") || lower.contains("islamic law course")
+            || lower.contains("islamic law exam") || lower.contains("islamic law paper")
+            || lower.contains("islamic law seminar") || lower.contains("islamic law notes")
+            || lower.contains("islamic law assignment") || lower.contains("islamic law textbook")
+            || word("islamic law") || word("sharia law") || word("shariah law")
+            || lower.contains("sharia class") || lower.contains("sharia course") || lower.contains("sharia exam")
+            || lower.contains("shariah class") || lower.contains("shariah course") || lower.contains("shariah exam")
+            || word("fiqh") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("study"))
+            || lower.contains("fiqh class") || lower.contains("fiqh course") || lower.contains("fiqh exam")
+            || lower.contains("usul al-fiqh") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("usul alfiqh") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("islamic jurisprudence class") || lower.contains("islamic jurisprudence course")
+            || lower.contains("islamic jurisprudence exam") || lower.contains("islamic jurisprudence paper")
+            || word("islamic jurisprudence") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("hanafi") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("fiqh") || lower.contains("law"))
+            || lower.contains("maliki") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("fiqh") || lower.contains("law"))
+            || lower.contains("hanbali") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("fiqh") || lower.contains("law"))
+            || lower.contains("madhab") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("fiqh") || lower.contains("law"))
+            || lower.contains("madhabs") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("fiqh") || lower.contains("law"))
+            || lower.contains("qiyas") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("fiqh") || lower.contains("islamic") || lower.contains("law"))
+            || lower.contains("maslaha") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("fiqh") || lower.contains("islamic") || lower.contains("law"))
+            || lower.contains("ijtihad") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("fiqh") || lower.contains("islamic") || lower.contains("law"))
+            || lower.contains("hudud") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("fiqh") || lower.contains("islamic") || lower.contains("law"))
+            || lower.contains("islamic contract law") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper")) {
+            return "islamiclaw"
         }
         if word("brief") || word("briefs") || word("pleading") || word("pleadings")
             || word("deposition") || word("depositions") || word("statute") || word("statutes")

@@ -734,6 +734,11 @@ extension CalloutManager {
         case "marinegeology":              return marinegeologyCallouts(tier: tier)
         case "educationpolicy":            return educationpolicyCallouts(tier: tier)
         case "globalfoodpolicy":           return globalfoodpolicyCallouts(tier: tier)
+        case "behavioralfinance":          return behavioralfinanceCallouts(tier: tier)
+        case "cryptocurrencyeconomics":    return cryptocurrencyeconomicsCallouts(tier: tier)
+        case "constitutionalcomparativelaw": return constitutionalcomparativelawCallouts(tier: tier)
+        case "internationalhumanitarianlaw": return internationalhumanitarianlawCallouts(tier: tier)
+        case "islamiclaw":                 return islamiclawCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -15127,6 +15132,111 @@ extension CalloutManager {
             "CLOSE THIS. open your global food policy textbook or FAO/WFP governance and food security notes.",
             "CLOSE THIS. those Green Revolution analysis and food sovereignty problems won't solve themselves.",
             "CLOSE THIS. your global food policy exam won't study itself."
+        ]
+        }
+    }
+
+    private func behavioralfinanceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those behavioral finance problems — prospect theory in markets, overconfidence bias in trading, herding behavior, noise trader risk, calendar anomalies, the disposition effect, and limits to arbitrage — won't analyze themselves.",
+            "your behavioral finance exam needs you — prospect theory, loss aversion in portfolios, mental accounting, overconfidence, herding, market anomalies (momentum, January effect), disposition effect, and Shiller's irrational exuberance are all waiting.",
+            "those behavioral finance assignments and market anomaly analyses are still open.",
+            "prospect theory, noise traders, disposition effect, herding, limits to arbitrage, irrational exuberance — get back to your behavioral finance coursework."
+        ]
+        case 2: return [
+            "stop. your behavioral finance exam and market anomaly paper are still open.",
+            "prospect theory, overconfidence in trading, herding behavior, disposition effect, limits to arbitrage, momentum anomaly — your exam won't wait.",
+            "behavioral finance class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your behavioral finance textbook or prospect theory and market anomaly notes.",
+            "CLOSE THIS. those noise trader and behavioral bias problems won't solve themselves.",
+            "CLOSE THIS. your behavioral finance exam won't study itself."
+        ]
+        }
+    }
+
+    private func cryptocurrencyeconomicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those cryptocurrency economics problems — tokenomics design, DeFi protocol economics, AMM liquidity provision, MEV, Bitcoin halving cycles, staking yields, proof-of-stake incentives, and crypto market microstructure — won't analyze themselves.",
+            "your crypto economics exam needs you — tokenomics, DeFi protocols, AMM pricing (x*y=k), MEV and front-running, Bitcoin halving supply schedule, staking APY mechanics, PoW vs PoS incentives, and blockchain consensus game theory are all waiting.",
+            "those cryptocurrency economics assignments and DeFi protocol analyses are still open.",
+            "tokenomics, AMM, MEV, Bitcoin halving, staking yields, PoS incentives, DeFi liquidity mining — get back to your crypto economics coursework."
+        ]
+        case 2: return [
+            "stop. your crypto economics exam and tokenomics paper are still open.",
+            "tokenomics design, DeFi AMM mechanics, MEV extraction, Bitcoin halving cycles, staking rewards, PoS vs PoW incentives, blockchain consensus game theory — your exam won't wait.",
+            "cryptocurrency economics class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your crypto economics textbook or tokenomics and DeFi protocol notes.",
+            "CLOSE THIS. those AMM pricing and MEV problems won't solve themselves.",
+            "CLOSE THIS. your cryptocurrency economics exam won't study itself."
+        ]
+        }
+    }
+
+    private func constitutionalcomparativelawCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those comparative constitutional law problems — constitutional design comparisons, Kelsenian abstract review vs Marbury concrete review, rights entrenchment, constitutional courts, amendment formulas, parliamentary sovereignty, and semi-presidential systems — won't analyze themselves.",
+            "your comparative constitutional law exam needs you — constitutional design, abstract vs concrete judicial review, constitutional courts (Germany BVerfG, French Conseil Constitutionnel), rights entrenchment, amendment formulas (supermajority, referendum), parliamentary sovereignty vs constitutional supremacy, and presidential vs parliamentary systems are all waiting.",
+            "those comparative constitutionalism assignments and constitutional court analyses are still open.",
+            "Kelsenian review, constitutional courts, rights entrenchment, amendment formulas, parliamentary sovereignty, presidential vs parliamentary systems — get back to your comparative constitutional law coursework."
+        ]
+        case 2: return [
+            "stop. your comparative constitutional law exam and constitutional design paper are still open.",
+            "Kelsenian abstract review, constitutional courts, rights entrenchment, amendment formulas, parliamentary sovereignty, semi-presidential systems — your exam won't wait.",
+            "comparative constitutional law class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your comparative constitutional law textbook or constitutional design and judicial review notes.",
+            "CLOSE THIS. those constitutional court and rights entrenchment problems won't solve themselves.",
+            "CLOSE THIS. your comparative constitutional law exam won't study itself."
+        ]
+        }
+    }
+
+    private func internationalhumanitarianlawCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those international humanitarian law problems — the Geneva Conventions, principles of distinction, proportionality, and military necessity, ICRC operations, POW treatment, protected persons, combatant status, and war crimes prosecution — won't analyze themselves.",
+            "your IHL exam needs you — Geneva Conventions I–IV and Additional Protocols, the principle of distinction (combatants vs civilians), proportionality in attack, military necessity, ICRC mandate and role, prisoner of war status (GC III), protected persons (GC IV), combatant status and unlawful combatant, Martens Clause, and Hague Law (means and methods of warfare) are all waiting.",
+            "those IHL assignments and LOAC case analyses are still open.",
+            "Geneva Conventions, principle of distinction, proportionality, military necessity, ICRC, POW, combatant status, Hague Law — get back to your international humanitarian law coursework."
+        ]
+        case 2: return [
+            "stop. your IHL exam and Geneva Conventions analysis are still open.",
+            "distinction principle, proportionality in attack, military necessity, Geneva Conventions POW rules, ICRC mandate, combatant status, war crimes — your exam won't wait.",
+            "international humanitarian law class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your IHL textbook or Geneva Conventions and LOAC principle notes.",
+            "CLOSE THIS. those distinction/proportionality/military necessity problems won't solve themselves.",
+            "CLOSE THIS. your international humanitarian law exam won't study itself."
+        ]
+        }
+    }
+
+    private func islamiclawCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those Islamic law problems — sharia sources and fiqh methodology, usul al-fiqh (qiyas analogical reasoning, maslaha public interest, ijma consensus, ijtihad independent reasoning), the four madhabs (Hanafi, Maliki, Shafi'i, Hanbali), hudud and tazir penalties, and Islamic contract law — won't analyze themselves.",
+            "your Islamic law exam needs you — sharia sources (Quran, Sunnah, ijma, qiyas), usul al-fiqh foundations, the four schools of jurisprudence (Hanafi/Maliki/Shafi'i/Hanbali), ijtihad and its gates, maslaha (public interest) in legal reasoning, hudud fixed penalties, tazir discretionary sanctions, Islamic contract law (riba prohibition, murabaha, musharaka), and waqf endowment law are all waiting.",
+            "those Islamic law assignments and fiqh methodology analyses are still open.",
+            "sharia, fiqh, usul al-fiqh, madhabs, qiyas, maslaha, ijtihad, hudud, Islamic contract law — get back to your Islamic law coursework."
+        ]
+        case 2: return [
+            "stop. your Islamic law exam and fiqh methodology paper are still open.",
+            "usul al-fiqh sources, madhab jurisprudence, qiyas analogical reasoning, maslaha public interest, ijtihad, hudud, tazir, Islamic contract law — your exam won't wait.",
+            "Islamic law class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your Islamic law textbook or fiqh methodology and madhab jurisprudence notes.",
+            "CLOSE THIS. those usul al-fiqh and Islamic legal theory problems won't solve themselves.",
+            "CLOSE THIS. your Islamic law exam won't study itself."
         ]
         }
     }

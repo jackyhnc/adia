@@ -28913,6 +28913,151 @@ struct CalloutManagerTests {
         #expect(mgr.taskAwareCallouts(keyword: "globalfoodpolicy", tier: 3).contains { $0.contains("CLOSE THIS") })
     }
 
+    // MARK: - behavioralfinance
+    @Test func behavioralfinanceRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "behavioral finance class prospect theory loss aversion overconfidence bias noise trader risk market anomalies exam") == "behavioralfinance")
+    }
+    @Test func behavioralfinanceRoutingFromProspectTheory() {
+        #expect(CalloutManager.extractTaskKeyword(from: "prospect theory financial markets investing portfolio finance class exam disposition effect herding") == "behavioralfinance")
+    }
+    @Test func behavioralfinanceRoutingFromMarketAnomalies() {
+        #expect(CalloutManager.extractTaskKeyword(from: "market anomalies behavioral finance class January effect momentum effect limits to arbitrage noise trader exam") == "behavioralfinance")
+    }
+    @Test func behavioralfinanceFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "behavioral economics class nudge theory choice architecture Thaler Sunstein bounded rationality")
+        #expect(kw != "behavioralfinance", "behavioral economics without finance/market/invest context should not route to behavioralfinance")
+    }
+    @Test @MainActor func behavioralfinanceCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "behavioralfinance", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "behavioralfinance", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "behavioralfinance", tier: 3).isEmpty)
+    }
+    @Test @MainActor func behavioralfinanceTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "behavioralfinance", tier: 1).count >= 4)
+    }
+    @Test @MainActor func behavioralfinanceTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "behavioralfinance", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - cryptocurrencyeconomics
+    @Test func cryptocurrencyeconomicsRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cryptocurrency economics class tokenomics DeFi AMM MEV Bitcoin halving staking yields proof of stake incentives exam") == "cryptocurrencyeconomics")
+    }
+    @Test func cryptocurrencyeconomicsRoutingFromTokenomics() {
+        #expect(CalloutManager.extractTaskKeyword(from: "tokenomics design class governance token distribution vesting schedule liquidity mining yield farming crypto economics exam") == "cryptocurrencyeconomics")
+    }
+    @Test func cryptocurrencyeconomicsRoutingFromDeFi() {
+        #expect(CalloutManager.extractTaskKeyword(from: "DeFi protocol economics class automated market maker AMM impermanent loss liquidity mining course exam") == "cryptocurrencyeconomics")
+    }
+    @Test func cryptocurrencyeconomicsFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "crypto law class SEC CFTC Howey test digital asset regulation blockchain legal DAO governance")
+        #expect(kw != "cryptocurrencyeconomics", "crypto law without economics/tokenomics keywords should not route to cryptocurrencyeconomics")
+    }
+    @Test @MainActor func cryptocurrencyeconomicsCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "cryptocurrencyeconomics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "cryptocurrencyeconomics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "cryptocurrencyeconomics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func cryptocurrencyeconomicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "cryptocurrencyeconomics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func cryptocurrencyeconomicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "cryptocurrencyeconomics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - constitutionalcomparativelaw
+    @Test func constitutionalcomparativelawRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "comparative constitutional law class Kelsen abstract review constitutional design rights entrenchment constitutional court amendment formula exam") == "constitutionalcomparativelaw")
+    }
+    @Test func constitutionalcomparativelawRoutingFromKelsenian() {
+        #expect(CalloutManager.extractTaskKeyword(from: "Kelsenian constitutional review class abstract review concrete review constitutional court comparative law exam") == "constitutionalcomparativelaw")
+    }
+    @Test func constitutionalcomparativelawRoutingFromComparativeConstitutionalism() {
+        #expect(CalloutManager.extractTaskKeyword(from: "comparative constitutionalism class presidential vs parliamentary systems semi-presidential rights entrenchment judicial independence exam") == "constitutionalcomparativelaw")
+    }
+    @Test func constitutionalcomparativelawFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "constitutional theory class originalism living constitutionalism textualism Dworkin departmentalism interpretation")
+        #expect(kw != "constitutionalcomparativelaw", "constitutional theory without comparative/design/court keywords should not route to constitutionalcomparativelaw")
+    }
+    @Test @MainActor func constitutionalcomparativelawCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "constitutionalcomparativelaw", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "constitutionalcomparativelaw", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "constitutionalcomparativelaw", tier: 3).isEmpty)
+    }
+    @Test @MainActor func constitutionalcomparativelawTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "constitutionalcomparativelaw", tier: 1).count >= 4)
+    }
+    @Test @MainActor func constitutionalcomparativelawTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "constitutionalcomparativelaw", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - internationalhumanitarianlaw
+    @Test func internationalhumanitarianlawRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "international humanitarian law class Geneva Conventions principle of distinction proportionality military necessity ICRC POW exam") == "internationalhumanitarianlaw")
+    }
+    @Test func internationalhumanitarianlawRoutingFromIHL() {
+        #expect(CalloutManager.extractTaskKeyword(from: "IHL class law of armed conflict LOAC Geneva Conventions combatant status war crimes protected persons exam") == "internationalhumanitarianlaw")
+    }
+    @Test func internationalhumanitarianlawRoutingFromLOAC() {
+        #expect(CalloutManager.extractTaskKeyword(from: "LOAC class principle of distinction military necessity proportionality Geneva law Hague law ICRC mandate exam") == "internationalhumanitarianlaw")
+    }
+    @Test func internationalhumanitarianlawFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "international law class ICJ UNCLOS treaty law VCLT PIL sovereign immunity jus cogens")
+        #expect(kw != "internationalhumanitarianlaw", "general international law without IHL/LOAC/Geneva keywords should not route to internationalhumanitarianlaw")
+    }
+    @Test @MainActor func internationalhumanitarianlawCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "internationalhumanitarianlaw", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "internationalhumanitarianlaw", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "internationalhumanitarianlaw", tier: 3).isEmpty)
+    }
+    @Test @MainActor func internationalhumanitarianlawTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "internationalhumanitarianlaw", tier: 1).count >= 4)
+    }
+    @Test @MainActor func internationalhumanitarianlawTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "internationalhumanitarianlaw", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - islamiclaw
+    @Test func islamiclawRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "Islamic law class sharia fiqh usul al-fiqh madhabs qiyas maslaha ijtihad hudud Islamic jurisprudence exam") == "islamiclaw")
+    }
+    @Test func islamiclawRoutingFromFiqh() {
+        #expect(CalloutManager.extractTaskKeyword(from: "fiqh class Hanafi Maliki madhab usul al-fiqh Islamic jurisprudence qiyas maslaha course exam") == "islamiclaw")
+    }
+    @Test func islamiclawRoutingFromSharia() {
+        #expect(CalloutManager.extractTaskKeyword(from: "sharia class Islamic law exam ijtihad hudud tazir Islamic contract law riba prohibition fiqh") == "islamiclaw")
+    }
+    @Test func islamiclawFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "international law class ICJ treaty VCLT sovereign immunity humanitarian law PIL")
+        #expect(kw != "islamiclaw", "international law without Islamic/sharia/fiqh keywords should not route to islamiclaw")
+    }
+    @Test @MainActor func islamiclawCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "islamiclaw", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "islamiclaw", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "islamiclaw", tier: 3).isEmpty)
+    }
+    @Test @MainActor func islamiclawTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "islamiclaw", tier: 1).count >= 4)
+    }
+    @Test @MainActor func islamiclawTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "islamiclaw", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
     // MARK: - Count guard (≥1317)
     @Test func calloutTemplatesCountAtLeast1307() {
         #expect(SuggestedSessionTemplates.all.count >= 1307, "template catalog must have ≥1307 entries after mediatheory/theaterstudies/developmentstudies/entertainmentlaw/bankinglaw additions")
@@ -28925,5 +29070,8 @@ struct CalloutManagerTests {
     }
     @Test func calloutTemplatesCountAtLeast1337() {
         #expect(SuggestedSessionTemplates.all.count >= 1337, "template catalog must have ≥1337 entries after energyeconomics/laboreconomics/marinegeology/educationpolicy/globalfoodpolicy additions")
+    }
+    @Test func calloutTemplatesCountAtLeast1347() {
+        #expect(SuggestedSessionTemplates.all.count >= 1347, "template catalog must have ≥1347 entries after behavioralfinance/cryptocurrencyeconomics/constitutionalcomparativelaw/internationalhumanitarianlaw/islamiclaw additions")
     }
 }
