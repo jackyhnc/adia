@@ -20672,3 +20672,71 @@ All GOAL.md tasks remain checked. Continue expanding keyword domains. Suggested 
 - `constructionestimating` — construction estimating class, RSMeans, quantity takeoff, bid writing (distinct from constructionmanagement)
 - `riskmanagement` (already exists — confirm)
 - `forensicengineering` — forensic engineering investigation, failure analysis, expert witness reports, product liability (distinct from forensicscience and engineering)
+
+---
+
+## Run 410 — computationallinguistics / sociolinguistics / agroecology / forensicengineering / healthlaw
+
+**Date:** 2026-07-23
+**Templates:** 1189 → 1199
+**Domains added:** 5
+
+### Routing branches added (CalloutManager.swift)
+
+| Domain | Placement | Key triggers |
+|---|---|---|
+| `computationallinguistics` | BEFORE `linguistics` (after `psycholinguistics`) | computational linguistics class/course/exam; formal grammar class/course/exam; context-free grammar+class/exam/linguistics; CKY algorithm/parsing; Earley parser/algorithm+parsing; chart parsing+class; PCFG+class/linguistics/exam/parsing; dependency parsing+class/linguistics; tree-adjoining grammar; CCG+linguistics; minimalist syntax class/course/exam; formal syntax/semantics class/course; lambda calculus+linguistics; computational syntax/semantics+class/exam |
+| `sociolinguistics` | BEFORE `linguistics` (after `computationallinguistics`) | sociolinguistics class/course/exam/notes/assignment/homework/textbook/seminar; language variation class/course/exam; dialectology class/course/exam; language and society+class/course/exam; code-switching+class/course/linguistics/exam; language contact class/course/exam; pidgin/creole+class/linguistics/exam; language policy/planning+class/linguistics; variationist linguistics; Labovian+class/study; speech community+class/study/linguistics; register variation+class/linguistics; linguistic landscape+class/course/exam; endangered language+class/course/linguistics/policy |
+| `agroecology` | BEFORE `agriculturalscience` (after `soilscience`) | agroecology class/course/exam/assignment/homework/notes/textbook/seminar/program/degree; agroecosystem+class/course/exam/lab/study; agroforestry class/course/exam/assignment/program/design; sustainable farming systems+class/course/exam/assignment; food systems ecology/science+class/course/exam; regenerative agriculture class/course/exam/program; permaculture design course/certificate; permaculture class/course/exam/assignment; ecological farming+class/course/exam; crop ecology class/course; soil ecology+class/course/exam/agroecol; IPM+agroecol/sustainable farming; polyculture farming+class/study; cover crop ecology+class/study/exam |
+| `forensicengineering` | BEFORE `forensicscience` (after `forensicchemistry`) | forensic engineering class/course/exam/assignment/notes/textbook/investigation/report; failure analysis+class/course/exam/engineering/investigation/lab; failure mode analysis+class/course/exam/engineering; FMEA+class/course/engineering/exam; root cause analysis+class/course/engineering/investigation/exam; structural/material/materials failure+class/course/engineering/investigation/analysis; product/engineering expert witness+report/class/course/exam; forensic structural/civil/mechanical engineering; engineering failure investigation; accident reconstruction+engineering; component failure analysis+class/engineering/exam; fracture mechanics forensic; fatigue fracture investigation+engineering |
+| `healthlaw` | BEFORE `neurolaw` (after `administrativelaw`) | health/healthcare/health care law class/course/exam/paper/assignment/notes/textbook/seminar/outline/journal; HIPAA law class/course/exam/regulation class/course; hipaa compliance law; FDA law/regulatory law class/course/exam; ACA/affordable care act law class/litigation; Medicare/Medicaid law class/course; healthcare compliance law; medical licensing law+class/course/exam; healthcare regulation class/course; health policy law+class/course/exam; bioethics law+class/course/exam; law and medicine class/course/exam |
+
+### Callout pools added (CalloutMessages.swift)
+
+- `computationallinguisticsCallouts(tier:)` — CKY/Earley parsing, PCFGs, formal grammar, dependency parsing, lambda semantics; CLOSE THIS tier
+- `sociolinguisticsCallouts(tier:)` — language variation, dialectology, code-switching, Labovian variationist, pidgins/creoles, language policy; CLOSE THIS tier
+- `agroecologyCallouts(tier:)` — agroforestry design, agroecosystem analysis, permaculture, regenerative agriculture, food systems ecology; CLOSE THIS tier
+- `forensicengineeringCallouts(tier:)` — failure analysis, FMEA, root cause analysis, structural failure, product liability, expert witness report; CLOSE THIS tier
+- `healthlawCallouts(tier:)` — HIPAA privacy rule, FDA regulatory law, ACA litigation, Medicare/Medicaid law, Stark Law, EMTALA; CLOSE THIS tier
+
+### Templates added (SuggestedSessionTemplates.swift)
+
+| Domain | Template 1 | Template 2 |
+|---|---|---|
+| computationallinguistics | Study exam — Chomsky hierarchy, CYK/Earley algorithms, PCFGs, dependency parsing, formal semantics, lambda calculus, minimalist syntax | Problem set/assignment — implement CYK or Earley parser, train PCFG from treebank, transition-based dependency parsing, or write formal semantics derivation |
+| sociolinguistics | Study exam — variationist sociolinguistics, Labovian methods, language contact, pidgins/creoles, language policy, linguistic landscape | Paper/analysis — variationist analysis of linguistic variable, language contact or policy paper, or linguistic landscape study |
+| agroecology | Study exam — agroecosystem services, agroforestry types, LER, permaculture zones, IPM, soil food web, food systems analysis | Design project — agroforestry system or permaculture design, food systems analysis paper, or field study report |
+| forensicengineering | Study exam — failure modes, fracture mechanics, FMEA, root cause methods, expert witness standards, Daubert, investigation process | Failure analysis report/expert witness document — component failure analysis, expert report in ASTM E620 format, or product liability analysis |
+| healthlaw | Study exam — HIPAA Privacy Rule, FDA regulatory pathways, ACA structure, Medicare/Medicaid law, EMTALA, Stark Law, Anti-Kickback | Paper/compliance memo — HIPAA breach analysis, ACA coverage memo, FDA regulatory memo, or Stark/AKS provider compliance memo |
+
+### Tests added
+
+**CalloutManagerTests.swift** — 35 new @Test functions:
+- 3 routing tests + 1 false-positive guard + 3 pool tests (all-tiers, tier-1-count, tier-3-CLOSE-THIS) per domain × 5 domains
+- Count guard updated: ≥1189 → ≥1199
+
+**SuggestedSessionTemplatesTests.swift** — 12 new @Test functions:
+- 2 template existence tests per domain × 5 domains + count guard ≥1189 → ≥1199
+
+### Verification
+- `grep -c "preferredDuration:" SuggestedSessionTemplates.swift` → 1199 ✓
+- Brace balance: CalloutMessages.swift 1243/1243 ✓; CalloutManager.swift 649/649 ✓
+- Routing branch ordering confirmed:
+  - computationallinguistics BEFORE linguistics (after psycholinguistics) ✓
+  - sociolinguistics BEFORE linguistics (after computationallinguistics) ✓
+  - agroecology BEFORE agriculturalscience (after soilscience) ✓
+  - forensicengineering BEFORE forensicscience (after forensicchemistry) ✓
+  - healthlaw BEFORE neurolaw (after administrativelaw) ✓
+
+### Blocked
+Swift toolchain unavailable on Linux container — no `swift build` or `swift test` possible.
+
+### Suggested next domains
+- `quantumoptics` already exists — check `quantumopticsCallouts`
+- `geochemistry` already exists (confirmed in routing)
+- `clinicalneurology` / `neurologyadvanced` — clinical neurology elective distinct from basic neuroscience (movement disorder clinic, neuro-ICU, epilepsy monitoring unit, MS clinic) — need to confirm if exists
+- `radiologyrotation` — radiology clerkship (chest X-ray, CT reads, MRI basics, interventional radiology, ABR Core exam — distinct from radiochemistry/physics)
+- `behavioralneuroscience` — behavioral neuroscience class (animal behavior models, lesion studies, optogenetics, EEG in animals, reward circuits, fear conditioning — distinct from neuroscience and behavioral biology)
+- `translationalscience` — translational research/science class (bench-to-bedside, T1/T2 translational research types, CTSA network, phase 0 studies, biomarker development — distinct from clinical research and pharmacology)
+- `marinebiology3` or `deepseabiology` — deep-sea biology / marine ecology of extreme environments (hydrothermal vents, cold seeps, hadal zone, chemosynthesis — distinct from marinebiology and marinebiology2)
+- `toxicology` already exists — check if `clinicaltoxicology` is distinct enough (it is — added in Run 408)
