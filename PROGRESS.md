@@ -1,5 +1,62 @@
 # Adia — Build Progress
 
+## Run 405 (automated) — 2026-07-23 — 4 new keyword domains: quantumtransport/geophysicsinversion/constitutivemodeling/infraredspectroscopy (1229→1237 templates)
+
+### What shipped
+
+**4 new keyword domains: quantumtransport, geophysicsinversion, constitutivemodeling, infraredspectroscopy**
+
+**New keyword domain — quantumtransport:**
+- Branch positioned BEFORE `condensedmatterphysics`. Quantum transport coursework (Landauer-Büttiker formalism, scattering matrix, conductance quantization, ballistic transport, NEGF, mesoscopic physics) distinct from solid-state and condensed matter physics.
+- Catches: quantum transport class/course/exam/homework/assignment/notes, Landauer-Büttiker+class/exam/transport/formalism, Landauer formula+class/exam/transport/conductance, scattering matrix+transport+class/exam/quantum, conductance quantization+class/exam/transport/quantum, ballistic transport+class/exam/quantum/mesoscopic, non-equilibrium green/nonequilibrium green+class/exam/transport/function, negf+transport+class/exam/quantum, mesoscopic physics+class/exam/transport/course, mesoscopic transport+class/exam, quantum point contact+class/exam/transport/conductance, Aharonov-Bohm+transport+class/exam/quantum.
+- `quantumtransportCallouts(tier:)` 4/3/3: "those Landauer-Büttiker and conductance quantization problems won't solve themselves." / "no one masters quantum transport by scrolling." / "CLOSE THIS. those Landauer formula and ballistic transport problems won't solve themselves."
+- 2 templates: study exam (Landauer formula, S-matrix, NEGF, UCF, Aharonov-Bohm, IQHE edge states, 60 min) + assignment (conductance quantization derivation, S-matrix unitarity, NEGF for tight-binding chain, QPC plateaus, Aharonov-Bohm oscillations, 60 min)
+
+**New keyword domain — geophysicsinversion:**
+- Branch positioned BEFORE `geophysics`. Advanced seismic inversion coursework (FWI, migration velocity analysis, AVO, pre-stack inversion, seismic impedance inversion) distinct from general geophysics surveys.
+- Catches: seismic inversion class/course/exam/homework/assignment/textbook, geophysical inversion class/course/exam/homework, full-waveform inversion/full waveform inversion+class/exam/course/seismic/geophysics, fwi+seismic+class/exam/inversion, migration velocity analysis+class/exam/seismic, amplitude versus offset/amplitude vs offset+class/exam/seismic/inversion, avo analysis+class/exam/seismic, pre-stack inversion/post-stack inversion+class/exam/seismic, seismic impedance inversion+class/exam/course, reflection seismology+inversion+class/exam.
+- `geophysicsinversionCallouts(tier:)` 4/3/3: "those full-waveform inversion and AVO analysis problems won't solve themselves." / "no one masters seismic inversion by scrolling." / "CLOSE THIS. those full-waveform inversion and AVO problems won't solve themselves."
+- 2 templates: study exam (FWI objective function/adjoint method, Shuey AVO, MVA/CIG, seismic impedance inversion, 60 min) + assignment (AVO intercept/gradient computation, post-stack impedance inversion, CIG RMO analysis, 1D FWI gradient step, 60 min)
+
+**New keyword domain — constitutivemodeling:**
+- Branch positioned BEFORE `solidmechanics`. Constitutive modeling coursework (hyperelasticity, J₂ plasticity with return mapping, Armstrong-Frederick kinematic hardening, GTN damage, viscoplasticity, material parameter identification) distinct from general solid mechanics.
+- Catches: constitutive modeling/modelling class/course/exam/homework/assignment/notes, constitutive model+material+class/exam/derive/calibrate, plasticity model+class/exam/constitutive/material, viscoplasticity/viscoplastic model+class/exam/constitutive/material/model, hyperelasticity/hyperelastic model+class/exam/constitutive/material/model, neo-hookean+class/exam/constitutive/material, damage mechanics+constitutive+class/exam, isotropic hardening/kinematic hardening+class/exam/constitutive/plasticity, Drucker-Prager/Drucker Prager+class/exam/constitutive/plasticity, material parameter identification/calibration+class/exam/constitutive.
+- `constitutivemodelingCallouts(tier:)` 4/3/3: "those plasticity model and hyperelasticity constitutive equations won't derive themselves." / "no one masters constitutive modeling by scrolling." / "CLOSE THIS. those hyperelastic and viscoplastic constitutive equations won't derive themselves."
+- 2 templates: study exam (neo-Hookean/Mooney-Rivlin/Ogden, J₂ return mapping, Armstrong-Frederick, GTN damage, Lemaitre CDM, parameter identification, 60 min) + assignment (neo-Hookean Cauchy stress derivation, Mooney-Rivlin calibration, radial return implementation, Armstrong-Frederick parameter fitting, GTN yield surface, 60 min)
+
+**New keyword domain — infraredspectroscopy:**
+- Branch positioned BEFORE `spectroscopy`. FTIR/NIR spectroscopy coursework (Fourier transform infrared, ATR-FTIR, Beer-Lambert quantitative IR, PLS/CLS chemometrics, near-infrared) distinct from broader spectroscopy (NMR, UV-Vis, mass spec).
+- Catches: ftir class/course/exam/homework/assignment/notes, Fourier transform infrared+class/exam/course/spectroscopy/analysis, atr-ftir/atr ftir+class/exam/spectroscopy/analysis/sampling, attenuated total reflectance+class/exam/infrared/ftir/spectroscopy, near-infrared spectroscopy/near infrared spectroscopy/nir spectroscopy+class/exam/course/analysis, mid-infrared spectroscopy+class/exam/course, infrared spectroscopy class/course/exam/homework/assignment/textbook, ftir spectrum+interpret/analyze/assign/class/exam, infrared absorption+class/exam/ftir/spectroscopy/functional group, peak assignment+infrared/ftir/ir spectroscopy+class/exam.
+- `infraredspectroscopyCallouts(tier:)` 4/3/3: "those FTIR peak assignment and ATR-FTIR sampling problems won't solve themselves." / "no one masters FTIR spectroscopy by scrolling." / "CLOSE THIS. those FTIR spectrum interpretation and peak assignment problems won't solve themselves."
+- 2 templates: study exam (Michelson interferometer, Jacquinot/Fellgett advantages, ATR penetration depth, Beer-Lambert, PLS/CLS, NIR, 60 min) + assignment (FTIR peak assignment, ATR penetration depth calculation, Beer-Lambert calibration curve, PLS chemometric model, NIR method design, 60 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +35 @Test functions (3 routing tests + 1 false-positive guard + 3 callout pool tests per domain × 4 domains + 1 count guard ≥1237)
+- SuggestedSessionTemplatesTests.swift: +9 @Test functions (2 template existence × 4 domains + 1 count guard ≥1237)
+
+**Template catalog: 1229 → 1237**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `quantumtransport` fires BEFORE condensedmatterphysics (condensedmatterphysics at line ~2138, quantumtransport at ~2113) ✓
+- `geophysicsinversion` fires BEFORE geophysics ✓
+- `constitutivemodeling` fires BEFORE solidmechanics ✓
+- `infraredspectroscopy` fires BEFORE spectroscopy (spectroscopy at line ~8963+, infraredspectroscopy at ~8933) ✓
+- Brace balance: CalloutMessages.swift 1281/1281 ✓; CalloutManager.swift 668/668 ✓
+- Template count: 1237 confirmed (grep -c "preferredDuration:" = 1237) ✓
+- 4 new routing return statements in CalloutManager.swift ✓
+- 4 new switch cases + 4 new private pool functions in CalloutMessages.swift ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - NEW candidates: `biogeochemistry` — biogeochemistry class (element cycles, stable isotopes, C/N/P/S biogeochemical cycling, isotope fractionation, radiocarbon dating, marine sediment geochemistry — distinct from geochemistry and marinechemistry), `environmentalhydrology` — environmental hydrology class (Darcy's law, groundwater flow, aquifer characterization, contaminant transport, vadose zone, hydraulic conductivity, well hydraulics — distinct from hydrology and environmental engineering), `molecularsimulation` — molecular simulation class (molecular dynamics, Monte Carlo methods, force fields, AMBER/CHARMM/OPLS, GROMACS/NAMD, free energy perturbation, umbrella sampling, potential of mean force — distinct from computationalchemistry and biophysics), `tectonophysics` — tectonophysics class (plate kinematics, stress in lithosphere, isostasy, GPS geodesy, moment tensor, fault mechanics, earthquake cycles, visco-elastic relaxation — distinct from structuralgeology and geophysics), `atmosphericchemistry` — atmospheric chemistry class (tropospheric/stratospheric chemistry, ozone depletion, photochemical smog, VOC-NOx chemistry, chemical transport models, aerosol formation, Junge distribution — distinct from atmospheric science and environmental chemistry)
+- Template count target: 1237 → 1247 after next 5-domain batch
+
+---
+
 ## Run 404 (automated) — 2026-07-22 — 5 new keyword domains: metamaterials/nondestructivetesting/optimalcontrol/rocketpropulsion/reliabilityengineering (1129→1139 templates)
 
 ### What shipped
