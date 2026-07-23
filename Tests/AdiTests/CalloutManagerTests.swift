@@ -27623,8 +27623,148 @@ struct CalloutManagerTests {
         #expect(mgr.taskAwareCallouts(keyword: "molecularsimulation", tier: 3).contains { $0.contains("CLOSE THIS") })
     }
 
-    // MARK: - Count guard (≥1247)
-    @Test func calloutTemplatesCountAtLeast1247() {
-        #expect(SuggestedSessionTemplates.all.count >= 1247, "template catalog must have ≥1247 entries after biogeochemistry/tectonophysics/catalysis/rheology/molecularsimulation additions")
+    // MARK: - sciencecommunication
+    @Test func sciencecommunicationRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "science communication class deficit model risk communication lay audiences exam") == "sciencecommunication")
+    }
+    @Test func sciencecommunicationRoutingFromRiskCommunication() {
+        #expect(CalloutManager.extractTaskKeyword(from: "risk communication class sandman hazard outrage exam course") == "sciencecommunication")
+    }
+    @Test func sciencecommunicationRoutingFromFramingScience() {
+        #expect(CalloutManager.extractTaskKeyword(from: "framing science class course cultural cognition kahan exam assignment") == "sciencecommunication")
+    }
+    @Test func sciencecommunicationFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "scientific writing class imrad format methods section journal submission exam") != "sciencecommunication")
+    }
+    @Test @MainActor func sciencecommunicationCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "sciencecommunication", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "sciencecommunication", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "sciencecommunication", tier: 3).isEmpty)
+    }
+    @Test @MainActor func sciencecommunicationTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "sciencecommunication", tier: 1).count >= 4)
+    }
+    @Test @MainActor func sciencecommunicationTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "sciencecommunication", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - healthbehavior
+    @Test func healthbehaviorRoutingFromHealthBeliefModel() {
+        #expect(CalloutManager.extractTaskKeyword(from: "health belief model class hbm perceived susceptibility severity benefits barriers exam") == "healthbehavior")
+    }
+    @Test func healthbehaviorRoutingFromTPB() {
+        #expect(CalloutManager.extractTaskKeyword(from: "theory of planned behavior class tpb attitude subjective norms perceived behavioral control exam") == "healthbehavior")
+    }
+    @Test func healthbehaviorRoutingFromTTM() {
+        #expect(CalloutManager.extractTaskKeyword(from: "transtheoretical model class stages of change health behavior precontemplation contemplation exam") == "healthbehavior")
+    }
+    @Test func healthbehaviorFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "public health mph epidemiology community health program evaluation class exam") != "healthbehavior")
+    }
+    @Test @MainActor func healthbehaviorCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "healthbehavior", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "healthbehavior", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "healthbehavior", tier: 3).isEmpty)
+    }
+    @Test @MainActor func healthbehaviorTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "healthbehavior", tier: 1).count >= 4)
+    }
+    @Test @MainActor func healthbehaviorTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "healthbehavior", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - physicalanthropology
+    @Test func physicalanthropologyRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "physical anthropology class human evolution paleoanthropology australopithecines exam") == "physicalanthropology")
+    }
+    @Test func physicalanthropologyRoutingFromPaleoanthropology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "paleoanthropology class hominin evolution homo erectus bipedalism osteology exam") == "physicalanthropology")
+    }
+    @Test func physicalanthropologyRoutingFromOsteology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "osteology class skeletal analysis anthropology lab sex estimation age exam") == "physicalanthropology")
+    }
+    @Test func physicalanthropologyFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cultural anthropology class ethnography participant observation thick description exam") != "physicalanthropology")
+    }
+    @Test @MainActor func physicalanthropologyCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "physicalanthropology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "physicalanthropology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "physicalanthropology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func physicalanthropologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "physicalanthropology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func physicalanthropologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "physicalanthropology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - culturalanthropology
+    @Test func culturalanthropologyRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cultural anthropology class thick description geertz kinship rites of passage exam") == "culturalanthropology")
+    }
+    @Test func culturalanthropologyRoutingFromEthnographicMethods() {
+        #expect(CalloutManager.extractTaskKeyword(from: "ethnographic methods class participant observation fieldwork cultural relativism course") == "culturalanthropology")
+    }
+    @Test func culturalanthropologyRoutingFromRitesOfPassage() {
+        #expect(CalloutManager.extractTaskKeyword(from: "rites of passage anthropology class van gennep liminality communitas turner exam") == "culturalanthropology")
+    }
+    @Test func culturalanthropologyFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "physical anthropology class osteology skeletal analysis paleoanthropology human evolution exam") != "culturalanthropology")
+    }
+    @Test @MainActor func culturalanthropologyCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "culturalanthropology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "culturalanthropology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "culturalanthropology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func culturalanthropologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "culturalanthropology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func culturalanthropologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "culturalanthropology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - translationalscience
+    @Test func translationalscienceRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "translational science class T1 T2 T3 bench to bedside biomarker development exam") == "translationalscience")
+    }
+    @Test func translationalscienceRoutingFromBenchToBedside() {
+        #expect(CalloutManager.extractTaskKeyword(from: "bench-to-bedside class translational research ctsa first-in-human ind application course") == "translationalscience")
+    }
+    @Test func translationalscienceRoutingFromTranslationalMedicine() {
+        #expect(CalloutManager.extractTaskKeyword(from: "translational medicine class drug development pipeline biomarker discovery program exam") == "translationalscience")
+    }
+    @Test func translationalScienceFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "pharmacology class receptor binding drug mechanism mcat usmle step 1 exam") != "translationalscience")
+    }
+    @Test @MainActor func translationalscienceCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "translationalscience", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "translationalscience", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "translationalscience", tier: 3).isEmpty)
+    }
+    @Test @MainActor func translationalScienceTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "translationalscience", tier: 1).count >= 4)
+    }
+    @Test @MainActor func translationalScienceTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "translationalscience", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (≥1257)
+    @Test func calloutTemplatesCountAtLeast1257() {
+        #expect(SuggestedSessionTemplates.all.count >= 1257, "template catalog must have ≥1257 entries after sciencecommunication/healthbehavior/physicalanthropology/culturalanthropology/translationalscience additions")
     }
 }

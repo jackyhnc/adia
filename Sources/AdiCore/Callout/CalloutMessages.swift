@@ -689,6 +689,11 @@ extension CalloutManager {
         case "geophysicsinversion":        return geophysicsinversionCallouts(tier: tier)
         case "constitutivemodeling":       return constitutivemodelingCallouts(tier: tier)
         case "infraredspectroscopy":       return infraredspectroscopyCallouts(tier: tier)
+        case "sciencecommunication":       return sciencecommunicationCallouts(tier: tier)
+        case "healthbehavior":             return healthbehaviorCallouts(tier: tier)
+        case "physicalanthropology":       return physicalanthropologyCallouts(tier: tier)
+        case "culturalanthropology":       return culturalanthropologyCallouts(tier: tier)
+        case "translationalscience":       return translationalscienceCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -14137,6 +14142,111 @@ extension CalloutManager {
             "CLOSE THIS. open your molecular simulation textbook.",
             "CLOSE THIS. those GROMACS and free energy perturbation problems won't solve themselves.",
             "CLOSE THIS. your molecular simulation exam won't study itself."
+        ]
+        }
+    }
+
+    private func sciencecommunicationCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your science communication assignment isn't going to write itself.",
+            "get back to your deficit model and risk communication notes.",
+            "communicating science to lay audiences requires your attention, not this.",
+            "close this and work on your science communication project."
+        ]
+        case 2: return [
+            "no one learns to frame science for the public by scrolling.",
+            "close this and draft your science communication piece.",
+            "your science journalism or risk communication assignment needs focus now."
+        ]
+        default: return [
+            "CLOSE THIS. your science communication work won't do itself.",
+            "CLOSE THIS. those deficit model and framing exercises won't write themselves.",
+            "CLOSE THIS. your science communication exam won't study itself."
+        ]
+        }
+    }
+
+    private func healthbehaviorCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those Health Belief Model and TPB theory applications won't write themselves.",
+            "your health behavior exam doesn't care that you're scrolling.",
+            "get back to your Transtheoretical Model and stages of change study notes.",
+            "close this and open your health behavior theory textbook."
+        ]
+        case 2: return [
+            "no one masters health behavior theory by scrolling.",
+            "close this and work on your motivational interviewing or behavior change assignment.",
+            "those HBM, TPB, and SCT frameworks need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your health behavior theory textbook.",
+            "CLOSE THIS. those stages of change and self-efficacy problems won't solve themselves.",
+            "CLOSE THIS. your health behavior exam won't study itself."
+        ]
+        }
+    }
+
+    private func physicalanthropologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those hominid evolution and osteology analyses won't write themselves.",
+            "your physical anthropology exam doesn't care that you're scrolling.",
+            "get back to your australopithecines and Homo evolution study notes.",
+            "close this and open your physical anthropology textbook."
+        ]
+        case 2: return [
+            "no one masters paleoanthropology by scrolling.",
+            "close this and work on your skeletal analysis or primatology assignment.",
+            "those bipedalism and out-of-Africa hypotheses need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your physical anthropology textbook.",
+            "CLOSE THIS. those hominid fossil and osteology problems won't solve themselves.",
+            "CLOSE THIS. your physical anthropology exam won't study itself."
+        ]
+        }
+    }
+
+    private func culturalanthropologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your ethnographic fieldwork analysis isn't going to write itself.",
+            "your cultural anthropology exam doesn't care that you're scrolling.",
+            "get back to your thick description and kinship analysis notes.",
+            "close this and open your cultural anthropology textbook."
+        ]
+        case 2: return [
+            "no one masters ethnographic methods by scrolling.",
+            "close this and work on your cultural relativism or rites of passage analysis.",
+            "those Geertz and Van Gennep frameworks need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your cultural anthropology textbook.",
+            "CLOSE THIS. that ethnographic analysis won't write itself.",
+            "CLOSE THIS. your cultural anthropology exam won't study itself."
+        ]
+        }
+    }
+
+    private func translationalscienceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those bench-to-bedside pipeline and biomarker development analyses won't write themselves.",
+            "your translational science exam doesn't care that you're scrolling.",
+            "get back to your T1/T2/T3 translational research and CTSA study notes.",
+            "close this and open your translational medicine textbook."
+        ]
+        case 2: return [
+            "no one masters translational research design by scrolling.",
+            "close this and work on your first-in-human or biomarker discovery assignment.",
+            "those drug development pipeline and IND application concepts need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your translational science textbook.",
+            "CLOSE THIS. those T1-to-T3 and bench-to-bedside problems won't solve themselves.",
+            "CLOSE THIS. your translational science exam won't study itself."
         ]
         }
     }

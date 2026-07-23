@@ -7728,8 +7728,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func molecularsimulationAssignmentTemplateExists() {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("molecular simulation") && $0.task.lowercased().contains("assignment") })
     }
-    // MARK: - Count guard (≥1247)
-    @Test func templateCountAtLeast1247() {
-        #expect(SuggestedSessionTemplates.all.count >= 1247, "template catalog must have ≥1247 entries after biogeochemistry/tectonophysics/catalysis/rheology/molecularsimulation additions")
+    // MARK: - sciencecommunication templates
+    @Test func sciencecommunicationStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("science communication") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func sciencecommunicationAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("science communication") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - healthbehavior templates
+    @Test func healthbehaviorStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("health behavior theory") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func healthbehaviorAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("health behavior") && $0.task.lowercased().contains("intervention design") })
+    }
+    // MARK: - physicalanthropology templates
+    @Test func physicalanthropologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("physical anthropology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func physicalanthropologyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("physical anthropology") && $0.task.lowercased().contains("skeletal analysis") })
+    }
+    // MARK: - culturalanthropology templates
+    @Test func culturalanthropologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("cultural anthropology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func culturalanthropologyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("cultural anthropology") && $0.task.lowercased().contains("fieldwork design") })
+    }
+    // MARK: - translationalscience templates
+    @Test func translationalscienceStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("translational science") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func translationalscienceAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("translational science") && $0.task.lowercased().contains("paper") })
+    }
+    // MARK: - Count guard (≥1257)
+    @Test func templateCountAtLeast1257() {
+        #expect(SuggestedSessionTemplates.all.count >= 1257, "template catalog must have ≥1257 entries after sciencecommunication/healthbehavior/physicalanthropology/culturalanthropology/translationalscience additions")
     }
 }

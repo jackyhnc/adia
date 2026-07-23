@@ -6405,6 +6405,30 @@ public final class CalloutManager {
             || lower.contains("grant review") && lower.contains("writing") {
             return "grantwriting"
         }
+        // sciencecommunication — positioned BEFORE scientificwriting so science communication class
+        // (communicating science to lay audiences, risk communication, science journalism, deficit
+        // model, public understanding of science) gets its own pool rather than the IMRAD/journal pool.
+        if lower.contains("science communication class") || lower.contains("science communication course")
+            || lower.contains("science communication exam") || lower.contains("science communication assignment")
+            || lower.contains("science communication program") || lower.contains("science communication seminar")
+            || lower.contains("science communication major") || lower.contains("science communication degree")
+            || lower.contains("science communication certificate")
+            || lower.contains("communicating science to") || lower.contains("science for lay audiences")
+            || lower.contains("science for general audiences") || lower.contains("science for the public")
+            || lower.contains("public understanding of science") || lower.contains("science literacy class")
+            || lower.contains("science literacy course") || lower.contains("science literacy exam")
+            || lower.contains("science journalism class") || lower.contains("science journalism course")
+            || lower.contains("science journalism exam") || lower.contains("science journalism program")
+            || lower.contains("risk communication class") || lower.contains("risk communication course")
+            || lower.contains("risk communication exam") || lower.contains("risk communication assignment")
+            || lower.contains("deficit model") && (lower.contains("class") || lower.contains("science communication") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("framing science") && (lower.contains("class") || lower.contains("course") || lower.contains("communication") || lower.contains("exam"))
+            || lower.contains("science in society") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("communication"))
+            || lower.contains("science and media") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("communicating research") && (lower.contains("class") || lower.contains("course") || lower.contains("public") || lower.contains("lay") || lower.contains("non-expert"))
+            || lower.contains("science for policy") && (lower.contains("class") || lower.contains("course") || lower.contains("communication") || lower.contains("exam")) {
+            return "sciencecommunication"
+        }
         // scientificwriting — positioned BEFORE writing so "scientific writing class/course/exam",
         // IMRAD format, methods section, and peer-review-process coursework route here instead of
         // the generic writing pool. Bare "abstract" and "peer review" alone stay in writing.
@@ -10593,6 +10617,31 @@ public final class CalloutManager {
             || lower.contains("poison control notes") && (lower.contains("rotation") || lower.contains("write") || lower.contains("clerkship")) {
             return "clinicaltoxicology"
         }
+        // translationalscience — positioned BEFORE premed so translational research class
+        // (T1/T2/T3 types, bench-to-bedside, biomarker development, CTSA) routes here with
+        // dedicated callouts rather than the broad premed pool.
+        if lower.contains("translational research class") || lower.contains("translational research course")
+            || lower.contains("translational research exam") || lower.contains("translational research program")
+            || lower.contains("translational medicine class") || lower.contains("translational medicine course")
+            || lower.contains("translational medicine exam") || lower.contains("translational medicine program")
+            || lower.contains("translational science class") || lower.contains("translational science course")
+            || lower.contains("translational science exam") || lower.contains("translational science program")
+            || lower.contains("translational science degree") || lower.contains("translational science major")
+            || lower.contains("bench to bedside") || lower.contains("bench-to-bedside")
+            || lower.contains("t1 translational") || lower.contains("t2 translational") || lower.contains("t3 translational")
+            || lower.contains("t1/t2") && (lower.contains("translational") || lower.contains("research"))
+            || lower.contains("first in human") && (lower.contains("class") || lower.contains("translational") || lower.contains("research") || lower.contains("study"))
+            || lower.contains("first-in-human") && (lower.contains("class") || lower.contains("translational") || lower.contains("research"))
+            || lower.contains("ctsa") && (lower.contains("translational") || lower.contains("research") || lower.contains("class") || lower.contains("consortium"))
+            || lower.contains("clinical and translational") && (lower.contains("class") || lower.contains("course") || lower.contains("program") || lower.contains("research"))
+            || lower.contains("biomarker development") && (lower.contains("class") || lower.contains("translational") || lower.contains("research") || lower.contains("course"))
+            || lower.contains("biomarker discovery") && (lower.contains("class") || lower.contains("translational") || lower.contains("research") || lower.contains("course"))
+            || lower.contains("drug development pipeline") && (lower.contains("class") || lower.contains("translational") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("preclinical to clinical") && (lower.contains("class") || lower.contains("translational") || lower.contains("research"))
+            || lower.contains("ind application") && (lower.contains("class") || lower.contains("translational") || lower.contains("research") || lower.contains("drug"))
+            || lower.contains("translational pharmacology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")) {
+            return "translationalscience"
+        }
         if word("anatomy") || word("physiology") || word("biochemistry")
             || word("pharmacology") || word("pathology") || word("histology")
             || word("microbiology") || word("immunology") || word("embryology")
@@ -11576,6 +11625,30 @@ public final class CalloutManager {
             || lower.contains("disparate health outcomes") && (lower.contains("class") || lower.contains("research") || lower.contains("paper") || lower.contains("analysis")) {
             return "healthequity"
         }
+        // healthbehavior — positioned AFTER healthequity and BEFORE publicheath so health behavior
+        // theory class (Health Belief Model, TPB, SCT, Transtheoretical Model, motivational
+        // interviewing theory) routes here with dedicated callouts. Bare "health promotion" stays
+        // in publicheath (fires after this).
+        if lower.contains("health belief model") || (lower.contains("hbm") && (lower.contains("health") || lower.contains("class") || lower.contains("behavior")))
+            || lower.contains("theory of planned behavior") || lower.contains("planned behavior class")
+            || lower.contains("theory of planned behaviour") || (lower.contains("tpb") && (lower.contains("health") || lower.contains("behavior") || lower.contains("class")))
+            || lower.contains("social cognitive theory") && (lower.contains("health") || lower.contains("class") || lower.contains("behavior") || lower.contains("course"))
+            || lower.contains("transtheoretical model") || lower.contains("stages of change") && (lower.contains("health") || lower.contains("behavior") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("prochaska") && (lower.contains("class") || lower.contains("health") || lower.contains("behavior") || lower.contains("change"))
+            || lower.contains("motivational interviewing class") || lower.contains("motivational interviewing course")
+            || lower.contains("motivational interviewing exam") || lower.contains("motivational interviewing theory")
+            || lower.contains("health behavior theory") || lower.contains("health behavior class")
+            || lower.contains("health behavior course") || lower.contains("health behavior change class")
+            || lower.contains("health behavior change course") || lower.contains("health behavior change exam")
+            || lower.contains("behavior change theory") && (lower.contains("health") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("self-efficacy theory") && (lower.contains("health") || lower.contains("class") || lower.contains("behavior") || lower.contains("bandura"))
+            || lower.contains("protection motivation theory") && (lower.contains("health") || lower.contains("class") || lower.contains("behavior"))
+            || lower.contains("theory of reasoned action") && (lower.contains("health") || lower.contains("class") || lower.contains("behavior"))
+            || lower.contains("information motivation behavioral skills") && (lower.contains("class") || lower.contains("health"))
+            || lower.contains("imb model") && (lower.contains("health") || lower.contains("behavior") || lower.contains("class"))
+            || lower.contains("health promotion theory") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("model")) {
+            return "healthbehavior"
+        }
         // publicheath — positioned after therapy (clinical context) and before socialscience.
         // Catches MPH programs, epidemiology, community/global health, outbreak investigation,
         // and population health. "health policy" stays in the policy branch.
@@ -12406,6 +12479,56 @@ public final class CalloutManager {
             || lower.contains("geopolitics assignment") || lower.contains("geopolitics thesis")
             || lower.contains("geopolitics research") || lower.contains("geopolitics essay") {
             return "geopolitics"
+        }
+        // physicalanthropology — positioned BEFORE culturalanthropology and anthropology so
+        // human evolution, paleoanthropology, osteology, and primatology class triggers route here.
+        // Biological/physical anthropology coursework distinct from cultural ethnography-focused work.
+        if lower.contains("physical anthropology class") || lower.contains("physical anthropology course")
+            || lower.contains("physical anthropology exam") || lower.contains("physical anthropology notes")
+            || lower.contains("physical anthropology program") || lower.contains("physical anthropology major")
+            || lower.contains("biological anthropology class") || lower.contains("biological anthropology course")
+            || lower.contains("biological anthropology exam") || lower.contains("biological anthropology notes")
+            || lower.contains("paleoanthropology class") || lower.contains("paleoanthropology course")
+            || lower.contains("paleoanthropology exam") || lower.contains("paleoanthropology notes")
+            || lower.contains("human evolution class") || lower.contains("human evolution course")
+            || lower.contains("human evolution exam") || lower.contains("human evolution notes")
+            || lower.contains("primatology class") || lower.contains("primatology course")
+            || lower.contains("primatology exam") || lower.contains("primatology notes")
+            || lower.contains("osteology class") || lower.contains("osteology course")
+            || lower.contains("osteology exam") || lower.contains("osteology lab")
+            || lower.contains("skeletal analysis") && (lower.contains("class") || lower.contains("anthropology") || lower.contains("lab") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("forensic osteology") && !lower.contains("forensic science")
+            || lower.contains("australopithecus") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("study"))
+            || lower.contains("australopithecines") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("study"))
+            || lower.contains("homo erectus") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("homo naledi") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("hominid evolution") || lower.contains("hominin evolution")
+            || lower.contains("bipedalism") && (lower.contains("class") || lower.contains("anthropology") || lower.contains("evolution") || lower.contains("exam"))
+            || lower.contains("sexual dimorphism") && (lower.contains("anthropology") || lower.contains("evolution") || lower.contains("primatology")) {
+            return "physicalanthropology"
+        }
+        // culturalanthropology — positioned BEFORE anthropology so cultural anthropology class,
+        // ethnographic methods, thick description, kinship analysis, and rites of passage
+        // coursework routes here with dedicated callouts. Broad word("anthropology") stays below.
+        if lower.contains("cultural anthropology class") || lower.contains("cultural anthropology course")
+            || lower.contains("cultural anthropology exam") || lower.contains("cultural anthropology notes")
+            || lower.contains("cultural anthropology program") || lower.contains("cultural anthropology major")
+            || lower.contains("ethnographic methods class") || lower.contains("ethnographic methods course")
+            || lower.contains("ethnographic methods exam")
+            || lower.contains("thick description") && (lower.contains("class") || lower.contains("anthropology") || lower.contains("ethnography") || lower.contains("geertz"))
+            || lower.contains("geertz") && (lower.contains("class") || lower.contains("anthropology") || lower.contains("ethnography") || lower.contains("culture"))
+            || lower.contains("cultural relativism") && (lower.contains("class") || lower.contains("anthropology") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("rites of passage") && (lower.contains("class") || lower.contains("anthropology") || lower.contains("course") || lower.contains("exam") || lower.contains("van gennep"))
+            || lower.contains("material culture") && (lower.contains("anthropology") || lower.contains("class") || lower.contains("course") || lower.contains("analysis"))
+            || lower.contains("kinship analysis") && (lower.contains("class") || lower.contains("anthropology") || lower.contains("course") || lower.contains("system"))
+            || lower.contains("fieldwork design") && (lower.contains("anthropology") || lower.contains("ethnography") || lower.contains("class") || lower.contains("research"))
+            || lower.contains("ethnographic fieldwork") && (lower.contains("class") || lower.contains("course") || lower.contains("methods") || lower.contains("cultural") || lower.contains("design"))
+            || lower.contains("liminality") && (lower.contains("class") || lower.contains("anthropology") || lower.contains("ritual") || lower.contains("van gennep") || lower.contains("turner"))
+            || lower.contains("van gennep") && (lower.contains("class") || lower.contains("anthropology") || lower.contains("rites") || lower.contains("liminality"))
+            || lower.contains("culture and personality") && (lower.contains("class") || lower.contains("anthropology") || lower.contains("course"))
+            || lower.contains("symbolic anthropology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("interpretive anthropology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")) {
+            return "culturalanthropology"
         }
         // anthropology — positioned BEFORE socialscience so cultural/physical/linguistic/biological
         // anthropology coursework gets a dedicated callout pool instead of the generic socialscience pool.
