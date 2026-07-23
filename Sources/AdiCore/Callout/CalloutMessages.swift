@@ -729,6 +729,11 @@ extension CalloutManager {
         case "datalaw":                    return datalawCallouts(tier: tier)
         case "competitionlaw":             return competitionlawCallouts(tier: tier)
         case "constitutionaltheory":       return constitutionaltheoryCallouts(tier: tier)
+        case "energyeconomics":            return energyeconomicsCallouts(tier: tier)
+        case "laboreconomics":             return laboreconomicsCallouts(tier: tier)
+        case "marinegeology":              return marinegeologyCallouts(tier: tier)
+        case "educationpolicy":            return educationpolicyCallouts(tier: tier)
+        case "globalfoodpolicy":           return globalfoodpolicyCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -15017,6 +15022,111 @@ extension CalloutManager {
             "CLOSE THIS. open your constitutional theory textbook or originalism and living constitutionalism notes.",
             "CLOSE THIS. those constitutional interpretation and judicial philosophy assignments won't complete themselves.",
             "CLOSE THIS. your constitutional theory exam won't study itself."
+        ]
+        }
+    }
+
+    private func energyeconomicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those energy economics problems — electricity market design, merit order dispatch, LCOE comparisons, carbon pricing mechanisms, and energy transition models — won't solve themselves.",
+            "your energy economics exam needs you — electricity markets, capacity markets, energy subsidies, oil market dynamics, natural gas economics, and renewable LCOE analysis are all waiting.",
+            "those energy economics assignments and market design problems are still open.",
+            "electricity market design, carbon pricing, LCOE, energy transition economics, merit order — get back to your energy economics coursework."
+        ]
+        case 2: return [
+            "stop. your energy economics exam and electricity market design problems are still open.",
+            "electricity markets, carbon pricing, LCOE, energy subsidies, oil market dynamics — your exam won't wait.",
+            "energy economics class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your energy economics textbook or electricity market design and carbon pricing notes.",
+            "CLOSE THIS. those energy market design and LCOE problems won't solve themselves.",
+            "CLOSE THIS. your energy economics exam won't study itself."
+        ]
+        }
+    }
+
+    private func laboreconomicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those labor economics problems — human capital theory, Mincer earnings equations, search-and-matching models, monopsony, wage inequality, and minimum wage effects — won't solve themselves.",
+            "your labor economics exam needs you — labor supply and demand, human capital, Mincer equation, job search models, wage determination, collective bargaining, and discrimination are all waiting.",
+            "those labor economics assignments and wage determination problems are still open.",
+            "human capital theory, Mincer equation, search and matching, monopsony, labor market discrimination, wage inequality — get back to your labor economics coursework."
+        ]
+        case 2: return [
+            "stop. your labor economics exam and human capital theory problems are still open.",
+            "Mincer equation, search-and-matching, monopsony, minimum wage effects, labor market discrimination — your exam won't wait.",
+            "labor economics class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your labor economics textbook or human capital theory and wage determination notes.",
+            "CLOSE THIS. those Mincer earnings, search-and-matching, and monopsony problems won't solve themselves.",
+            "CLOSE THIS. your labor economics exam won't study itself."
+        ]
+        }
+    }
+
+    private func marinegeologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those marine geology problems — seafloor spreading, mid-ocean ridges, oceanic crust, pelagic sediments, turbidites, hydrothermal vents, and abyssal plain stratigraphy — won't solve themselves.",
+            "your marine geology exam needs you — seafloor spreading, oceanic crust structure, turbidite sequences, pelagic sediments, hydrothermal vent systems, seamounts, and deep-sea drilling are all waiting.",
+            "those marine geology assignments and seafloor mapping problems are still open.",
+            "seafloor spreading, oceanic crust, mid-ocean ridges, turbidites, pelagic sediments, hydrothermal vents — get back to your marine geology coursework."
+        ]
+        case 2: return [
+            "stop. your marine geology exam and seafloor spreading problems are still open.",
+            "oceanic crust, turbidites, pelagic sediments, mid-ocean ridges, hydrothermal vents — your exam won't wait.",
+            "marine geology class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your marine geology textbook or seafloor spreading and oceanic crust notes.",
+            "CLOSE THIS. those turbidite sequences, pelagic sediments, and hydrothermal vent problems won't solve themselves.",
+            "CLOSE THIS. your marine geology exam won't study itself."
+        ]
+        }
+    }
+
+    private func educationpolicyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those education policy problems — school choice, charter school research, voucher programs, NCLB vs ESSA, teacher effectiveness, value-added models, and higher education policy — won't analyze themselves.",
+            "your education policy exam needs you — school choice design, charter school accountability, NCLB/ESSA standards-based reform, teacher effectiveness measurement, higher ed policy, and equity and access are all waiting.",
+            "those education policy assignments and school reform analyses are still open.",
+            "school choice, charter schools, NCLB, ESSA, teacher effectiveness, value-added, higher education policy — get back to your education policy coursework."
+        ]
+        case 2: return [
+            "stop. your education policy exam and school choice analysis are still open.",
+            "charter schools, vouchers, NCLB/ESSA, teacher effectiveness, value-added models, higher education policy — your exam won't wait.",
+            "education policy class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your education policy textbook or school choice and charter school accountability notes.",
+            "CLOSE THIS. those NCLB/ESSA reform analysis and teacher effectiveness problems won't solve themselves.",
+            "CLOSE THIS. your education policy exam won't study itself."
+        ]
+        }
+    }
+
+    private func globalfoodpolicyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those global food policy problems — FAO and WFP governance, the Green Revolution, food sovereignty (La Via Campesina), food security frameworks, Codex Alimentarius, and global hunger policy — won't analyze themselves.",
+            "your global food policy exam needs you — food security frameworks, FAO/WFP operations, Green Revolution impacts, food sovereignty movements, food price crises, food aid policy, and malnutrition governance are all waiting.",
+            "those global food policy assignments and food security governance analyses are still open.",
+            "FAO, WFP, Green Revolution, food sovereignty, La Via Campesina, Codex Alimentarius, global hunger — get back to your global food policy coursework."
+        ]
+        case 2: return [
+            "stop. your global food policy exam and food security governance analysis are still open.",
+            "FAO, WFP, Green Revolution, food sovereignty, food price crises, malnutrition policy — your exam won't wait.",
+            "global food policy class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your global food policy textbook or FAO/WFP governance and food security notes.",
+            "CLOSE THIS. those Green Revolution analysis and food sovereignty problems won't solve themselves.",
+            "CLOSE THIS. your global food policy exam won't study itself."
         ]
         }
     }

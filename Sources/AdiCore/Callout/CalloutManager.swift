@@ -1057,6 +1057,56 @@ public final class CalloutManager {
             || lower.contains("extensive form game") && (lower.contains("class") || lower.contains("exam")) {
             return "gametheory"
         }
+        // energyeconomics — positioned BEFORE environmentaleconomics and economics so energy
+        // economics class/exam, electricity market design, merit order dispatch, LCOE, energy
+        // transition, oil markets, and capacity markets route to a dedicated pool. Distinct from
+        // environmentaleconomics (Pigouvian taxes, ecosystem services) and general economics.
+        if lower.contains("energy economics class") || lower.contains("energy economics course")
+            || lower.contains("energy economics exam") || lower.contains("energy economics paper")
+            || lower.contains("energy economics assignment") || lower.contains("energy economics homework")
+            || lower.contains("energy economics textbook") || lower.contains("energy economics notes")
+            || lower.contains("electricity market design") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("economics"))
+            || lower.contains("electricity market") && (lower.contains("economics") || lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("regulation") || lower.contains("design"))
+            || lower.contains("energy market") && (lower.contains("economics") || lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("design"))
+            || lower.contains("merit order dispatch") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("economics"))
+            || lower.contains("merit order") && (lower.contains("economics") || lower.contains("class") || lower.contains("electricity") || lower.contains("exam"))
+            || lower.contains("capacity market") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("electricity"))
+            || lower.contains("energy transition") && (lower.contains("economics") || lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("levelized cost of energy") || lower.contains("levelized cost of electricity")
+            || lower.contains("lcoe") && (lower.contains("class") || lower.contains("economics") || lower.contains("exam") || lower.contains("course") || lower.contains("energy"))
+            || lower.contains("energy subsidies") && (lower.contains("class") || lower.contains("economics") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("oil market") && (lower.contains("economics") || lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("natural gas market") && (lower.contains("economics") || lower.contains("class") || lower.contains("exam"))
+            || lower.contains("natural gas economics") || lower.contains("oil market economics")
+            || lower.contains("carbon pricing") && (lower.contains("economics") || lower.contains("class") || lower.contains("exam") || lower.contains("market") || lower.contains("energy"))
+            || lower.contains("renewable energy economics") || lower.contains("renewable energy") && (lower.contains("economics") || lower.contains("class") || lower.contains("exam") || lower.contains("market")) {
+            return "energyeconomics"
+        }
+        // laboreconomics — positioned BEFORE environmentaleconomics and economics so labor
+        // economics class/exam, human capital theory, Mincer equation, job search models,
+        // wage determination, and monopsony route here. Distinct from general economics.
+        if lower.contains("labor economics class") || lower.contains("labor economics course")
+            || lower.contains("labor economics exam") || lower.contains("labor economics paper")
+            || lower.contains("labor economics assignment") || lower.contains("labor economics homework")
+            || lower.contains("labour economics class") || lower.contains("labour economics course")
+            || lower.contains("labour economics exam") || lower.contains("labour economics paper")
+            || lower.contains("human capital theory") && (lower.contains("class") || lower.contains("economics") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("mincer equation") && (lower.contains("class") || lower.contains("economics") || lower.contains("exam"))
+            || lower.contains("mincer earnings") && (lower.contains("class") || lower.contains("economics") || lower.contains("exam"))
+            || lower.contains("job search model") && (lower.contains("class") || lower.contains("economics") || lower.contains("exam") || lower.contains("labor"))
+            || lower.contains("search and matching") && (lower.contains("class") || lower.contains("economics") || lower.contains("exam") || lower.contains("labor"))
+            || lower.contains("wage determination") && (lower.contains("class") || lower.contains("economics") || lower.contains("exam") || lower.contains("labor"))
+            || lower.contains("minimum wage") && (lower.contains("economics class") || lower.contains("economics course") || lower.contains("economics exam") || lower.contains("labor economics"))
+            || lower.contains("monopsony") && (lower.contains("class") || lower.contains("economics") || lower.contains("exam") || lower.contains("labor"))
+            || lower.contains("labor market discrimination") && (lower.contains("class") || lower.contains("economics") || lower.contains("exam"))
+            || lower.contains("labour market discrimination") && (lower.contains("class") || lower.contains("economics") || lower.contains("exam"))
+            || lower.contains("collective bargaining") && (lower.contains("economics class") || lower.contains("economics course") || lower.contains("economics exam") || lower.contains("labor economics"))
+            || lower.contains("wage inequality") && (lower.contains("economics") || lower.contains("labor")) && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("labor supply") && (lower.contains("economics") || lower.contains("labor")) && (lower.contains("class") || lower.contains("economics") || lower.contains("exam"))
+            || lower.contains("labour supply") && (lower.contains("economics") || lower.contains("labour")) && (lower.contains("class") || lower.contains("economics") || lower.contains("exam"))
+            || lower.contains("labor demand") && (lower.contains("economics") || lower.contains("class") || lower.contains("exam") || lower.contains("course")) {
+            return "laboreconomics"
+        }
         // environmentaleconomics — positioned BEFORE economics so environmental economics class,
         // Pigouvian tax, Coase theorem (environmental context), ecosystem services valuation,
         // and benefit-cost analysis for environmental policy route here. Distinct from
@@ -3157,6 +3207,30 @@ public final class CalloutManager {
             || lower.contains("divergent boundary") && (lower.contains("class") || lower.contains("exam") || lower.contains("tectonics"))
             || lower.contains("rifting") && (lower.contains("class") || lower.contains("exam") || lower.contains("tectonics") || lower.contains("geodynamics")) {
             return "tectonics"
+        }
+        // marinegeology — positioned BEFORE geology so marine geology class/exam, seafloor
+        // spreading, oceanic crust, turbidites, pelagic sediments, hydrothermal vents, and
+        // mid-ocean ridge geology route here. Distinct from oceanography (ocean physics/chemistry)
+        // and sedimentology (continental/transitional settings).
+        if lower.contains("marine geology class") || lower.contains("marine geology course")
+            || lower.contains("marine geology exam") || lower.contains("marine geology lab")
+            || lower.contains("marine geology homework") || lower.contains("marine geology assignment")
+            || lower.contains("marine geology textbook") || lower.contains("marine geology notes")
+            || lower.contains("seafloor spreading") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("geology") || lower.contains("marine"))
+            || lower.contains("oceanic crust") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("geology") || lower.contains("marine"))
+            || lower.contains("mid-ocean ridge") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("geology") || lower.contains("marine"))
+            || lower.contains("mid ocean ridge") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("geology") || lower.contains("marine"))
+            || lower.contains("pelagic sediment") && (lower.contains("class") || lower.contains("exam") || lower.contains("marine") || lower.contains("geology"))
+            || lower.contains("turbidite") && (lower.contains("class") || lower.contains("exam") || lower.contains("marine") || lower.contains("deep sea") || lower.contains("deep-sea"))
+            || lower.contains("abyssal plain") && (lower.contains("class") || lower.contains("exam") || lower.contains("geology") || lower.contains("marine"))
+            || lower.contains("hydrothermal vent") && (lower.contains("class") || lower.contains("exam") || lower.contains("geology") || lower.contains("marine"))
+            || lower.contains("seamount") && (lower.contains("class") || lower.contains("exam") || lower.contains("geology") || lower.contains("marine"))
+            || lower.contains("deep sea sediment") && (lower.contains("class") || lower.contains("exam") || lower.contains("geology") || lower.contains("marine"))
+            || lower.contains("deep-sea sediment") && (lower.contains("class") || lower.contains("exam") || lower.contains("geology") || lower.contains("marine"))
+            || lower.contains("marine sedimentary") && (lower.contains("class") || lower.contains("exam") || lower.contains("geology"))
+            || lower.contains("ocean drilling program") && (lower.contains("class") || lower.contains("exam") || lower.contains("geology"))
+            || lower.contains("iodp") && lower.contains("core") && (lower.contains("class") || lower.contains("exam") || lower.contains("geology") || lower.contains("marine")) {
+            return "marinegeology"
         }
         // geology — positioned before engineering so "geology lab" and earth-science field tasks
         // don't fall through to engineering or research via word("lab").
@@ -6809,6 +6883,31 @@ public final class CalloutManager {
             || lower.contains("individualized education program") || lower.contains("individualized education plan") {
             return "specialeducation"
         }
+        // educationpolicy — positioned BEFORE educationalleadership and education so education
+        // policy class/exam, school choice, charter schools, NCLB/ESSA, teacher effectiveness,
+        // value-added models, and higher education policy route here. Distinct from education
+        // (pedagogical methods) and educationalleadership (administrator preparation programs).
+        if lower.contains("education policy class") || lower.contains("education policy course")
+            || lower.contains("education policy exam") || lower.contains("education policy paper")
+            || lower.contains("education policy seminar") || lower.contains("education policy notes")
+            || lower.contains("education policy assignment") || lower.contains("education policy analysis")
+            || lower.contains("educational policy class") || lower.contains("educational policy course")
+            || lower.contains("educational policy exam") || lower.contains("educational policy paper")
+            || lower.contains("school choice") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("policy") || lower.contains("paper"))
+            || lower.contains("voucher program") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("education") || lower.contains("policy"))
+            || lower.contains("charter school") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("policy") || lower.contains("paper"))
+            || lower.contains("no child left behind") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("policy"))
+            || lower.contains("nclb") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("policy") || lower.contains("education"))
+            || lower.contains("every student succeeds act") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("policy"))
+            || lower.contains("essa") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")) && (lower.contains("education policy") || lower.contains("policy"))
+            || lower.contains("teacher effectiveness") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("policy") || lower.contains("paper"))
+            || lower.contains("value-added model") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("education") || lower.contains("teacher"))
+            || lower.contains("higher education policy") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("student debt policy") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("higher education"))
+            || lower.contains("education reform") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("policy") || lower.contains("paper"))
+            || lower.contains("k-12 policy") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("education")) {
+            return "educationpolicy"
+        }
         // educationalleadership — positioned AFTER specialeducation and BEFORE education so
         // principal preparation, superintendent certification, and EdD programs get a dedicated pool.
         // Generic "lesson plan"/"curriculum" stays in education (fires after this).
@@ -7472,6 +7571,28 @@ public final class CalloutManager {
             || lower.contains("fda food safety") || (lower.contains("fsma") && lower.contains("food"))
             || lower.contains("food protection manager") || lower.contains("food protection certification") {
             return "foodsafety"
+        }
+        // globalfoodpolicy — positioned BEFORE foodsystems so international food security,
+        // FAO policy, WFP operations, Green Revolution history, food sovereignty (La Via
+        // Campesina international framework), Codex Alimentarius, and global hunger governance
+        // route here. Distinct from foodsystems (local/supply chain) and foodscience (technology).
+        if lower.contains("global food policy") || lower.contains("global food security class")
+            || lower.contains("global food security course") || lower.contains("global food security exam")
+            || lower.contains("global food security paper") || lower.contains("global food security seminar")
+            || lower.contains("food security policy") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("global"))
+            || lower.contains("food security governance") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("green revolution") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("policy") || lower.contains("food") || lower.contains("agriculture"))
+            || lower.contains("la via campesina") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("policy") || lower.contains("food"))
+            || lower.contains("food sovereignty") && (lower.contains("international") || lower.contains("global") || lower.contains("policy") || lower.contains("class") && lower.contains("food"))
+            || lower.contains("wfp") && lower.contains("food") && (lower.contains("class") || lower.contains("course") || lower.contains("policy") || lower.contains("exam") || lower.contains("aid"))
+            || lower.contains("world food programme") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("policy"))
+            || lower.contains("fao") && lower.contains("food") && (lower.contains("class") || lower.contains("course") || lower.contains("policy") || lower.contains("exam") || lower.contains("security"))
+            || lower.contains("codex alimentarius") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("policy") || lower.contains("food"))
+            || lower.contains("food aid policy") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("global hunger") && (lower.contains("class") || lower.contains("course") || lower.contains("policy") || lower.contains("exam") || lower.contains("food"))
+            || lower.contains("malnutrition policy") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("food") || lower.contains("global"))
+            || lower.contains("food price crisis") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("policy")) {
+            return "globalfoodpolicy"
         }
         // foodsystems — positioned AFTER foodsafety and BEFORE winesommelier so food systems,
         // sustainable food systems, food sovereignty, food justice, and food supply chain coursework

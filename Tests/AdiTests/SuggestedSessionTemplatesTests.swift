@@ -8008,6 +8008,41 @@ struct SuggestedSessionTemplatesTests {
     @Test func constitutionaltheoryAssignmentTemplateExists() {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("constitutional theory paper") })
     }
+    // MARK: - energyeconomics templates
+    @Test func energyeconomicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("energy economics for my exam") })
+    }
+    @Test func energyeconomicsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("energy economics paper") })
+    }
+    // MARK: - laboreconomics templates
+    @Test func laboreconomicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("labor economics for my exam") })
+    }
+    @Test func laboreconomicsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("labor economics paper") })
+    }
+    // MARK: - marinegeology templates
+    @Test func marinegeologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("marine geology for my exam") })
+    }
+    @Test func marinegeologyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("marine geology lab assignment") })
+    }
+    // MARK: - educationpolicy templates
+    @Test func educationpolicyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("education policy for my exam") })
+    }
+    @Test func educationpolicyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("education policy paper") })
+    }
+    // MARK: - globalfoodpolicy templates
+    @Test func globalfoodpolicyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("global food policy for my exam") })
+    }
+    @Test func globalfoodpolicyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("global food policy paper") })
+    }
     // MARK: - Count guard (≥1317)
     @Test func templateCountAtLeast1307() {
         #expect(SuggestedSessionTemplates.all.count >= 1307, "template catalog must have ≥1307 entries after mediatheory/theaterstudies/developmentstudies/entertainmentlaw/bankinglaw additions")
@@ -8017,5 +8052,8 @@ struct SuggestedSessionTemplatesTests {
     }
     @Test func templateCountAtLeast1327() {
         #expect(SuggestedSessionTemplates.all.count >= 1327, "template catalog must have ≥1327 entries after immigrationpolicy/cryptolaw/datalaw/competitionlaw/constitutionaltheory additions")
+    }
+    @Test func templateCountAtLeast1337() {
+        #expect(SuggestedSessionTemplates.all.count >= 1337, "template catalog must have ≥1337 entries after energyeconomics/laboreconomics/marinegeology/educationpolicy/globalfoodpolicy additions")
     }
 }

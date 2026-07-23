@@ -28768,6 +28768,151 @@ struct CalloutManagerTests {
         #expect(mgr.taskAwareCallouts(keyword: "constitutionaltheory", tier: 3).contains { $0.contains("CLOSE THIS") })
     }
 
+    // MARK: - energyeconomics
+    @Test func energyeconomicsRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "energy economics class electricity market design merit order LCOE carbon pricing exam") == "energyeconomics")
+    }
+    @Test func energyeconomicsRoutingFromElectricityMarket() {
+        #expect(CalloutManager.extractTaskKeyword(from: "electricity market design class merit order dispatch capacity market LCOE energy transition economics exam") == "energyeconomics")
+    }
+    @Test func energyeconomicsRoutingFromLCOE() {
+        #expect(CalloutManager.extractTaskKeyword(from: "levelized cost of energy energy economics class renewable energy economics carbon pricing course exam") == "energyeconomics")
+    }
+    @Test func energyeconomicsFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "ecology class ecosystem services environmental policy carbon footprint")
+        #expect(kw != "energyeconomics", "ecology/environment without energy economics keywords should not route to energyeconomics")
+    }
+    @Test @MainActor func energyeconomicsCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "energyeconomics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "energyeconomics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "energyeconomics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func energyeconomicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "energyeconomics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func energyeconomicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "energyeconomics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - laboreconomics
+    @Test func laboreconomicsRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "labor economics class human capital theory Mincer equation job search model monopsony wage determination exam") == "laboreconomics")
+    }
+    @Test func laboreconomicsRoutingFromMincerEquation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "Mincer equation labor economics course returns to schooling experience wage determination exam") == "laboreconomics")
+    }
+    @Test func laboreconomicsRoutingFromMonopsony() {
+        #expect(CalloutManager.extractTaskKeyword(from: "monopsony labor economics class minimum wage effects wage determination search and matching exam") == "laboreconomics")
+    }
+    @Test func laboreconomicsFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "economics class supply and demand equilibrium marginal cost macroeconomics microeconomics")
+        #expect(kw != "laboreconomics", "general economics without labor economics keywords should not route to laboreconomics")
+    }
+    @Test @MainActor func laboreconomicsCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "laboreconomics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "laboreconomics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "laboreconomics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func laboreconomicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "laboreconomics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func laboreconomicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "laboreconomics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - marinegeology
+    @Test func marinegeologyRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "marine geology class seafloor spreading oceanic crust turbidites pelagic sediments hydrothermal vents exam") == "marinegeology")
+    }
+    @Test func marinegeologyRoutingFromSeafloorSpreading() {
+        #expect(CalloutManager.extractTaskKeyword(from: "seafloor spreading marine geology mid-ocean ridge oceanic crust exam class") == "marinegeology")
+    }
+    @Test func marinegeologyRoutingFromTurbidites() {
+        #expect(CalloutManager.extractTaskKeyword(from: "turbidite marine sedimentary sequences class Bouma sequence deep-sea sediment pelagic ooze exam geology") == "marinegeology")
+    }
+    @Test func marinegeologyFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "oceanography class ocean circulation thermohaline salinity temperature ocean currents")
+        #expect(kw != "marinegeology", "oceanography without marine geology keywords should not route to marinegeology")
+    }
+    @Test @MainActor func marinegeologyCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "marinegeology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "marinegeology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "marinegeology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func marinegeologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "marinegeology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func marinegeologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "marinegeology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - educationpolicy
+    @Test func educationpolicyRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "education policy class school choice charter schools NCLB ESSA teacher effectiveness value-added models exam") == "educationpolicy")
+    }
+    @Test func educationpolicyRoutingFromSchoolChoice() {
+        #expect(CalloutManager.extractTaskKeyword(from: "school choice policy class voucher program charter school accountability education reform exam course") == "educationpolicy")
+    }
+    @Test func educationpolicyRoutingFromNCLB() {
+        #expect(CalloutManager.extractTaskKeyword(from: "NCLB No Child Left Behind education policy class AYP accountability standards-based reform ESSA exam") == "educationpolicy")
+    }
+    @Test func educationpolicyFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "education class lesson plan curriculum development pedagogy classroom management teacher certification")
+        #expect(kw != "educationpolicy", "general education/pedagogy without policy keywords should not route to educationpolicy")
+    }
+    @Test @MainActor func educationpolicyCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "educationpolicy", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "educationpolicy", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "educationpolicy", tier: 3).isEmpty)
+    }
+    @Test @MainActor func educationpolicyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "educationpolicy", tier: 1).count >= 4)
+    }
+    @Test @MainActor func educationpolicyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "educationpolicy", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - globalfoodpolicy
+    @Test func globalfoodpolicyRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "global food policy class FAO WFP Green Revolution food sovereignty La Via Campesina food security exam") == "globalfoodpolicy")
+    }
+    @Test func globalfoodpolicyRoutingFromGreenRevolution() {
+        #expect(CalloutManager.extractTaskKeyword(from: "Green Revolution food policy class Borlaug semi-dwarf wheat CIMMYT agriculture food security exam") == "globalfoodpolicy")
+    }
+    @Test func globalfoodpolicyRoutingFromFoodSovereignty() {
+        #expect(CalloutManager.extractTaskKeyword(from: "food sovereignty international class La Via Campesina global food governance policy FAO WFP exam") == "globalfoodpolicy")
+    }
+    @Test func globalfoodpolicyFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "food systems class sustainable food local food supply chain food justice community supported agriculture")
+        #expect(kw != "globalfoodpolicy", "food systems without global/international policy keywords should not route to globalfoodpolicy")
+    }
+    @Test @MainActor func globalfoodpolicyCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "globalfoodpolicy", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "globalfoodpolicy", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "globalfoodpolicy", tier: 3).isEmpty)
+    }
+    @Test @MainActor func globalfoodpolicyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "globalfoodpolicy", tier: 1).count >= 4)
+    }
+    @Test @MainActor func globalfoodpolicyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "globalfoodpolicy", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
     // MARK: - Count guard (≥1317)
     @Test func calloutTemplatesCountAtLeast1307() {
         #expect(SuggestedSessionTemplates.all.count >= 1307, "template catalog must have ≥1307 entries after mediatheory/theaterstudies/developmentstudies/entertainmentlaw/bankinglaw additions")
@@ -28777,5 +28922,8 @@ struct CalloutManagerTests {
     }
     @Test func calloutTemplatesCountAtLeast1327() {
         #expect(SuggestedSessionTemplates.all.count >= 1327, "template catalog must have ≥1327 entries after immigrationpolicy/cryptolaw/datalaw/competitionlaw/constitutionaltheory additions")
+    }
+    @Test func calloutTemplatesCountAtLeast1337() {
+        #expect(SuggestedSessionTemplates.all.count >= 1337, "template catalog must have ≥1337 entries after energyeconomics/laboreconomics/marinegeology/educationpolicy/globalfoodpolicy additions")
     }
 }
