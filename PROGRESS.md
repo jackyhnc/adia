@@ -1,5 +1,71 @@
 # Adia — Build Progress
 
+## Run 407 (automated) — 2026-07-23 — 5 new keyword domains: solidstatechemistry/coordinationchemistry/biophysicalchemistry/physicochemistry/nucleargeochemistry (1307→1317 templates)
+
+### What shipped
+
+**5 new keyword domains: solidstatechemistry, coordinationchemistry, biophysicalchemistry, physicochemistry, nucleargeochemistry**
+
+**New keyword domain — solidstatechemistry:**
+- Branch positioned BEFORE `inorganicchemistry`. Crystal structures and bonding in solids, solid-state NMR, powder XRD, ionic conductors, defect chemistry (Schottky/Frenkel), lattice energy, Born-Haber cycles, band gaps, and battery materials chemistry distinct from crystallography (mineral focus), materialscience (engineering), and solidstatephysics.
+- Catches: solid state/solid-state chemistry class/course/exam/lab/notes/homework/assignment/textbook, word("solid state chemistry")/word("solid-state chemistry"), solid state NMR+class/exam/chemistry/lab, powder XRD+class/exam/chemistry/lab, powder diffraction+class/chemistry/exam, ionic conductor+class/exam/chemistry/solid, ionic conductivity+class/exam/solid/chemistry, defect chemistry+class/exam/course/solid, Schottky defect+class/exam/chemistry/solid, Frenkel defect+class/exam/chemistry/solid, band gap+class/chemistry/exam/solid state, crystal bonding+class/exam/chemistry, lattice energy+class/exam/chemistry/born-haber, Born-Haber cycle+class/exam/chemistry, battery materials+class/exam/chemistry/solid.
+- `solidstatechemistryCallouts(tier:)` 4/3/3: "those crystal structure and ionic conductivity problems won't solve themselves." / "no one masters solid-state chemistry by scrolling." / "CLOSE THIS. those crystal bonding and ionic conductor problems won't solve themselves."
+- 2 templates: study exam (crystal bonding, ionic conductors, defect chemistry, solid-state NMR, powder XRD, lattice energy, Born-Haber, band gaps, battery materials, 60 min) + assignment (Born-Haber cycle, powder XRD analysis, defect concentration, ionic conductivity, solid-state NMR, 60 min)
+
+**New keyword domain — coordinationchemistry:**
+- Branch positioned BEFORE `inorganicchemistry`. Transition metal complexes, ligand field theory, crystal field splitting (Oh/Td/square planar), CFSE, spectrochemical series, chelates, polydentate ligands, trans effect, lability/inertness, Jahn-Teller distortion distinct from general inorganic chemistry.
+- Catches: coordination chemistry class/course/exam/lab/notes/homework/assignment/textbook, word("coordination chemistry"), coordination compound+class/exam/course/coordination, coordination complex+class/exam/course/metal, ligand field theory+class/exam/coordination/course, crystal field theory+class/exam/coordination/transition metal, crystal field splitting+class/exam/coordination, chelate+class/exam/coordination/complex/chemistry, chelation+class/exam/coordination/complex, spectrochemical series+class/exam/course, CFSE+class/exam/coordination, Jahn-Teller distortion+class/exam/coordination/complex, coordination number+class/exam/coordination/complex/chemistry, lability+class/exam/coordination/complex/metal, trans effect+class/exam/coordination/complex, polydentate/bidentate/tridentate ligand+class/exam/coordination.
+- `coordinationchemistryCallouts(tier:)` 4/3/3: "those crystal field splitting and chelate stability problems won't solve themselves." / "no one masters coordination chemistry by scrolling." / "CLOSE THIS. those crystal field theory and chelate problems won't solve themselves."
+- 2 templates: study exam (crystal field theory, CFSE, spectrochemical series, chelate stability, polydentate ligands, trans effect, Jahn-Teller, 60 min) + assignment (crystal field splitting energies, CFSE calculation, spectrochemical prediction, chelate stability, lability/trans effect, 60 min)
+
+**New keyword domain — biophysicalchemistry:**
+- Branch positioned BEFORE `biochemistry`. Thermodynamics of macromolecules, protein folding energetics, fluorescence spectroscopy of biomolecules, FRET, single-molecule methods, ITC, DSC, optical tweezers, worm-like chain polymer model distinct from biophysics (patch clamp, electrophysiology) and biochemistry (enzyme kinetics, metabolic pathways).
+- Catches: biophysical chemistry class/course/exam/lab/notes/homework/assignment/textbook, word("biophysical chemistry"), thermodynamics of macromolecules+class/exam/biophysical, protein folding energetics+class/exam/biophysical/thermodynamics, protein stability thermodynamics+class/exam/biophysical, isothermal titration calorimetry+class/exam/biophysical/lab, ITC+binding+class/exam/biophysical/calorimetry, DSC+protein+class/exam/biophysical/unfolding, fluorescence spectroscopy+class/exam/biophysical/protein/biomolecule, FRET+class/exam/biophysical/fluorescence/energy transfer, single-molecule+class/exam/biophysical/spectroscopy/force, optical tweezers+class/exam/biophysical/course, worm-like chain+class/exam/biophysical/polymer/dna, thermodynamic cycle+class/biophysical/exam/protein, van't Hoff analysis+class/exam/biophysical/binding.
+- `biophysicalchemistryCallouts(tier:)` 4/3/3: "those protein folding thermodynamics and FRET problems won't solve themselves." / "no one masters biophysical chemistry by scrolling." / "CLOSE THIS. those thermodynamics of macromolecules and FRET problems won't solve themselves."
+- 2 templates: study exam (thermodynamics of macromolecules, protein folding energetics, fluorescence spectroscopy, FRET, single-molecule, ITC, DSC, worm-like chain, 60 min) + assignment (ITC ΔH/ΔS/Ka extraction, DSC Tm/ΔHcal, FRET efficiency, van't Hoff analysis, 60 min)
+
+**New keyword domain — physicochemistry (physical organic chemistry):**
+- Branch positioned AFTER `organicchemistry` and BEFORE `organicchemistrylab`. Hammett equation, sigma-rho correlations, LFER, kinetic isotope effects (primary/secondary), Marcus theory, Marcus-Cohen cross-relation, Brønsted catalysis law, curved Hammett plots distinct from organic chemistry reaction mechanisms and physical chemistry thermodynamics.
+- Catches: physical organic chemistry class/course/exam/lab/notes/homework/assignment/textbook, word("physical organic chemistry"), Hammett equation+class/exam/organic/linear free energy, Hammett plot+class/exam/organic/substituent, sigma rho+class/exam/hammett/organic, linear free energy relationship+class/exam/organic/chemistry, LFER+class/exam/organic/chemistry, kinetic isotope effect+class/exam/organic/chemistry, secondary kinetic isotope+class/exam/organic, solvent isotope effect+class/exam/organic/chemistry, Marcus theory+class/exam/organic/electron transfer, Marcus-Cohen+class/exam/organic, Brønsted catalysis law+class/exam/organic, bronsted catalysis+class/exam/organic/law, curved Hammett plot+class/exam/organic, substituent constant+class/exam/hammett/organic.
+- `physicochemistryCallouts(tier:)` 4/3/3: "those Hammett equation and linear free energy relationship problems won't solve themselves." / "no one masters physical organic chemistry by scrolling." / "CLOSE THIS. those Hammett sigma-rho and Marcus theory problems won't solve themselves."
+- 2 templates: study exam (LFER, Hammett equation, sigma-rho, KIE, Marcus theory, Brønsted law, curved Hammett plots, Marcus-Cohen, 60 min) + assignment (Hammett plot construction, KIE calculation, Marcus theory electron transfer, curved Hammett mechanism analysis, 60 min)
+
+**New keyword domain — nucleargeochemistry:**
+- Branch positioned BEFORE `geochemistry` and AFTER `biogeochemistry`. Radiogenic isotope systems U-Pb, Rb-Sr, Sm-Nd, Lu-Hf, K-Ar, Ar-Ar, Re-Os geochronology, fission track thermochronology, cosmogenic nuclide exposure dating, isochron diagrams, initial isotope ratios, closure temperature distinct from biogeochemistry (element cycles) and general geochemistry (trace elements, XRF).
+- Catches: nuclear geochemistry class/course/exam/lab/notes/homework/assignment/textbook, word("nuclear geochemistry"), geochronology class/course/exam/lab/homework/assignment, word("geochronology"), U-Pb geochronology+class/exam/dating/zircon, Rb-Sr system+class/exam/geochronology/isotope, Sm-Nd system+class/exam/geochronology/isotope, Lu-Hf system+class/exam/geochronology/isotope, K-Ar dating+class/exam/geochronology/geology, Ar-Ar dating+class/exam/geochronology/geology, Re-Os system+class/exam/geochronology/isotope, cosmogenic nuclide+class/exam/geochronology/dating, fission track+class/exam/geochronology/dating/thermochronology, thermochronology+class/exam/geochronology/dating/course, radiogenic isotope geochemistry+class/exam/course, radiogenic isotope+class/geochronology/geochemistry/exam.
+- `nucleargeochemistryCallouts(tier:)` 4/3/3: "those U-Pb geochronology and Rb-Sr isotope system problems won't solve themselves." / "no one masters nuclear geochemistry by scrolling." / "CLOSE THIS. those U-Pb and Sm-Nd radiogenic isotope problems won't solve themselves."
+- 2 templates: study exam (U-Pb/Rb-Sr/Sm-Nd/Lu-Hf/Re-Os, K-Ar/Ar-Ar, fission track, cosmogenic nuclides, isochron, closure temperature, 60 min) + assignment (U-Pb concordia ages, Rb-Sr isochron dates, fission track annealing, cosmogenic nuclide exposure ages, 60 min)
+
+**New tests:**
+- CalloutManagerTests.swift: +35 @Test functions (3 routing tests + 1 false-positive guard + 3 callout pool tests per domain × 5 domains + 1 count guard ≥1317)
+- SuggestedSessionTemplatesTests.swift: +12 @Test functions (2 template existence × 5 domains + 2 count guards ≥1307/≥1317)
+
+**Template catalog: 1307 → 1317**
+
+### Verification
+Swift toolchain unavailable on Linux container — reviewed by code inspection.
+- `nucleargeochemistry` fires BEFORE geochemistry (nucleargeochemistry at line ~2789, geochemistry at ~2816) ✓
+- `biophysicalchemistry` fires BEFORE biochemistry (biophysicalchemistry at line ~9023, biochemistry at ~9041) ✓
+- `solidstatechemistry` fires BEFORE inorganicchemistry (solidstatechemistry at line ~9188, inorganicchemistry at ~9240) ✓
+- `coordinationchemistry` fires BEFORE inorganicchemistry (coordinationchemistry at line ~9216, inorganicchemistry at ~9240) ✓
+- `physicochemistry` fires AFTER organicchemistry (organicchemistry at line ~9271, physicochemistry at ~9297) ✓
+- Brace balance: CalloutManager.swift 708/708 ✓; CalloutMessages.swift 1361/1361 ✓
+- Template count: 1317 confirmed (grep -c "preferredDuration:" = 1317) ✓
+- 5 new routing return statements in CalloutManager.swift ✓
+- 5 new switch cases + 5 new private pool functions in CalloutMessages.swift ✓
+
+### Blocked
+None. Swift toolchain unavailable on Linux container.
+
+### Next agent should
+- Continue adding keyword domains. Good candidates not yet covered:
+  - `atmosphericchemistry` — atmospheric chemistry class (tropospheric/stratospheric chemistry, ozone depletion, photochemical smog, VOC-NOx chemistry, chemical transport models, aerosol formation, Junge distribution — distinct from atmospheric science and environmental chemistry)
+  - `environmentalhydrology` — environmental hydrology class (Darcy's law, groundwater flow, aquifer characterization, contaminant transport, vadose zone, hydraulic conductivity, well hydraulics — distinct from hydrology and environmental engineering)
+  - `marinegeology` — marine geology class (oceanic spreading centers, turbidites, pelagic sediments, seamounts, oceanic crust, hydrothermal vents, subduction erosion — distinct from oceanography and geology)
+  - `glaciology` — glaciology class (ice dynamics, glacier mass balance, basal sliding, ice sheet modeling, ice cores, cryosphere feedbacks, surge dynamics — distinct from climatology and atmospheric science)
+  - `hydrogeology` — hydrogeology class (groundwater hydrology, aquifer types, Theis equation, Darcy's law, pumping tests, capture zone, groundwater quality — distinct from environmental hydrology and hydrology)
+- Template count target: 1317 → 1327 after next 5-domain batch
+
 ## Run 406 (automated) — 2026-07-23 — 5 new keyword domains: biogeochemistry/tectonophysics/catalysis/rheology/molecularsimulation (1237→1247 templates)
 
 ### What shipped
