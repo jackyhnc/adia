@@ -21031,3 +21031,43 @@ All GOAL.md tasks remain checked. Continue expanding keyword domains. Suggested 
 - `disasterrisk` — disaster risk reduction class (Sendai Framework, UNDRR, DRR vs DRM distinction, risk assessment, vulnerability mapping, resilience metrics — distinct from emergencymanagement)
 - `developmentalpsychopath` — developmental psychopathology class (diathesis-stress model, equifinality and multifinality, attachment and psychopathology, developmental cascades, early adversity ACEs — distinct from developmentalpsychology and clinicalpsychology)
 - `pedsrotation` / `neonatologyrotation` — already have pediatricsrotation; check if neonatologyrotation exists
+
+---
+
+## Run 415 — 2026-07-23
+
+### What shipped
+5 new keyword domains: **globalhealth**, **disasterrisk**, **neonatologyrotation**, **developmentalpsychopath**, **humanrights** — template catalog grows 1257→1267.
+
+**globalhealth** — global health class/course/exam/program/major, DALYs (disability-adjusted life years), PEPFAR, tropical medicine class/course/exam, neglected tropical diseases. Positioned AFTER globalhealthpolicy (policy/governance qualifier) and globalhealthdev (NGO/development qualifier), BEFORE emergencymanagement. 4+3+3 callout pool. 2 templates (study exam with DALY formula + GBD / burden of disease analysis + UHC health financing paper).
+
+**disasterrisk** — disaster risk reduction class/course/exam, DRR, Sendai Framework, UNDRR, vulnerability mapping + disaster/risk context, hazard assessment + disaster/drr context, resilience framework + disaster context, risk governance + disaster context, DRM class/course/exam. Positioned AFTER emergencymanagement (FEMA/incident command) and BEFORE cognitivescience. 4+3+3 callout pool. 2 templates (study exam with PAR model / Sendai analysis + vulnerability assessment + risk governance paper).
+
+**neonatologyrotation** — NICU rotation/clerkship/elective/rounds, neonatal ICU rotation/clerkship, neonatal intensive care + rotation/clerkship/rounds/notes, neonatology case write-up, neonatal resuscitation + rotation/nicu, premature/preterm infant + rotation/nicu, neonatology shelf. Positioned AFTER surgeryrotation and BEFORE pediatricsrotation. 4+3+3 callout pool. 2 templates (NICU rotation case write-ups with NRP algorithm / neonatology shelf exam study with Ballard Score and RDS management).
+
+**developmentalpsychopath** — developmental psychopathology class/course/exam, diathesis-stress model + psych/developmental/class, equifinality + class/psych/developmental, multifinality + class/psych/developmental, developmental cascades + class/psych, adverse childhood experience + class/psych, early adversity + class/psych/pathology, risk and resilience + developmental/psych/pathology context. Positioned BEFORE developmentalpsych (Piaget/attachment terms). 4+3+3 callout pool. 2 templates (study exam with equifinality/multifinality/ACEs / developmental pathway + risk-resilience + cascade intervention paper).
+
+**humanrights** — human rights class/course/exam/law, international human rights + class/course/law, UDHR + class/course/rights, ICCPR + class/course/rights, ICESCR + class/course/rights, humanitarian law class/course/exam, international humanitarian law + class/course, R2P + class/course, responsibility to protect + class, refugee rights + class/law, human rights documentation + class/research. Positioned AFTER ethnicstudies and BEFORE internationalrelations. 4+3+3 callout pool. 2 templates (study exam with UDHR/ICCPR/ICESCR/IHL/R2P / treaty analysis + refugee paper + IHL case study).
+
+**Tests**: 35 new CalloutManagerTests (3 routing + 1 false-positive guard + 3 pool tests per domain × 5 domains) + 10 new SuggestedSessionTemplatesTests (2 existence tests per domain × 5 domains) + count guard ≥1257→≥1267.
+
+### Verification
+- `grep -c "preferredDuration:" SuggestedSessionTemplates.swift` → 1267 ✓
+- Brace balance: CalloutMessages.swift 1311/1311 ✓; CalloutManager.swift 683/683 ✓
+- Routing ordering:
+  - globalhealthpolicy(11495) < globalhealthdev(11716) < globalhealth(11735) ✓
+  - emergencymanagement(11755) < disasterrisk(11774) < cognitivescience ✓
+  - surgeryrotation(10416) < neonatologyrotation(10435) < pediatricsrotation(10456) ✓
+  - cognitivepsychology < developmentalpsychopath(12159) < developmentalpsych(12183) ✓
+  - ethnicstudies(12500) < humanrights(12523) < internationalrelations(12550) ✓
+
+### Blocked
+Swift toolchain unavailable on Linux container — no `swift build` or `swift test` possible.
+
+### Next agent pick-up
+All GOAL.md tasks remain checked. Continue expanding keyword domains. Suggested next 5:
+- `environmentalpolicy` — already exists at line 7821! Skip.
+- `sportpsychology` / `exercisephysiology` — check kinesiology doesn't fully cover: sport psychology class/course/exam (mental performance, flow, arousal regulation, imagery, self-talk, Csikszentmihalyi — distinct from kinesiology which catches "sport psychology" as a bare keyword but may lack a dedicated pool); exercise physiology class/course/exam (VO2max, lactate threshold, EPOC, cardiorespiratory responses — similar overlap concern)
+- `medicalanthropology` — medical anthropology class (biocultural approach, illness vs disease, explanatory models, medicalization, health disparities from anthropological lens — distinct from culturalanthropology, publichealth, and physicalanthropology)
+- `communityhealth` — community health class/course (CHW, CBPR, community health assessment, social determinants at community level — distinct from publichealth which is more epidemiology-focused)
+- `nutritionscience` — nutrition science / human nutrition class (macronutrients, micronutrients, nutrient metabolism, DRI, dietary assessment methods — distinct from foodscience which is more food chemistry/processing)
