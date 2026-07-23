@@ -7375,6 +7375,29 @@ public final class CalloutManager {
             || lower.contains("food protection manager") || lower.contains("food protection certification") {
             return "foodsafety"
         }
+        // foodsystems — positioned AFTER foodsafety and BEFORE winesommelier so food systems,
+        // sustainable food systems, food sovereignty, food justice, and food supply chain coursework
+        // gets a dedicated pool. Distinct from foodscience (chemistry/processing), foodsafety
+        // (HACCP/ServSafe), and agroecology (farming ecology). Bare "food" alone NOT matched.
+        if lower.contains("food systems class") || lower.contains("food systems course")
+            || lower.contains("food systems exam") || lower.contains("food systems paper")
+            || lower.contains("food systems program") || lower.contains("food systems major")
+            || lower.contains("food systems assignment") || lower.contains("food systems notes")
+            || lower.contains("sustainable food systems") || lower.contains("food systems and sustainability")
+            || lower.contains("food sovereignty") && (lower.contains("class") || lower.contains("course") || lower.contains("paper") || lower.contains("exam") || lower.contains("food"))
+            || lower.contains("food justice") && (lower.contains("class") || lower.contains("course") || lower.contains("paper") || lower.contains("exam"))
+            || lower.contains("food desert") && (lower.contains("class") || lower.contains("course") || lower.contains("paper") || lower.contains("exam"))
+            || lower.contains("food supply chain") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("analysis") || lower.contains("paper"))
+            || lower.contains("food security class") || lower.contains("food security course")
+            || lower.contains("food security exam") || lower.contains("food security paper")
+            || lower.contains("food access") && (lower.contains("class") || lower.contains("course") || lower.contains("paper") || lower.contains("exam") || lower.contains("equity"))
+            || lower.contains("food policy class") || lower.contains("food policy course")
+            || lower.contains("food policy exam") || lower.contains("food policy paper")
+            || lower.contains("food environment") && (lower.contains("class") || lower.contains("course") || lower.contains("paper") || lower.contains("exam"))
+            || lower.contains("agrifood system") || lower.contains("agro-food system")
+            || lower.contains("food value chain") && (lower.contains("class") || lower.contains("course") || lower.contains("paper") || lower.contains("analysis")) {
+            return "foodsystems"
+        }
         // winesommelier — positioned after culinary (shared hospitality/food context) and before
         // cosmetology. Catches wine education, sommelier certification, and viticulture/enology coursework.
         // Bare "drinking wine" or "wine with dinner" never fires (needs educational/professional context).
@@ -7505,6 +7528,27 @@ public final class CalloutManager {
             || word("compose") || word("composing") || word("composition") || word("compositions")
             || word("lyric") || word("lyrics") || word("melody") || word("melodies") {
             return "musicproduction"
+        }
+        // musichistory — positioned AFTER musicproduction (DAW/beatmaking fire first) and BEFORE
+        // musicology (dissertation-level research) so undergraduate music history class content —
+        // Baroque, Classical, Romantic, 20th-century, style analysis, listening assignments —
+        // routes to a dedicated pool. "music history dissertation/thesis" stays in musicology.
+        if lower.contains("music history class") || lower.contains("music history course")
+            || lower.contains("music history exam") || lower.contains("music history notes")
+            || lower.contains("music history assignment") || lower.contains("music history paper")
+            || lower.contains("music history textbook") || lower.contains("music history quiz")
+            || lower.contains("music history major") || lower.contains("music history program")
+            || lower.contains("baroque music") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("analysis"))
+            || lower.contains("classical period music") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("analysis"))
+            || lower.contains("romantic era music") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("analysis"))
+            || lower.contains("romantic period music") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("analysis"))
+            || lower.contains("20th century music") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("analysis"))
+            || lower.contains("twentieth century music") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("analysis"))
+            || lower.contains("renaissance music") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("analysis"))
+            || lower.contains("medieval music") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("analysis"))
+            || lower.contains("history of music class") || lower.contains("history of music course")
+            || lower.contains("history of music exam") || lower.contains("history of music paper") {
+            return "musichistory"
         }
         // musicology — positioned BEFORE musictheory so musicology degree, ethnomusicology,
         // music history dissertation, and AMS conference prep route to a dedicated academic pool.
@@ -12586,6 +12630,27 @@ public final class CalloutManager {
             || lower.contains("cultural studies course") || lower.contains("cultural studies exam") {
             return "ethnicstudies"
         }
+        // genderstudies — positioned AFTER ethnicstudies and BEFORE humanrights so gender studies,
+        // women's studies, feminist theory, queer theory, and gender and sexuality coursework gets a
+        // dedicated pool. Distinct from ethnicstudies (race/ethnicity focus) and humanrights (treaty law).
+        if lower.contains("gender studies class") || lower.contains("gender studies course")
+            || lower.contains("gender studies exam") || lower.contains("gender studies paper")
+            || lower.contains("gender studies program") || lower.contains("gender studies major")
+            || lower.contains("women's studies class") || lower.contains("women's studies course")
+            || lower.contains("women's studies exam") || lower.contains("women's studies paper")
+            || lower.contains("women studies class") || lower.contains("women studies course")
+            || lower.contains("feminist theory") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("queer theory") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("gender and sexuality") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("patriarchy") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("feminist"))
+            || lower.contains("intersectionality") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("gender") || lower.contains("feminist"))
+            || lower.contains("gender performativity") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("lgbtq studies") || lower.contains("lgbtq+ studies")
+            || lower.contains("masculinity studies") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("gender equity") && (lower.contains("class") || lower.contains("course") || lower.contains("paper") || lower.contains("research"))
+            || lower.contains("feminist scholarship") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper")) {
+            return "genderstudies"
+        }
         // humanrights — positioned AFTER ethnicstudies and BEFORE internationalrelations so international
         // human rights law, UDHR, ICCPR, ICESCR, ICC, and R2P coursework get a dedicated pool.
         // Bare "human rights" without educational context falls through to socialscience.
@@ -12608,6 +12673,27 @@ public final class CalloutManager {
             || lower.contains("human rights documentation") && (lower.contains("class") || lower.contains("course") || lower.contains("research"))
             || lower.contains("human rights report") && (lower.contains("class") || lower.contains("assignment") || lower.contains("course")) {
             return "humanrights"
+        }
+        // peacestudies — positioned AFTER humanrights and BEFORE internationalrelations so peace and
+        // conflict studies, peacebuilding, conflict resolution, and nonviolent resistance coursework
+        // routes here. Distinct from IR (state-centric foreign policy) and humanrights (treaty law).
+        // Bare "peace" alone NOT matched.
+        if lower.contains("peace and conflict") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("studies") || lower.contains("paper"))
+            || lower.contains("peace studies class") || lower.contains("peace studies course")
+            || lower.contains("peace studies exam") || lower.contains("peace studies program")
+            || lower.contains("peace studies major") || lower.contains("peace studies paper")
+            || lower.contains("conflict resolution class") || lower.contains("conflict resolution course")
+            || lower.contains("conflict resolution exam") || lower.contains("conflict resolution paper")
+            || lower.contains("peacebuilding") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("nonviolent resistance") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("nonviolence") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("theory") || lower.contains("paper"))
+            || lower.contains("galtung") && (lower.contains("class") || lower.contains("course") || lower.contains("peace") || lower.contains("conflict") || lower.contains("paper"))
+            || lower.contains("positive peace") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("theory"))
+            || lower.contains("negative peace") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("theory"))
+            || lower.contains("conflict transformation") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("post-conflict reconstruction") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("transitional justice") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper")) {
+            return "peacestudies"
         }
         // internationalrelations — positioned BEFORE socialscience (which caught "international relations"
         // generically) so IR theory, foreign policy, diplomatic studies, and global governance courses
@@ -12635,6 +12721,25 @@ public final class CalloutManager {
             || lower.contains("liberalism") && (lower.contains("ir") || lower.contains("international relations") || lower.contains("class") || lower.contains("course"))
             || lower.contains("constructivism") && (lower.contains("ir") || lower.contains("international relations") || lower.contains("class") || lower.contains("course")) {
             return "internationalrelations"
+        }
+        // globalstudies — positioned AFTER internationalrelations and BEFORE globalpoliticaleconomy so
+        // interdisciplinary global studies coursework — globalization, global citizenship, transnational
+        // issues, cross-cultural competency — routes to a dedicated pool. Distinct from IR (state-centric)
+        // and globalpoliticaleconomy (IPE/VoC focus). Bare "global" alone NOT matched.
+        if lower.contains("global studies class") || lower.contains("global studies course")
+            || lower.contains("global studies exam") || lower.contains("global studies program")
+            || lower.contains("global studies major") || lower.contains("global studies paper")
+            || lower.contains("global studies degree") || lower.contains("global studies assignment")
+            || lower.contains("globalization") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper")) && !(lower.contains("ipe") || lower.contains("political economy") || lower.contains("varieties of capitalism"))
+            || lower.contains("global citizenship") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("transnational") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("global studies"))
+            || lower.contains("cross-cultural competency") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("cross-cultural competence") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("global interconnectedness") && (lower.contains("class") || lower.contains("course") || lower.contains("paper"))
+            || lower.contains("world regional geography") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("global issues class") || lower.contains("global issues course")
+            || lower.contains("global issues exam") || lower.contains("global issues paper") {
+            return "globalstudies"
         }
         // globalpoliticaleconomy — positioned AFTER internationalrelations and BEFORE socialscience.
         // Catches IPE coursework, comparative political economy, and global political economy.

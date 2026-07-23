@@ -28048,8 +28048,153 @@ struct CalloutManagerTests {
         #expect(mgr.taskAwareCallouts(keyword: "comparativepolitics", tier: 3).contains { $0.contains("CLOSE THIS") })
     }
 
-    // MARK: - Count guard (≥1277)
-    @Test func calloutTemplatesCountAtLeast1277() {
-        #expect(SuggestedSessionTemplates.all.count >= 1277, "template catalog must have ≥1277 entries after exercisephysiology/nutritionscience/reproductivehealth/medicalanthropology/comparativepolitics additions")
+    // MARK: - foodsystems
+    @Test func foodsystemsRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "food systems class sustainable food systems food sovereignty food justice supply chain exam") == "foodsystems")
+    }
+    @Test func foodsystemsRoutingFromFoodJustice() {
+        #expect(CalloutManager.extractTaskKeyword(from: "food justice paper food deserts food access equity food policy course") == "foodsystems")
+    }
+    @Test func foodsystemsRoutingFromFoodSovereignty() {
+        #expect(CalloutManager.extractTaskKeyword(from: "food sovereignty food systems sustainable food systems exam agrifood supply chain") == "foodsystems")
+    }
+    @Test func foodsystemsFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "food safety exam servsafe haccp certification food handler")
+        #expect(kw != "foodsystems", "food safety / servsafe should not route to foodsystems")
+    }
+    @Test @MainActor func foodsystemsCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "foodsystems", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "foodsystems", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "foodsystems", tier: 3).isEmpty)
+    }
+    @Test @MainActor func foodsystemsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "foodsystems", tier: 1).count >= 4)
+    }
+    @Test @MainActor func foodsystemsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "foodsystems", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - musichistory
+    @Test func musichistoryRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "music history class Baroque Classical Romantic 20th century listening analysis exam") == "musichistory")
+    }
+    @Test func musichistoryRoutingFromBaroque() {
+        #expect(CalloutManager.extractTaskKeyword(from: "baroque music analysis paper music history course Renaissance polyphony counterpoint") == "musichistory")
+    }
+    @Test func musichistoryRoutingFromPeriod() {
+        #expect(CalloutManager.extractTaskKeyword(from: "romantic era music analysis music history exam Beethoven Brahms symphonic poem") == "musichistory")
+    }
+    @Test func musichistoryFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "music theory exam ear training sight reading chord progression harmony counterpoint")
+        #expect(kw != "musichistory", "music theory ear training should not route to musichistory")
+    }
+    @Test @MainActor func musichistoryCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "musichistory", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "musichistory", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "musichistory", tier: 3).isEmpty)
+    }
+    @Test @MainActor func musichistoryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "musichistory", tier: 1).count >= 4)
+    }
+    @Test @MainActor func musichistoryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "musichistory", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - genderstudies
+    @Test func genderstudiesRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "gender studies class feminist theory intersectionality queer theory gender performativity exam") == "genderstudies")
+    }
+    @Test func genderstudiesRoutingFromFeministTheory() {
+        #expect(CalloutManager.extractTaskKeyword(from: "feminist theory paper Butler gender performativity patriarchy women's studies course") == "genderstudies")
+    }
+    @Test func genderstudiesRoutingFromIntersectionality() {
+        #expect(CalloutManager.extractTaskKeyword(from: "intersectionality class gender feminist Crenshaw matrix of domination paper") == "genderstudies")
+    }
+    @Test func genderstudiesFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "ethnic studies class race diaspora cultural studies colonialism decolonization exam")
+        #expect(kw != "genderstudies", "ethnic studies without gender context should not route to genderstudies")
+    }
+    @Test @MainActor func genderstudiesCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "genderstudies", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "genderstudies", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "genderstudies", tier: 3).isEmpty)
+    }
+    @Test @MainActor func genderstudiesTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "genderstudies", tier: 1).count >= 4)
+    }
+    @Test @MainActor func genderstudiesTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "genderstudies", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - peacestudies
+    @Test func peacestudiesRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "peace and conflict studies class Galtung positive peace negative peace peacebuilding exam") == "peacestudies")
+    }
+    @Test func peacestudiesRoutingFromPeacebuilding() {
+        #expect(CalloutManager.extractTaskKeyword(from: "peacebuilding paper conflict resolution class nonviolent resistance transitional justice course") == "peacestudies")
+    }
+    @Test func peacestudiesRoutingFromGaltung() {
+        #expect(CalloutManager.extractTaskKeyword(from: "Galtung conflict transformation peace course positive peace structural violence paper") == "peacestudies")
+    }
+    @Test func peacestudiesFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "international relations class foreign policy realism liberalism IR theory global governance exam")
+        #expect(kw != "peacestudies", "IR theory without peace studies context should not route to peacestudies")
+    }
+    @Test @MainActor func peacestudiesCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "peacestudies", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "peacestudies", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "peacestudies", tier: 3).isEmpty)
+    }
+    @Test @MainActor func peacestudiesTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "peacestudies", tier: 1).count >= 4)
+    }
+    @Test @MainActor func peacestudiesTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "peacestudies", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - globalstudies
+    @Test func globalstudiesRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "global studies class globalization global citizenship transnational issues cross-cultural competency exam") == "globalstudies")
+    }
+    @Test func globalstudiesRoutingFromGlobalization() {
+        #expect(CalloutManager.extractTaskKeyword(from: "globalization paper global studies course global citizenship transnational movements world regional geography") == "globalstudies")
+    }
+    @Test func globalstudiesRoutingFromCrossCultural() {
+        #expect(CalloutManager.extractTaskKeyword(from: "cross-cultural competency class global studies program global interconnectedness world regional geography exam") == "globalstudies")
+    }
+    @Test func globalstudiesFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "international political economy class comparative political economy IPE varieties of capitalism exam")
+        #expect(kw != "globalstudies", "IPE without global studies context should not route to globalstudies")
+    }
+    @Test @MainActor func globalstudiesCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "globalstudies", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "globalstudies", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "globalstudies", tier: 3).isEmpty)
+    }
+    @Test @MainActor func globalstudiesTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "globalstudies", tier: 1).count >= 4)
+    }
+    @Test @MainActor func globalstudiesTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "globalstudies", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (≥1287)
+    @Test func calloutTemplatesCountAtLeast1287() {
+        #expect(SuggestedSessionTemplates.all.count >= 1287, "template catalog must have ≥1287 entries after foodsystems/musichistory/genderstudies/peacestudies/globalstudies additions")
     }
 }

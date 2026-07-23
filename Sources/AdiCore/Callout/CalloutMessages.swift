@@ -704,6 +704,11 @@ extension CalloutManager {
         case "reproductivehealth":         return reproductivehealthCallouts(tier: tier)
         case "medicalanthropology":        return medicalanthropologyCallouts(tier: tier)
         case "comparativepolitics":        return comparativepoliticsCallouts(tier: tier)
+        case "foodsystems":                return foodsystemsCallouts(tier: tier)
+        case "musichistory":               return musichistoryCallouts(tier: tier)
+        case "genderstudies":              return genderstudiesCallouts(tier: tier)
+        case "peacestudies":               return peacestudiesCallouts(tier: tier)
+        case "globalstudies":              return globalstudiesCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -14467,6 +14472,111 @@ extension CalloutManager {
             "CLOSE THIS. open your comparative politics textbook or regime types and democratization notes.",
             "CLOSE THIS. those varieties of capitalism and electoral systems assignments won't complete themselves.",
             "CLOSE THIS. your comparative politics exam won't study itself."
+        ]
+        }
+    }
+
+    private func foodsystemsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "food systems doesn't study itself — food sovereignty, food justice, supply chain analysis, food deserts, food security, and food policy are all waiting.",
+            "your food systems exam needs you — sustainable food systems, food access equity, agrifood supply chains, food environment analysis, and food value chains won't memorize themselves.",
+            "those food systems assignments and food policy papers are still open.",
+            "food sovereignty, food justice, food deserts, supply chain analysis — get back to your food systems coursework."
+        ]
+        case 2: return [
+            "stop. your food systems exam and food policy paper are still open.",
+            "food sovereignty, food justice, sustainable food systems, food security — your exam won't wait.",
+            "food systems class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your food systems textbook or food sovereignty and food justice notes.",
+            "CLOSE THIS. those food supply chain and food policy assignments won't complete themselves.",
+            "CLOSE THIS. your food systems exam won't study itself."
+        ]
+        }
+    }
+
+    private func musichistoryCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "music history doesn't study itself — Baroque, Classical, Romantic, and 20th-century periods; style analysis; listening assignments; and historical context are all waiting.",
+            "your music history exam needs you — Renaissance polyphony, Baroque counterpoint, Classical form, Romantic expression, and 20th-century movements won't memorize themselves.",
+            "those music history assignments and style analysis papers are still open.",
+            "Baroque, Classical, Romantic, 20th-century music — get back to your music history coursework."
+        ]
+        case 2: return [
+            "stop. your music history exam and listening analysis are still open.",
+            "Renaissance, Baroque, Classical, Romantic, 20th-century — your exam won't wait.",
+            "music history class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your music history textbook or Baroque and Classical period notes.",
+            "CLOSE THIS. those Romantic era and 20th-century music assignments won't complete themselves.",
+            "CLOSE THIS. your music history exam won't study itself."
+        ]
+        }
+    }
+
+    private func genderstudiesCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "gender studies doesn't study itself — feminist theory, queer theory, intersectionality, patriarchy, gender performativity, and LGBTQ studies are all waiting.",
+            "your gender studies exam needs you — Butler's gender performativity, Crenshaw's intersectionality, waves of feminism, patriarchy, and queer theory frameworks won't memorize themselves.",
+            "those gender studies assignments and feminist theory papers are still open.",
+            "feminist theory, queer theory, intersectionality, gender performativity — get back to your gender studies coursework."
+        ]
+        case 2: return [
+            "stop. your gender studies exam and feminist theory paper are still open.",
+            "feminist theory, queer theory, intersectionality, patriarchy, gender performativity — your exam won't wait.",
+            "gender studies class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your gender studies textbook or feminist theory and intersectionality notes.",
+            "CLOSE THIS. those queer theory and gender performativity assignments won't complete themselves.",
+            "CLOSE THIS. your gender studies exam won't study itself."
+        ]
+        }
+    }
+
+    private func peacestudiesCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "peace and conflict studies doesn't study itself — Galtung's positive and negative peace, peacebuilding, conflict resolution, nonviolent resistance, and transitional justice are all waiting.",
+            "your peace studies exam needs you — conflict transformation, post-conflict reconstruction, nonviolence theory, the peacebuilding continuum, and transitional justice mechanisms won't memorize themselves.",
+            "those peace and conflict assignments and conflict resolution papers are still open.",
+            "positive peace, negative peace, Galtung, peacebuilding, nonviolent resistance — get back to your peace studies coursework."
+        ]
+        case 2: return [
+            "stop. your peace studies exam and conflict resolution paper are still open.",
+            "Galtung, positive peace, peacebuilding, nonviolent resistance, transitional justice — your exam won't wait.",
+            "peace and conflict studies class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your peace studies textbook or Galtung and conflict transformation notes.",
+            "CLOSE THIS. those peacebuilding and nonviolent resistance assignments won't complete themselves.",
+            "CLOSE THIS. your peace studies exam won't study itself."
+        ]
+        }
+    }
+
+    private func globalstudiesCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "global studies doesn't study itself — globalization, global citizenship, transnational issues, cross-cultural competency, and world regional geography are all waiting.",
+            "your global studies exam needs you — globalization frameworks, global interconnectedness, transnational movements, cross-cultural competence, and global governance systems won't memorize themselves.",
+            "those global studies assignments and globalization papers are still open.",
+            "globalization, global citizenship, transnational issues, cross-cultural competency — get back to your global studies coursework."
+        ]
+        case 2: return [
+            "stop. your global studies exam and globalization paper are still open.",
+            "globalization, global citizenship, transnational issues, cross-cultural competency — your exam won't wait.",
+            "global studies class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your global studies textbook or globalization and global citizenship notes.",
+            "CLOSE THIS. those transnational issues and cross-cultural competency assignments won't complete themselves.",
+            "CLOSE THIS. your global studies exam won't study itself."
         ]
         }
     }

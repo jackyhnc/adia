@@ -7833,8 +7833,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func comparativepoliticsAssignmentTemplateExists() {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("comparative politics") && $0.task.lowercased().contains("paper") })
     }
-    // MARK: - Count guard (≥1277)
-    @Test func templateCountAtLeast1277() {
-        #expect(SuggestedSessionTemplates.all.count >= 1277, "template catalog must have ≥1277 entries after exercisephysiology/nutritionscience/reproductivehealth/medicalanthropology/comparativepolitics additions")
+    // MARK: - foodsystems templates
+    @Test func foodsystemsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("food systems") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func foodsystemsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("food systems") && $0.task.lowercased().contains("paper") })
+    }
+    // MARK: - musichistory templates
+    @Test func musichistoryStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("music history") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func musichistoryAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("music history") && $0.task.lowercased().contains("paper") })
+    }
+    // MARK: - genderstudies templates
+    @Test func genderstudiesStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("gender studies") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func genderstudiesAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("gender studies") && $0.task.lowercased().contains("paper") })
+    }
+    // MARK: - peacestudies templates
+    @Test func peacestudiesStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("peace") && $0.task.lowercased().contains("conflict") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func peacestudiesAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("peace") && $0.task.lowercased().contains("conflict") && $0.task.lowercased().contains("paper") })
+    }
+    // MARK: - globalstudies templates
+    @Test func globalstudiesStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("global studies") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func globalstudiesAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("global studies") && $0.task.lowercased().contains("paper") })
+    }
+    // MARK: - Count guard (≥1287)
+    @Test func templateCountAtLeast1287() {
+        #expect(SuggestedSessionTemplates.all.count >= 1287, "template catalog must have ≥1287 entries after foodsystems/musichistory/genderstudies/peacestudies/globalstudies additions")
     }
 }

@@ -21121,3 +21121,45 @@ All GOAL.md tasks remain checked. Continue expanding keyword domains. Suggested 
 - `computationalchemistry` — computational chemistry class (molecular dynamics simulation, DFT, quantum mechanics in chemistry, force fields, energy minimization — distinct from computationalfinance and general chemistry domains)
 - `criminallaw` — criminal law class (actus reus, mens rea, Model Penal Code, strict liability, common law crimes, defenses — distinct from criminaljustice/criminallaw may already exist, check)
 - `musichistory` — music history class (Baroque, Classical, Romantic, 20th-century music, form analysis, historical context, listening assignments — distinct from musictheory and musiccomposition)
+
+---
+
+## Run 417 — 2026-07-23
+
+### What shipped
+5 new keyword domains: **foodsystems**, **musichistory**, **genderstudies**, **peacestudies**, **globalstudies** — template catalog grows 1277→1287.
+
+**foodsystems** — food systems class/course/exam/paper/program/major/assignment/notes, sustainable food systems, food sovereignty+food/class/course/paper/exam, food justice+class/course/paper/exam, food desert+class/course/paper/exam, food supply chain+class/course/exam/analysis/paper, food security class/course/exam/paper, food access+class/course/paper/exam/equity, food policy class/course/exam/paper, food environment+class/course/paper/exam, agrifood system, agro-food system, food value chain+class/course/paper/analysis. Positioned AFTER foodsafety(7376) and BEFORE winesommelier(7421). 4+3+3 callout pool. 2 templates (study exam with food sovereignty/food justice/food deserts/food security/La Via Campesina/Washington Consensus/SNAP / food justice analysis or food sovereignty vs food security paper or sustainable food systems transition analysis).
+
+**musichistory** — music history class/course/exam/notes/assignment/paper/textbook/quiz/major/program, baroque music+class/course/exam/paper/analysis, classical period music+class/course/exam/paper/analysis, romantic era/period music+class/course/exam/analysis, 20th/twentieth century music+class/course/exam/analysis, renaissance music+class/course/exam/paper/analysis, medieval music+class/course/exam/paper/analysis, history of music class/course/exam/paper. Positioned AFTER musicproduction(7530) and BEFORE musicology(7571). 4+3+3 callout pool. 2 templates (study exam with medieval/Renaissance/Baroque/Classical/Romantic/20th century periods, composers, forms / comparative period style analysis or composer biography paper or listening journal).
+
+**genderstudies** — gender studies class/course/exam/paper/program/major, women's studies class/course/exam/paper, feminist theory+class/course/exam/paper, queer theory+class/course/exam/paper, gender and sexuality+class/course/exam, patriarchy+class/course/exam/paper/feminist, intersectionality+class/course/exam/gender/feminist, gender performativity+class/course/exam/paper, lgbtq studies, lgbtq+ studies, masculinity studies+class/course/exam/paper, gender equity/equality+class/course/paper/research, feminist scholarship+class/course/exam/paper. Positioned AFTER ethnicstudies(12631) and BEFORE humanrights(12675). 4+3+3 callout pool. 2 templates (study exam with feminist waves/Butler/Crenshaw/Collins/hooks/Lorde / feminist theory application or gender performativity analysis or intersectionality paper).
+
+**peacestudies** — peace and conflict+class/course/exam/studies/paper, peace studies class/course/exam/program/major/paper, conflict resolution class/course/exam/paper, peacebuilding+class/course/exam/paper, nonviolent resistance+class/course/exam/paper, nonviolence+class/course/exam/theory/paper, Galtung+class/course/peace/conflict/paper, positive/negative peace+class/course/exam/theory, conflict transformation+class/course/exam/paper, post-conflict reconstruction+class/course/exam/paper, transitional justice+class/course/exam/paper. Positioned AFTER humanrights(12675) and BEFORE internationalrelations(12723). 4+3+3 callout pool. 2 templates (study exam with Galtung/ABC model/DDR/SSR/transitional justice / conflict analysis using ABC or peacebuilding evaluation or nonviolent resistance analysis).
+
+**globalstudies** — global studies class/course/exam/program/major/paper/degree/assignment, globalization+class/course/exam/paper (with IPE/VoC exclusion guard), global citizenship+class/course/exam/paper, transnational+class/course/exam/global studies, cross-cultural competency/competence+class/course/exam, global interconnectedness+class/course/paper, world regional geography+class/course/exam, global issues class/course/exam/paper. Positioned AFTER internationalrelations(12723) and BEFORE globalpoliticaleconomy(12761). 4+3+3 callout pool. 2 templates (study exam with globalization frameworks/Hofstede/Bennett DMIS/Bretton Woods/Washington Consensus/global citizenship / globalization analysis or migration and transnationalism paper or cross-cultural competency reflection).
+
+**Tests**: 35 new CalloutManagerTests (3 routing + 1 false-positive guard + 3 pool tests per domain × 5 domains) + 12 new SuggestedSessionTemplatesTests (study+assignment per domain × 5 + count guard ≥1287).
+
+### Verification
+- `grep -c "preferredDuration:" SuggestedSessionTemplates.swift` → 1287 ✓
+- Brace balance: CalloutMessages.swift 1331/1331 ✓; CalloutManager.swift 693/693 ✓
+- Routing ordering:
+  - foodsafety(7376) < foodsystems(7399) < winesommelier(7421) ✓
+  - musicproduction(7530) < musichistory(7551) < musicology(7571) ✓
+  - ethnicstudies(12631) < genderstudies(12652) < humanrights(12675) ✓
+  - humanrights(12675) < peacestudies(12696) < internationalrelations(12723) ✓
+  - internationalrelations(12723) < globalstudies(12742) < globalpoliticaleconomy(12761) ✓
+- 5 case entries confirmed in taskAwareCallouts switch (CalloutMessages.swift lines 707-711) ✓
+- 5 new private pool functions confirmed in CalloutMessages.swift ✓
+
+### Blocked
+Swift toolchain unavailable on Linux container — no `swift build` or `swift test` possible.
+
+### Next agent pick-up
+All GOAL.md tasks remain checked. Continue expanding keyword domains. Suggested next 5:
+- `socialinnovation` — social innovation class (innovation for social change, systems thinking, design thinking for social impact, scaling social innovation, impact measurement — distinct from socialentrepreneurship which covers startup/venture-based social enterprise)
+- `urbanplanning` — check if exists; urban planning class (zoning, land use, transit-oriented development, urban design, comprehensive planning — distinct from urbansociology which is more sociological theory)
+- `philosophyofscience` — check if exists; philosophy of science class (Kuhn's paradigm shifts, Popper's falsificationism, Lakatos, Feyerabend, underdetermination, demarcation problem — distinct from philosophy and sociology of science)
+- `environmentalhumanities` — environmental humanities/ecocriticism class (nature-culture relationships, environmental justice narrative, ecocriticism, posthumanism, more-than-human theory — distinct from environmental studies/environmentalscience)
+- `africanstudies` — African studies class (pan-Africanism, postcolonial theory in Africa, African political economy, decolonization in Africa — distinct from ethnicstudies which handles broader race/diaspora context)
