@@ -20640,3 +20640,35 @@ None. Swift toolchain unavailable on Linux container.
 - `occupationaltherapy` — OT fieldwork (SOAP/POMR notes for ADL/IADL intervention, sensory processing, NBCOT exam — distinct from occupational medicine and social work)
 - `bioethics` — bioethics class/seminar/rotation (principlism: autonomy/beneficence/non-maleficence/justice, clinical ethics consultation, research ethics IRB, end-of-life ethics, genomic ethics — distinct from medical humanities and ethics as a philosophy branch)
 - `medicalspanish` — medical Spanish class/course (clinical vocabulary, patient-history phrases, OSCE in Spanish, interpreter competency certification — distinct from general Spanish)
+
+---
+
+## Run 409 — 2026-07-23
+
+### What shipped
+5 new keyword domains: **physicaltherapy**, **medicalspanish**, **musicology**, **patientadvocacy**, **animallaw** — template catalog grows 1179→1189.
+
+**physicaltherapy** — DPT students, PT clinical internship/rotation, NPTE board exam, PT SOAP documentation, PTA program. Positioned BEFORE kinesiology (generic "physical therapy" stays in kinesiology; DPT-specific terms route here). 4+3+3 callout pool. 2 templates (clinical notes / NPTE study).
+
+**medicalspanish** — Medical Spanish class, clinical vocabulary, CCHI/CoreCHI interpreter certification, OSCE in Spanish, Spanish for healthcare professionals. Positioned BEFORE language. 4+3+3 callout pool. 2 templates (vocab/phrases study / OSCE and interpreter exam practice).
+
+**musicology** — Musicology/ethnomusicology degree and program, music history dissertation, AMS conference paper, popular music studies, organology. Positioned BEFORE musictheory. 4+3+3 callout pool. 2 templates (paper/seminar assignment / exam study).
+
+**patientadvocacy** — Patient advocacy program/certification, BCPA exam, care navigation, patient rights, healthcare advocacy. Positioned BEFORE healthcareadmin. 4+3+3 callout pool. 2 templates (BCPA prep / case study & practicum).
+
+**animallaw** — Animal law class/clinic, AWA litigation, anti-cruelty statutes, standing for animals, legal personhood, wildlife trafficking law, factory farming law. Positioned BEFORE animalwelfare. 4+3+3 callout pool. 2 templates (exam study / case brief & memo).
+
+**Tests**: 35 new CalloutManagerTests (3 routing + 1 false-positive guard + 3 pool tests per domain) + 12 new SuggestedSessionTemplatesTests (2 template existence + count guard ≥1189 per domain).
+
+Brace balance verified: CalloutMessages.swift 1233/1233 ✓; CalloutManager.swift 644/644 ✓; SuggestedSessionTemplates.swift preferredDuration count 1189 ✓.
+
+### Blocked
+Swift toolchain unavailable on Linux container — no `swift build` or `swift test` possible.
+
+### Next agent pick-up
+All GOAL.md tasks remain checked. Continue expanding keyword domains. Suggested next 5:
+- `cognitivescience` (already exists — check if it's fully distinct from cognitive psychology/neuroscience)
+- `technicalwriting` — technical writing class, STC certification, user documentation, API docs (distinct from techwriting if techwriting is already too broad)
+- `constructionestimating` — construction estimating class, RSMeans, quantity takeoff, bid writing (distinct from constructionmanagement)
+- `riskmanagement` (already exists — confirm)
+- `forensicengineering` — forensic engineering investigation, failure analysis, expert witness reports, product liability (distinct from forensicscience and engineering)
