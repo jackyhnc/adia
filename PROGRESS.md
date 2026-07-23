@@ -21318,3 +21318,51 @@ All GOAL.md tasks remain checked. Continue expanding keyword domains. Suggested 
 - `datalaw` — data privacy law class (GDPR, CCPA, HIPAA data privacy, FTC Section 5 enforcement, data breach notification, cross-border data transfers, EU-US data privacy framework — distinct from healthlaw/cybersecurity which touch privacy tangentially)
 - `competitionlaw` — competition/antitrust law class (Sherman Act Sections 1 and 2, Clayton Act, FTC Act, rule of reason vs per se analysis, merger review, EU competition law Article 101/102 — distinct from corporatelaw which covers M&A transactions)
 - `constitutionaltheory` — constitutional theory class (distinct from constitutionallaw which covers doctrine; covers constitutional interpretation — originalism, living constitutionalism, textualism, departmentalism, popular constitutionalism, Dworkin's law as integrity)
+
+---
+
+## Run 420 — 2026-07-23
+
+### What shipped
+5 new keyword domains: **immigrationpolicy**, **cryptolaw**, **datalaw**, **competitionlaw**, **constitutionaltheory** — template catalog grows 1317→1327.
+
+**immigrationpolicy** — positioned AFTER bankinglaw(14032) and BEFORE cryptolaw(14055). Distinct from immigrationlaw (visa petitions/removal/asylum practice, fires earlier). Catches immigration policy class/course/exam/paper/seminar/notes/assignment/analysis, DACA policy + class/course/exam/paper/analysis, deferred action + policy/class/course/exam/paper, comprehensive immigration reform + class/course/exam/paper/policy, border policy + immigration/class/course/exam/paper, immigration enforcement + policy/class/course/exam, immigration economics + class/course/exam/paper, Borjas + immigration/policy/class/course/labor, immigration and labor market + class/course/exam/paper, integration policy + immigration/class/course/exam, assimilation policy + immigration/class/course/exam, immigration reform policy + class/course/exam/paper, points-based immigration + class/course/exam/policy, immigration selection policy + class/course/exam. 4+3+3 callout pool. 2 templates (study DACA/Borjas vs Card/comprehensive reform/points-based selection/integration policy / DACA analysis, immigration economics debate, or integration policy paper).
+
+**cryptolaw** — positioned AFTER immigrationpolicy(14055) and BEFORE datalaw(14080). Catches crypto law class/course/exam/paper, cryptocurrency law class/course/exam/paper, cryptocurrency regulation class/course/exam/paper, blockchain law class/course/exam/paper, blockchain regulation class/course/exam/paper, digital asset law + class/course/exam/paper, digital asset regulation + class/course/exam/paper, SEC vs CFTC + crypto/class/law/exam, DAO governance + law/class/course/legal/exam, smart contract + law/legal/enforceab/class/course + class/law/exam/paper, NFT law, NFT legal + class/course/exam/ip, crypto AML + class/law/course/kyc/regulation, stablecoin regulation + class/law/course/exam/paper, Howey test + crypto/token/digital asset/class/securities, security token + law/class/sec/regulation/exam. 4+3+3 callout pool. 2 templates (study SEC vs CFTC/Howey test/DAO/smart contracts/NFT IP/stablecoin regulation/AML / digital asset classification, DAO governance, or stablecoin/AML paper).
+
+**datalaw** — positioned AFTER cryptolaw(14080) and BEFORE competitionlaw(14106). Distinct from healthlaw (clinical health law) and cybersecurity (technical security). Catches data privacy law class/course/exam/paper/seminar/notes, privacy law class/course/exam/paper/assignment/outline, GDPR class/course/exam, GDPR law + class/course/exam/paper/compliance, GDPR compliance class/course, CCPA class/law class/course/exam, California Consumer Privacy + class/course/exam/law, HIPAA privacy + law/class/course/exam/regulation, data breach law + class/course/exam/notification, data breach notification + law/class/course/exam, FTC Section 5 + privacy/law/class/data/exam, cross-border data transfer + law/class/course/exam, EU-US data privacy + class/course/law/exam/framework, data protection law + class/course/exam/paper, information privacy law + class/course/exam/paper, Schrems + law/class/data/privacy/exam. 4+3+3 callout pool. 2 templates (study GDPR lawful bases/CCPA/HIPAA/FTC Section 5/Schrems II/cross-border transfers / GDPR lawful basis, Schrems II TIA, or U.S. federal privacy law paper).
+
+**competitionlaw** — positioned AFTER datalaw(14106) and BEFORE constitutionaltheory(14135). Distinct from corporatelaw (M&A transactions) and lawandeconomics (Coase/Posner — fires later). Catches antitrust law class/course/exam/paper/seminar/outline, competition law class/course/exam/paper/seminar/notes, antitrust class + law/course/exam/paper/brief, antitrust course/exam + law/paper, Sherman Act + class/law/course/exam/paper, Clayton Act + class/law/course/exam/antitrust, FTC Act + antitrust/class/law/course/exam, rule of reason + antitrust/class/law/exam/competition, per se illegal + antitrust/class/law/exam, horizontal restraint + antitrust/class/law/exam, vertical restraint + antitrust/class/law/exam, merger review + antitrust/class/law/exam/competition, HHI + antitrust/merger/class/competition/law, monopolization + class/law/course/exam/antitrust, EU competition law + class/course/exam/paper, Article 101 + competition/eu/class/antitrust/exam, Article 102 + competition/eu/class/antitrust/exam, law school/1l/2l/3l antitrust. 4+3+3 callout pool. 2 templates (study Sherman Act/Clayton Act/rule of reason/monopolization/merger HHI/EU 101-102 / horizontal restraint, monopolization, or merger analysis paper).
+
+**constitutionaltheory** — positioned AFTER competitionlaw(14135) and BEFORE taxlaw(14159). Distinct from constitutionallaw (doctrine/cases, fires much earlier). Catches constitutional theory class/course/exam/paper/seminar/notes, constitutional interpretation class/course/exam/paper, originalism + class/course/exam/paper/theory/constitutional, living constitutionalism + class/course/exam/paper/theory, textualism + class/course/exam/paper/constitutional/theory, departmentalism + class/course/exam/paper/constitutional, popular constitutionalism + class/course/exam/paper, Dworkin law as integrity + class/course/exam/paper, constitutional construction + class/course/exam/paper/theory, interpretation theory + constitutional/class/course/exam, judicial philosophy + class/course/exam/constitutional/theory, strict constructionism + class/course/exam/paper/constitutional, purposivism + constitutional/class/course/exam/interpretation, Akhil Amar + class/constitutional/course/exam/theory, Jack Balkin + class/constitutional/course/exam/theory. 4+3+3 callout pool. 2 templates (study originalism/living constitutionalism/textualism/departmentalism/Dworkin/Balkin/Amar / interpretive methodology comparison, Dworkin vs positivism/originalism, or departmentalism/popular constitutionalism paper).
+
+### Tests added
+
+**CalloutManagerTests.swift** — 35 new @Test functions:
+- 3 routing tests + 1 false-positive guard + 3 pool tests (all-tiers, tier-1-count, tier-3-CLOSE-THIS) per domain × 5 domains
+- Count guard updated: ≥1317 → ≥1327
+
+**SuggestedSessionTemplatesTests.swift** — 12 new @Test functions:
+- 2 template existence tests per domain × 5 domains + count guard ≥1317 → ≥1327
+
+### Verification
+- `grep -c "preferredDuration:" SuggestedSessionTemplates.swift` → 1327 ✓
+- Brace balance: CalloutMessages.swift 1371/1371 ✓; CalloutManager.swift 713/713 ✓
+- Routing ordering:
+  - bankinglaw(14032) < immigrationpolicy(14055) < cryptolaw(14080) ✓
+  - cryptolaw(14080) < datalaw(14106) < competitionlaw(14135) ✓
+  - competitionlaw(14135) < constitutionaltheory(14159) < taxlaw(14186) ✓
+- 5 case entries confirmed in taskAwareCallouts switch (CalloutMessages.swift) ✓
+- 5 new private pool functions confirmed in CalloutMessages.swift ✓
+
+### Blocked
+Swift toolchain unavailable on Linux container — no `swift build` or `swift test` possible.
+
+### Next agent pick-up
+All GOAL.md tasks remain checked. Continue expanding keyword domains. Suggested next 5:
+- `cognitivescience` — cognitive science class (cognitive architectures, computational models of mind, connectionism, embodied cognition, cognitive linguistics, perception, attention, memory — distinct from cognitive psychology and neuroscience which are more empirical/biological)
+- `mediatheory` — already added in run 419. Skip.
+- `globalfoodpolicy` — global food policy / food security class (food systems analysis, FAO, WFP, Green Revolution, food sovereignty (La Via Campesina), global food supply chains, food waste policy, food access and nutrition security — distinct from foodscience and agriculturescience)
+- `educationpolicy` — education policy class (school choice, vouchers, charter schools, standards-based reform, NCLB/ESSA, equity and access, teacher effectiveness, higher education policy, student debt — distinct from educationalpsychology and curriculum studies)
+- `energyeconomics` — energy economics class (electricity market design, carbon pricing, energy transition, natural gas economics, energy subsidies, LCOE comparisons, oil market dynamics — distinct from environmentaleconomics which is more Pigouvian externality theory)
+- `socialentrepreneurship` — social entrepreneurship class (B corps, social enterprise models, impact investing, blended value, mission-related investing, SROI — distinct from socialinnovation which is more policy/systems-change focused)
