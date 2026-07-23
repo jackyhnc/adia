@@ -21210,3 +21210,45 @@ All GOAL.md tasks remain checked. Continue expanding keyword domains. Suggested 
 - `developmentstudies` — development studies class (development theory, post-development, dependency, human development index, capabilities approach, Amartya Sen, Martha Nussbaum — distinct from economics and international relations)
 - `classicalstudies` — classical studies / classics class (ancient Greek/Roman history, literature (Homer, Virgil, Cicero), philosophy (Plato, Aristotle), classical archaeology, Latin/Greek — distinct from philosophy and ancient history which may be separate domains)
 - `theaterstudies` — theater studies / dramatic arts class (dramatic theory, performance theory, Brecht, Stanislavski, directing, dramaturgy, dramatic analysis — distinct from musictheory/musichistory and creative writing)
+
+---
+
+## Run 419 — 2026-07-23
+
+### What shipped
+5 new keyword domains: **mediatheory**, **theaterstudies**, **developmentstudies**, **entertainmentlaw**, **bankinglaw** — template catalog grows 1297→1307.
+
+**mediatheory** — positioned BEFORE communicationstudies. Catches media theory class/course/exam/paper/program/major/notes/assignment, media ecology class/course/exam/paper, critical media studies class/course/exam/paper, McLuhan + class/course/exam/paper/theory, medium is the message + class/course/exam/paper, Baudrillard + class/course/exam/media/paper, simulacra + class/media/course/exam/paper, hyperreality + class/media/course/exam/baudrillard, Hall's encoding + class/course/exam/paper, encoding and decoding + media/class/course/hall, encoding/decoding + media/class/course/hall, political economy of media + class/course/exam/paper, manufacturing consent + class/course/media/exam, Frankfurt School + media/class/course/theory, culture industry + class/media/course/adorno/horkheimer, Debord + spectacle/class/media/theory, society of the spectacle + class/course/media, Kittler + class/media/theory/course, platform studies class/course/exam/paper, media studies theory + class/course/exam. 4+3+3 callout pool. 2 templates (study exam with McLuhan/Baudrillard/Hall/Frankfurt School/Debord/Kittler / media ecology or Baudrillard simulation or Hall/political economy of media paper).
+
+**theaterstudies** — positioned BEFORE performingarts (after dancescience). Catches theater/theatre studies class/course/exam/major/program/paper, theater/theatre history class/course/exam/notes, dramatic literature class/course/exam/paper, dramatic theory + class/course/exam/paper, theater/theatre criticism class/course, play analysis class/course/exam, dramaturgy class/course/exam/paper/seminar/assignment, Brechtian + class/theory/course/paper, epic theater/theatre + class/theory/course/exam, Verfremdungseffekt + class/theater/theatre/theory, theater/theatre of cruelty + class/course/artaud, Artaud + class/theater/theatre/performance/theory, Grotowski + class/theater/theatre/performance/theory, poor theater + class/course/grotowski, performance theory class/course/exam, Schechner + class/performance/theory/theater, environmental theater + class/course/theory, catharsis + drama/theater/class/aristotle. 4+3+3 callout pool. 2 templates (study exam with Aristotle/Brecht/Artaud/Grotowski/Schechner / dramatic theory, Brechtian analysis, or performance theory paper).
+
+**developmentstudies** — positioned AFTER globalstudies and BEFORE globalpoliticaleconomy. Catches development studies class/course/exam/paper/program/major/notes/assignment, international development class/course/exam/paper/program/major, capabilities approach + class/course/exam/development/paper, human development index + class/course/exam/paper, HDI + class/development/course/exam/undp, Amartya Sen + class/development/course/exam/paper, Martha Nussbaum + class/development/course/exam/capabilities, post-development + class/course/exam/paper/escobar, Arturo Escobar + class/development/course/exam/paper, modernization theory + class/development/course/exam/paper, Rostow + class/development/stages/course/exam, basic needs approach + class/development/course/exam, aid effectiveness + class/course/development/exam/paper, Jeffrey Sachs + class/development/aid/poverty/exam, William Easterly + class/development/aid/poverty/exam, millennium development goals + class/course/exam/paper, sustainable development goals + class/course/exam/development, SDGs + class/development/course/exam/undp, MDGs + class/development/course/exam/undp. 4+3+3 callout pool. 2 templates (study exam with Rostow/Sen/Escobar/HDI/MDGs-SDGs/Sachs-Easterly / capabilities approach, post-development, or comparative development paper).
+
+**entertainmentlaw** — positioned AFTER intellectualproperty and BEFORE environmentallaw. Catches entertainment law class/course/exam/paper/seminar/program, music law class/course/exam/paper, film law class/course/exam/paper, music contract + law/class/course/legal/exam, recording contract + law/class/course/legal/exam, talent agreement + law/class/course/legal/exam, right of publicity + law/class/course/exam/entertainment, SAG-AFTRA + law/class/course/contract/exam, WGA + entertainment/law/contract/class/legal, entertainment industry law, music industry law, film industry law, entertainment contracts class/course/exam, artist management + law/contract/class/legal/entertainment, music publishing + law/class/legal/contract/exam, sync licensing + law/class/legal/contract, entertainment transactional + law/class/exam. 4+3+3 callout pool. 2 templates (study exam with recording contracts/mechanical royalties/SAG-AFTRA residuals/right of publicity / music contract, right of publicity/NIL, or collective bargaining paper).
+
+**bankinglaw** — positioned AFTER corporatelaw and BEFORE taxlaw. Catches banking law class/course/exam/paper/seminar/outline, bank regulation class/course/exam/paper/seminar/outline, financial regulation law + class/course/exam/banking/paper, Dodd-Frank + law/class/course/banking/regulation/exam, Basel III + law/class/course/banking/regulation/exam, FDIC + law/class/regulation/banking/exam/course, OCC regulation + banking/class/law/exam, Glass-Steagall + law/class/course/banking/exam, Federal Reserve Act + law/class/course/banking/exam, bank holding company + law/class/course/exam/regulation, commercial banking law, bank supervision + law/class/course/exam, community reinvestment act + law/class/course/banking/cra. 4+3+3 callout pool. 2 templates (study exam with Glass-Steagall/Dodd-Frank/Volcker Rule/Basel III/FDIC / Dodd-Frank provision, Basel III capital/liquidity, or CRA community banking paper).
+
+**Tests**: 35 new CalloutManagerTests (3 routing + 1 false-positive guard + 3 pool tests per domain × 5 domains) + 12 new SuggestedSessionTemplatesTests (2 existence tests per domain × 5 + count guard ≥1297→≥1307).
+
+### Verification
+- `grep -c "preferredDuration:" SuggestedSessionTemplates.swift` → 1307 ✓
+- Brace balance: CalloutMessages.swift 1351/1351 ✓; CalloutManager.swift 703/703 ✓
+- Routing ordering:
+  - mediatheory(5964) < communicationstudies(5983) ✓
+  - dancescience(6356) < theaterstudies(6394) < performingarts(6420) ✓
+  - globalstudies(12812) < developmentstudies(12843) < globalpoliticaleconomy(12862) ✓
+  - intellectualproperty(13516) < entertainmentlaw(13541) < environmentallaw(13561) ✓
+  - corporatelaw(13871) < bankinglaw(13895) < taxlaw(13922) ✓
+- 5 case entries confirmed in taskAwareCallouts switch (CalloutMessages.swift lines 717–721) ✓
+- 5 new private pool functions confirmed in CalloutMessages.swift ✓
+
+### Blocked
+Swift toolchain unavailable on Linux container — no `swift build` or `swift test` possible.
+
+### Next agent pick-up
+All GOAL.md tasks remain checked. Continue expanding keyword domains. Suggested next 5:
+- `immigrationpolicy` — immigration policy class (distinct from immigrationlaw which covers legal practice/petitions; covers immigration policy analysis, DACA, comprehensive immigration reform, border policy, integration/assimilation policy, immigration economics — Borjas vs Card debate)
+- `cryptolaw` — cryptocurrency and blockchain law class (regulatory status of crypto assets, SEC vs CFTC jurisdiction, DAO governance, smart contract enforceability, NFT intellectual property, AML/KYC for crypto exchanges, stablecoin regulation)
+- `datalaw` — data privacy law class (GDPR, CCPA, HIPAA data privacy, FTC Section 5 enforcement, data breach notification, cross-border data transfers, EU-US data privacy framework — distinct from healthlaw/cybersecurity which touch privacy tangentially)
+- `competitionlaw` — competition/antitrust law class (Sherman Act Sections 1 and 2, Clayton Act, FTC Act, rule of reason vs per se analysis, merger review, EU competition law Article 101/102 — distinct from corporatelaw which covers M&A transactions)
+- `constitutionaltheory` — constitutional theory class (distinct from constitutionallaw which covers doctrine; covers constitutional interpretation — originalism, living constitutionalism, textualism, departmentalism, popular constitutionalism, Dworkin's law as integrity)
