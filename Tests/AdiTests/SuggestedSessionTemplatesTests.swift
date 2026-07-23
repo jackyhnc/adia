@@ -7630,4 +7630,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func templateCountAtLeast1219() {
         #expect(SuggestedSessionTemplates.all.count >= 1219, "template catalog must have ≥1219 entries after environmentaleconomics/socialepigenetics/behavioralneuroscience/medicalethics/lawandeconomics additions")
     }
+    // MARK: - scientificwriting templates
+    @Test func scientificwritingStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("scientific writing") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func scientificwritingDraftTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("scientific paper") && $0.task.lowercased().contains("methods section") })
+    }
+    // MARK: - behavioralbiology templates
+    @Test func behavioralbiolgyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("behavioral biology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func behavioralbiolgyPaperTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("behavioral biology") && $0.task.lowercased().contains("paper") })
+    }
+    // MARK: - agingneuroscience templates
+    @Test func agingneuroscienceStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("neuroscience of aging") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func agingneurosciencePaperTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("neuroscience of aging") && $0.task.lowercased().contains("paper") })
+    }
+    // MARK: - computationalsocialscience templates
+    @Test func computationalsocialscienceStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("computational social science") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func computationalsocialsciencePaperTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("computational social science") && $0.task.lowercased().contains("paper") })
+    }
+    // MARK: - publicpolicy templates
+    @Test func publicpolicyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("public policy") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func publicpolicyPaperTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("public policy") && $0.task.lowercased().contains("paper") })
+    }
+    // MARK: - Count guard (≥1229)
+    @Test func templateCountAtLeast1229() {
+        #expect(SuggestedSessionTemplates.all.count >= 1229, "template catalog must have ≥1229 entries after scientificwriting/behavioralbiology/agingneuroscience/computationalsocialscience/publicpolicy additions")
+    }
 }

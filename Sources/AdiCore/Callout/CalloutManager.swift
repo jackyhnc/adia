@@ -6289,6 +6289,29 @@ public final class CalloutManager {
             || lower.contains("grant review") && lower.contains("writing") {
             return "grantwriting"
         }
+        // scientificwriting — positioned BEFORE writing so "scientific writing class/course/exam",
+        // IMRAD format, methods section, and peer-review-process coursework route here instead of
+        // the generic writing pool. Bare "abstract" and "peer review" alone stay in writing.
+        if lower.contains("scientific writing class") || lower.contains("scientific writing course")
+            || lower.contains("scientific writing exam") || lower.contains("scientific writing assignment")
+            || lower.contains("scientific writing workshop") || lower.contains("scientific writing program")
+            || lower.contains("scientific writing notes") || lower.contains("scientific writing seminar")
+            || lower.contains("imrad format") || lower.contains("imrad structure") || lower.contains("imrad paper")
+            || lower.contains("imrad section") || lower.contains("imrad outline")
+            || lower.contains("methods section") && (lower.contains("class") || lower.contains("scientific") || lower.contains("paper") || lower.contains("manuscript") || lower.contains("write"))
+            || lower.contains("results section") && (lower.contains("class") || lower.contains("scientific") || lower.contains("paper") || lower.contains("manuscript") || lower.contains("write"))
+            || lower.contains("discussion section") && (lower.contains("class") || lower.contains("scientific") || lower.contains("paper") || lower.contains("manuscript"))
+            || lower.contains("scientific abstract") && (lower.contains("class") || lower.contains("write") || lower.contains("course") || lower.contains("draft"))
+            || lower.contains("writing a scientific paper") || lower.contains("writing scientific papers")
+            || lower.contains("scientific manuscript") && (lower.contains("class") || lower.contains("write") || lower.contains("course") || lower.contains("draft") || lower.contains("submit"))
+            || lower.contains("peer review process") && (lower.contains("class") || lower.contains("course") || lower.contains("scientific") || lower.contains("manuscript") || lower.contains("journal"))
+            || lower.contains("journal submission") && (lower.contains("class") || lower.contains("scientific") || lower.contains("manuscript") || lower.contains("course"))
+            || lower.contains("writing for science") || lower.contains("science writing class") || lower.contains("science writing course")
+            || lower.contains("writing in science") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("research paper structure") && (lower.contains("class") || lower.contains("scientific") || lower.contains("course") || lower.contains("write"))
+            || lower.contains("lab report format") && (lower.contains("class") || lower.contains("scientific") || lower.contains("course") || lower.contains("write")) {
+            return "scientificwriting"
+        }
         if word("blog") || word("blogs") || word("newsletter") || word("newsletters")
             || word("draft") || word("drafts") || word("outline") || word("outlines")
             || word("revision") || word("revisions") || word("revise")
@@ -7850,6 +7873,33 @@ public final class CalloutManager {
             || word("vtne") || lower.contains("vtne exam") || lower.contains("vtne prep")
             || lower.contains("vet tech license") || lower.contains("vet tech certification") {
             return "veterinarytechnology"
+        }
+        // behavioralbiology — positioned BEFORE zoology so behavioral biology coursework (ultimate vs
+        // proximate causation, kin selection, ESS, honest signaling, mate choice, parental investment)
+        // routes here instead of zoology or veterinary. "animal behavior" alone stays in veterinary.
+        if lower.contains("behavioral biology class") || lower.contains("behavioral biology course")
+            || lower.contains("behavioral biology exam") || lower.contains("behavioral biology assignment")
+            || lower.contains("behavioral biology notes") || lower.contains("behavioral biology major")
+            || lower.contains("behavioral biology textbook") || lower.contains("behavioral biology program")
+            || lower.contains("ultimate causation") || lower.contains("proximate causation")
+            || lower.contains("ultimate and proximate") || lower.contains("proximate and ultimate")
+            || lower.contains("hamilton's rule") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("biology") || lower.contains("behavior"))
+            || lower.contains("inclusive fitness") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("behavior") || lower.contains("biology") || lower.contains("kin"))
+            || lower.contains("kin selection") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("behavior") || lower.contains("biology"))
+            || lower.contains("evolutionarily stable strategy") || lower.contains("evolutionary stable strategy") || (lower.contains("ess") && (lower.contains("behavioral") || lower.contains("kin selection") || lower.contains("game theory") && lower.contains("biology")))
+            || lower.contains("honest signaling") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("biology") || lower.contains("behavior"))
+            || lower.contains("zahavian handicap") || lower.contains("handicap principle") && (lower.contains("class") || lower.contains("course") || lower.contains("biology") || lower.contains("behavior") || lower.contains("signaling"))
+            || lower.contains("runaway selection") && (lower.contains("class") || lower.contains("course") || lower.contains("biology") || lower.contains("behavior"))
+            || lower.contains("parental investment theory") || lower.contains("trivers' parental investment") || lower.contains("trivers parental investment")
+            || lower.contains("parental investment") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("behavioral biology") || lower.contains("behavior") && lower.contains("evolution"))
+            || lower.contains("reciprocal altruism") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("biology") || lower.contains("behavior"))
+            || lower.contains("intrasexual selection") || lower.contains("intersexual selection")
+            || lower.contains("sexual selection") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("behavioral") || lower.contains("biology") && !lower.contains("plant") && !lower.contains("fungal"))
+            || lower.contains("eusociality") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("behavior") || lower.contains("biology"))
+            || lower.contains("cooperative breeding") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("biology") || lower.contains("behavior"))
+            || lower.contains("alarm call") && (lower.contains("class") || lower.contains("course") || lower.contains("biology") || lower.contains("behavior") || lower.contains("signaling"))
+            || lower.contains("mda framework") && lower.contains("behavior") {
+            return "behavioralbiology"
         }
         // zoology — positioned BEFORE veterinary so zoology degree/program tasks, taxonomic
         // classification work, and entomology route to a dedicated pool rather than the vet pool.
@@ -10001,6 +10051,34 @@ public final class CalloutManager {
             || lower.contains("reflex testing") && (lower.contains("class") || lower.contains("lab") || lower.contains("neurology") || lower.contains("teaching") || lower.contains("exam"))
             || lower.contains("neurology lab") && (lower.contains("class") || lower.contains("course") || lower.contains("teaching") || lower.contains("practical")) {
             return "neurologylab"
+        }
+        // agingneuroscience — positioned BEFORE clinicalneurology so neuroscience-of-aging coursework
+        // (Alzheimer's amyloid/tau pathology, APOE4, Parkinson's alpha-synuclein, neuroinflammation,
+        // cognitive reserve) routes here. Clinical rotation tasks stay in clinicalneurology.
+        if lower.contains("neuroscience of aging class") || lower.contains("neuroscience of aging course")
+            || lower.contains("neuroscience of aging exam") || lower.contains("neuroscience of aging notes")
+            || lower.contains("neuroscience of aging assignment") || lower.contains("aging neuroscience class")
+            || lower.contains("aging neuroscience course") || lower.contains("aging neuroscience exam")
+            || lower.contains("neurobiology of aging class") || lower.contains("neurobiology of aging course")
+            || lower.contains("neurobiology of aging exam") || lower.contains("neurobiology of aging notes")
+            || lower.contains("amyloid cascade hypothesis") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("alzheimer") || lower.contains("paper"))
+            || lower.contains("amyloid beta") && (lower.contains("alzheimer") || lower.contains("class") || lower.contains("neuroscience")) && (lower.contains("class") || lower.contains("exam") || lower.contains("notes") || lower.contains("paper"))
+            || lower.contains("tau tangles") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("neuroscience") || lower.contains("alzheimer"))
+            || lower.contains("neurofibrillary tangles") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("neuroscience") || lower.contains("alzheimer"))
+            || lower.contains("apoe4") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("neuroscience") || lower.contains("alzheimer") || lower.contains("risk"))
+            || lower.contains("apoe epsilon4") && (lower.contains("class") || lower.contains("neuroscience") || lower.contains("alzheimer"))
+            || lower.contains("alzheimer's pathology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("neuroscience"))
+            || lower.contains("alzheimer pathology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("neuroscience"))
+            || lower.contains("alpha-synuclein") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("parkinson") || lower.contains("neuroscience"))
+            || lower.contains("alpha synuclein") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("parkinson") || lower.contains("neuroscience"))
+            || lower.contains("lewy body") && (lower.contains("class") || lower.contains("course") || lower.contains("neuroscience") || lower.contains("pathology"))
+            || lower.contains("neuroinflammation and aging") || lower.contains("aging and neuroinflammation")
+            || lower.contains("cognitive reserve") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("neuroscience") || lower.contains("aging"))
+            || lower.contains("brain aging") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("neuroscience"))
+            || lower.contains("senescent neuron") || lower.contains("neuronal senescence") && (lower.contains("class") || lower.contains("exam") || lower.contains("neuroscience"))
+            || lower.contains("normal aging vs") && lower.contains("neurodegeneration")
+            || lower.contains("synaptic loss") && (lower.contains("alzheimer") || lower.contains("aging") || lower.contains("neurodegeneration")) && (lower.contains("class") || lower.contains("exam") || lower.contains("neuroscience")) {
+            return "agingneuroscience"
         }
         // clinicalneurology — positioned AFTER neuroanatomy and anesthesiology and BEFORE premed
         // so neurology-rotation/ward tasks route here. "neuroanatomy class" stays in neuroanatomy
@@ -12209,6 +12287,30 @@ public final class CalloutManager {
             || lower.contains("displacement") && (lower.contains("sociology") || lower.contains("urban") || lower.contains("gentrification")) && (lower.contains("class") || lower.contains("exam") || lower.contains("paper")) {
             return "urbansociology"
         }
+        // computationalsocialscience — positioned BEFORE sociology so CSS methods coursework
+        // (agent-based modeling, computational text analysis for social science, network analysis)
+        // routes here. Bare "social network" and "text mining" alone stay in their own branches.
+        if lower.contains("computational social science class") || lower.contains("computational social science course")
+            || lower.contains("computational social science exam") || lower.contains("computational social science assignment")
+            || lower.contains("computational social science notes") || lower.contains("computational social science program")
+            || lower.contains("computational social science major") || lower.contains("computational social science method")
+            || lower.contains("css methods class") && (lower.contains("social") || lower.contains("sociology") || lower.contains("political"))
+            || lower.contains("agent-based model") && (lower.contains("social science") || lower.contains("sociology") || lower.contains("political") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("agent based model") && (lower.contains("social science") || lower.contains("sociology") || lower.contains("political") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("abm") && (lower.contains("social science") || lower.contains("sociology") || lower.contains("agent") && lower.contains("model"))
+            || lower.contains("social simulation") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("agent") || lower.contains("computational"))
+            || lower.contains("computational sociology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("method"))
+            || lower.contains("computational political science") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("text analysis for social science") || lower.contains("social science text analysis")
+            || lower.contains("network analysis for sociology") || lower.contains("social network analysis class") && (lower.contains("computational") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("netlogo") && (lower.contains("class") || lower.contains("course") || lower.contains("social") || lower.contains("model"))
+            || lower.contains("repast") && (lower.contains("social") || lower.contains("model") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("digital trace data") && (lower.contains("class") || lower.contains("social") || lower.contains("course") || lower.contains("research"))
+            || lower.contains("computational content analysis") && (lower.contains("class") || lower.contains("social") || lower.contains("course") || lower.contains("sociology"))
+            || lower.contains("scraping social media") && (lower.contains("class") || lower.contains("course") || lower.contains("research") || lower.contains("sociology") || lower.contains("political"))
+            || lower.contains("big data social science") || lower.contains("social data science class") || lower.contains("social data science course") {
+            return "computationalsocialscience"
+        }
         // sociology — positioned BEFORE socialscience so sociological theory, structural analysis,
         // and sociology coursework gets a dedicated callout pool. Bare word("sociology") routes to
         // studying (fires much earlier); compound sociology terms without bare study-words route here.
@@ -12350,6 +12452,32 @@ public final class CalloutManager {
             || lower.contains("public management class") || lower.contains("public management course")
             || lower.contains("public budgeting class") || lower.contains("public finance class") || lower.contains("public finance course") {
             return "publicadministration"
+        }
+        // publicpolicy — positioned BEFORE policy so "public policy class/course/exam" and
+        // Bardach/Weimer-Vining frameworks route here instead of the generic policy pool.
+        // Generic "policy brief", "policy memo", and "monetary policy" stay in policy.
+        if lower.contains("public policy class") || lower.contains("public policy course")
+            || lower.contains("public policy exam") || lower.contains("public policy assignment")
+            || lower.contains("public policy notes") || lower.contains("public policy major")
+            || lower.contains("public policy program") || lower.contains("public policy degree")
+            || lower.contains("public policy textbook") || lower.contains("public policy seminar")
+            || lower.contains("policy analysis class") || lower.contains("policy analysis course")
+            || lower.contains("policy analysis exam") || lower.contains("policy analysis assignment")
+            || lower.contains("bardach policy") || lower.contains("bardach's eightfold path")
+            || lower.contains("eightfold path") && (lower.contains("policy") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("weimer and vining") || lower.contains("weimer & vining")
+            || lower.contains("kingdon's agenda setting") || lower.contains("kingdon agenda")
+            || lower.contains("policy window") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("policy"))
+            || lower.contains("policy agenda") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("political"))
+            || lower.contains("public policy analysis") && !lower.contains("brief") && !lower.contains("memo")
+            || lower.contains("policy evaluation") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("public"))
+            || lower.contains("program evaluation") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("policy"))
+            || lower.contains("cost-benefit analysis") && (lower.contains("policy") || lower.contains("class") || lower.contains("course") || lower.contains("public"))
+            || lower.contains("cost benefit analysis") && (lower.contains("policy") || lower.contains("class") || lower.contains("course") || lower.contains("public"))
+            || lower.contains("stakeholder analysis") && (lower.contains("policy") || lower.contains("class") || lower.contains("course") || lower.contains("public"))
+            || lower.contains("logic model") && (lower.contains("policy") || lower.contains("class") || lower.contains("course") || lower.contains("program"))
+            || lower.contains("theory of change") && (lower.contains("policy") || lower.contains("class") || lower.contains("course") || lower.contains("program")) {
+            return "publicpolicy"
         }
         // policy — positioned after socialscience and publicadministration, before legal. This
         // intercepts "policy brief" and "legislative brief" before legal's `word("brief")` fires.

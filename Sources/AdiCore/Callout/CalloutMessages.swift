@@ -675,6 +675,11 @@ extension CalloutManager {
         case "behavioralneuroscience":     return behavioralneuroscienceCallouts(tier: tier)
         case "medicalethics":              return medicalethicsCallouts(tier: tier)
         case "lawandeconomics":            return lawandeconomicsCallouts(tier: tier)
+        case "scientificwriting":          return scientificwritingCallouts(tier: tier)
+        case "behavioralbiology":          return behavioralbiolgyCallouts(tier: tier)
+        case "agingneuroscience":          return agingneuroscienceCallouts(tier: tier)
+        case "computationalsocialscience": return computationalsocialscienceCallouts(tier: tier)
+        case "publicpolicy":               return publicpolicyCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -13829,6 +13834,111 @@ extension CalloutManager {
             "CLOSE THIS. open your law and economics textbook or Posner casebook.",
             "CLOSE THIS. those economic analysis of tort and contract law assignments won't complete themselves.",
             "CLOSE THIS. your law and economics exam won't study itself."
+        ]
+        }
+    }
+
+    private func scientificwritingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "scientific writing doesn't write itself — your IMRAD structure, methods section, results section, and discussion are all waiting.",
+            "your scientific paper needs you — the abstract, methods, results, and discussion sections won't draft themselves.",
+            "those scientific writing assignments and lab reports are still open.",
+            "IMRAD format, methods section, scientific abstract, peer review process — get back to your scientific writing coursework."
+        ]
+        case 2: return [
+            "stop. your scientific writing assignment and manuscript draft are still open.",
+            "methods section, results section, scientific abstract — your draft won't finish itself.",
+            "scientific writing class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your scientific writing notes or manuscript draft.",
+            "CLOSE THIS. those methods and results sections won't write themselves.",
+            "CLOSE THIS. your scientific writing assignment won't complete itself."
+        ]
+        }
+    }
+
+    private func behavioralbiolgyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "behavioral biology doesn't study itself — ultimate vs proximate causation, Hamilton's rule, kin selection, ESS, and honest signaling are all waiting.",
+            "your behavioral biology exam needs you — inclusive fitness, parental investment theory, sexual selection, reciprocal altruism, and runaway selection won't memorize themselves.",
+            "those behavioral biology papers and evolutionary analysis assignments are still open.",
+            "kin selection, evolutionarily stable strategy, honest signaling, Zahavian handicap — get back to your behavioral biology coursework."
+        ]
+        case 2: return [
+            "stop. your behavioral biology exam and evolutionary analysis paper are still open.",
+            "Hamilton's rule, inclusive fitness, ESS, parental investment — your exam won't wait.",
+            "behavioral biology class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your behavioral biology textbook or kin selection notes.",
+            "CLOSE THIS. those evolutionary behavior analysis assignments won't complete themselves.",
+            "CLOSE THIS. your behavioral biology exam won't study itself."
+        ]
+        }
+    }
+
+    private func agingneuroscienceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "neuroscience of aging doesn't study itself — Alzheimer's amyloid cascade, tau tangles, APOE4, Parkinson's alpha-synuclein, and cognitive reserve are all waiting.",
+            "your aging neuroscience exam needs you — amyloid beta, neurofibrillary tangles, Lewy bodies, neuroinflammation, and synaptic loss won't memorize themselves.",
+            "those neuroscience of aging papers and neurodegeneration assignments are still open.",
+            "amyloid cascade hypothesis, tau tangles, APOE4, alpha-synuclein — get back to your aging neuroscience coursework."
+        ]
+        case 2: return [
+            "stop. your neuroscience of aging exam and neurodegeneration paper are still open.",
+            "amyloid cascade, tau tangles, APOE4, Parkinson's pathology — your exam won't wait.",
+            "aging neuroscience class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your aging neuroscience textbook or Alzheimer's pathology notes.",
+            "CLOSE THIS. those neurodegeneration and cognitive reserve assignments won't complete themselves.",
+            "CLOSE THIS. your neuroscience of aging exam won't study itself."
+        ]
+        }
+    }
+
+    private func computationalsocialscienceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "computational social science doesn't run itself — agent-based modeling, NetLogo, social simulation, computational text analysis, and digital trace data are all waiting.",
+            "your CSS exam needs you — agent-based models, network analysis, social media scraping, computational content analysis, and ABM validation won't study themselves.",
+            "those computational social science assignments and social simulation reports are still open.",
+            "agent-based modeling, NetLogo, digital trace data, computational text analysis — get back to your CSS coursework."
+        ]
+        case 2: return [
+            "stop. your computational social science exam and ABM assignment are still open.",
+            "agent-based models, NetLogo, social simulation, network analysis — your assignment won't finish itself.",
+            "computational social science class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your CSS notes or agent-based model simulation.",
+            "CLOSE THIS. those social simulation and network analysis assignments won't complete themselves.",
+            "CLOSE THIS. your computational social science exam won't study itself."
+        ]
+        }
+    }
+
+    private func publicpolicyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "public policy doesn't analyze itself — Bardach's eightfold path, Kingdon's agenda setting, cost-benefit analysis, stakeholder analysis, and program evaluation are all waiting.",
+            "your public policy exam needs you — policy windows, logic models, theory of change, cost-benefit analysis, and policy evaluation won't memorize themselves.",
+            "those public policy analysis assignments and policy evaluation papers are still open.",
+            "Bardach's eightfold path, Kingdon's policy windows, cost-benefit analysis, stakeholder analysis — get back to your public policy coursework."
+        ]
+        case 2: return [
+            "stop. your public policy exam and policy analysis assignment are still open.",
+            "Bardach, Kingdon, cost-benefit analysis, program evaluation — your exam won't wait.",
+            "public policy class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your public policy textbook or Bardach eightfold path notes.",
+            "CLOSE THIS. those policy analysis and program evaluation assignments won't complete themselves.",
+            "CLOSE THIS. your public policy exam won't study itself."
         ]
         }
     }

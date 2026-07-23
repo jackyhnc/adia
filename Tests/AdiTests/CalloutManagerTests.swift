@@ -27231,8 +27231,148 @@ struct CalloutManagerTests {
         #expect(mgr.taskAwareCallouts(keyword: "lawandeconomics", tier: 3).contains { $0.contains("CLOSE THIS") })
     }
 
-    // MARK: - Count guard (≥1219)
-    @Test func calloutTemplatesCountAtLeast1219() {
-        #expect(SuggestedSessionTemplates.all.count >= 1219, "template catalog must have ≥1219 entries after environmentaleconomics/socialepigenetics/behavioralneuroscience/medicalethics/lawandeconomics additions")
+    // MARK: - scientificwriting
+    @Test func scientificwritingRoutingFromIMRAD() {
+        #expect(CalloutManager.extractTaskKeyword(from: "imrad format scientific writing class methods section results section discussion paper") == "scientificwriting")
+    }
+    @Test func scientificwritingRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "scientific writing course manuscript draft abstract peer review process journal submission") == "scientificwriting")
+    }
+    @Test func scientificwritingRoutingFromMethodsSection() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write my methods section scientific paper manuscript class assignment") == "scientificwriting")
+    }
+    @Test func scientificwritingFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "peer review draft outline revision proofread blog abstract") != "scientificwriting")
+    }
+    @Test @MainActor func scientificwritingCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "scientificwriting", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "scientificwriting", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "scientificwriting", tier: 3).isEmpty)
+    }
+    @Test @MainActor func scientificwritingTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "scientificwriting", tier: 1).count >= 4)
+    }
+    @Test @MainActor func scientificwritingTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "scientificwriting", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - behavioralbiology
+    @Test func behavioralbiolgyRoutingFromHamiltonsRule() {
+        #expect(CalloutManager.extractTaskKeyword(from: "hamilton's rule kin selection inclusive fitness behavioral biology class exam") == "behavioralbiology")
+    }
+    @Test func behavioralbiolgyRoutingFromESS() {
+        #expect(CalloutManager.extractTaskKeyword(from: "evolutionarily stable strategy hawk-dove game behavioral biology course paper") == "behavioralbiology")
+    }
+    @Test func behavioralbiolgyRoutingFromUltimateProximate() {
+        #expect(CalloutManager.extractTaskKeyword(from: "ultimate causation proximate causation tinbergen behavioral biology assignment") == "behavioralbiology")
+    }
+    @Test func behavioralbiolgyFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "animal behavior veterinary animal science livestock vet school dissection") != "behavioralbiology")
+    }
+    @Test @MainActor func behavioralbiolgyCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "behavioralbiology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "behavioralbiology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "behavioralbiology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func behavioralbiolgyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "behavioralbiology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func behavioralbiolgyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "behavioralbiology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - agingneuroscience
+    @Test func agingneuroscienceRoutingFromAmyloidCascade() {
+        #expect(CalloutManager.extractTaskKeyword(from: "amyloid cascade hypothesis alzheimer's pathology class neuroscience exam") == "agingneuroscience")
+    }
+    @Test func agingneuroscienceRoutingFromAPOE4() {
+        #expect(CalloutManager.extractTaskKeyword(from: "apoe4 alzheimer's risk neuroscience of aging class exam paper") == "agingneuroscience")
+    }
+    @Test func agingneuroscienceRoutingFromTauTangles() {
+        #expect(CalloutManager.extractTaskKeyword(from: "tau tangles neurofibrillary tangles neuroscience of aging course exam") == "agingneuroscience")
+    }
+    @Test func agingneuroscienceFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "neurology rotation neuro clerkship ward rounds neurology attending clinical case") != "agingneuroscience")
+    }
+    @Test @MainActor func agingneuroscienceCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "agingneuroscience", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "agingneuroscience", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "agingneuroscience", tier: 3).isEmpty)
+    }
+    @Test @MainActor func agingneuroscienceTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "agingneuroscience", tier: 1).count >= 4)
+    }
+    @Test @MainActor func agingneuroscienceTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "agingneuroscience", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - computationalsocialscience
+    @Test func computationalsocialscienceRoutingFromABM() {
+        #expect(CalloutManager.extractTaskKeyword(from: "agent-based model social science netlogo schelling segregation model class course") == "computationalsocialscience")
+    }
+    @Test func computationalsocialscienceRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "computational social science class agent based modeling digital trace data exam") == "computationalsocialscience")
+    }
+    @Test func computationalsocialscienceRoutingFromLDA() {
+        #expect(CalloutManager.extractTaskKeyword(from: "computational sociology text analysis for social science lda topic modeling class exam") == "computationalsocialscience")
+    }
+    @Test func computationalsocialscienceFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "symbolic interactionism structural functionalism conflict theory sociology class exam") != "computationalsocialscience")
+    }
+    @Test @MainActor func computationalsocialscienceCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "computationalsocialscience", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "computationalsocialscience", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "computationalsocialscience", tier: 3).isEmpty)
+    }
+    @Test @MainActor func computationalsocialscienceTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "computationalsocialscience", tier: 1).count >= 4)
+    }
+    @Test @MainActor func computationalsocialscienceTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "computationalsocialscience", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - publicpolicy
+    @Test func publicpolicyRoutingFromBardach() {
+        #expect(CalloutManager.extractTaskKeyword(from: "bardach's eightfold path public policy class policy analysis exam") == "publicpolicy")
+    }
+    @Test func publicpolicyRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "public policy course kingdon's agenda setting policy window cost-benefit analysis exam") == "publicpolicy")
+    }
+    @Test func publicpolicyRoutingFromProgramEvaluation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "program evaluation public policy class logic model theory of change assignment") == "publicpolicy")
+    }
+    @Test func publicpolicyFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "policy brief policy memo regulatory analysis legislative brief health policy monetary policy") != "publicpolicy")
+    }
+    @Test @MainActor func publicpolicyCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "publicpolicy", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "publicpolicy", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "publicpolicy", tier: 3).isEmpty)
+    }
+    @Test @MainActor func publicpolicyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "publicpolicy", tier: 1).count >= 4)
+    }
+    @Test @MainActor func publicpolicyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "publicpolicy", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (≥1229)
+    @Test func calloutTemplatesCountAtLeast1229() {
+        #expect(SuggestedSessionTemplates.all.count >= 1229, "template catalog must have ≥1229 entries after scientificwriting/behavioralbiology/agingneuroscience/computationalsocialscience/publicpolicy additions")
     }
 }
