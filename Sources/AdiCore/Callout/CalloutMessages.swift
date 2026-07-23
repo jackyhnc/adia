@@ -744,6 +744,11 @@ extension CalloutManager {
         case "urbaneconomics":             return urbaneconomicsCallouts(tier: tier)
         case "comparativeliterature":      return comparativeliteratureCallouts(tier: tier)
         case "politicalphilosophy":        return politicalphilosophyCallouts(tier: tier)
+        case "microeconomics":             return microeconomicsCallouts(tier: tier)
+        case "econometrics":               return econometricsCallouts(tier: tier)
+        case "industrialorganization":     return industrialorganizationCallouts(tier: tier)
+        case "organizationalbehavior":     return organizationalbehaviorCallouts(tier: tier)
+        case "moralphilosophy":            return moralphilosophyCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -15347,6 +15352,111 @@ extension CalloutManager {
             "CLOSE THIS. open your political philosophy textbook or Rawls, Nozick, and social contract theory notes.",
             "CLOSE THIS. those communitarianism and civic republicanism problems won't analyze themselves.",
             "CLOSE THIS. your political philosophy exam won't study itself."
+        ]
+        }
+    }
+
+    private func microeconomicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "Micro is theory, and theory has structure — utility maximization subject to budget constraint, cost minimization for the firm, equilibrium via market-clearing. Map out the model before you algebra: what's being optimized, what are the constraints, what conditions must hold at equilibrium. Cobb-Douglas utility U=x^α y^β gives you constant expenditure shares; CES generalizes that. Indifference curves slope down because marginal utility is positive; they're convex because of diminishing MRS. Every demand derivation starts from the Lagrangian.",
+            "Producer theory mirrors consumer theory with symmetry: the firm minimizes cost subject to an output target. The cost function c(w,r,q) is the dual of the production function. Shephard's lemma says ∂c/∂w = L* (conditional labor demand). With Cobb-Douglas technology q=L^α K^β returns to scale sum to α+β; MRTS=w/r at the optimum. Marginal cost pricing in perfect competition gives P=MC; the supply curve IS the MC curve above shutdown. Profit maximization at MR=MC applies across market structures.",
+            "Elasticity quantifies responsiveness. Price elasticity of demand ε_d = (∂Q/∂P)(P/Q) — unit elastic on linear demand at midpoint. Income elasticity: normal goods ε_I>0, inferior goods ε_I<0. Cross-price elasticity: substitutes positive, complements negative. For a linear demand Q=a-bP, ε_d = -bP/Q; total revenue is maximized at ε_d=-1. Deadweight loss from a tax is ½bΔP² — area of the triangle. All exam problems in micro need elasticity as a lens.",
+            "Welfare analysis uses consumer and producer surplus. CS = area under demand above price; PS = area above supply below price. A price ceiling below equilibrium creates CS gain for buyers but DWL from underproduction; a price floor above equilibrium creates PS gain for sellers but DWL from oversupply. First Welfare Theorem: competitive equilibrium is Pareto efficient given no externalities, public goods, or information asymmetries. Second Welfare Theorem: any Pareto-efficient allocation can be achieved via lump-sum redistribution plus competitive markets."
+        ]
+        case 2: return [
+            "Microeconomics exam today — know your utility maximization/expenditure minimization duality, Shephard's lemma, Roy's identity, and Slutsky decomposition. The substitution effect always reduces quantity when price rises; income effect direction depends on good type.",
+            "Draw the indifference curve diagram first, then the budget line tangency, then the algebra. MRS = price ratio at interior solution. Corner solution if MRS > price ratio at x=0. Your problem set needs both math and intuition.",
+            "Micro class open — every market structure problem follows the same checklist: demand, cost, profit-max condition, equilibrium quantity and price, CS/PS/DWL calculation."
+        ]
+        default: return [
+            "CLOSE THIS. your microeconomics exam and problem sets are waiting on utility theory, cost minimization, and market equilibrium.",
+            "CLOSE THIS. those indifference curve and elasticity problems won't solve themselves.",
+            "CLOSE THIS. your microeconomics final exam won't study itself."
+        ]
+        }
+    }
+
+    private func econometricsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "OLS is BLUE (Best Linear Unbiased Estimator) under the Gauss-Markov assumptions: linearity, random sampling, no perfect multicollinearity, zero conditional mean E[u|X]=0, homoskedasticity. When homoskedasticity fails, OLS is still unbiased but not efficient — use heteroskedasticity-robust standard errors (White's estimator). The OLS estimator β̂=(X'X)⁻¹X'Y; its variance is σ²(X'X)⁻¹. Omitted variable bias: if you leave out a variable correlated with both X and Y, your estimate is biased. The direction of bias depends on the sign of (correlation between X and omitted var) × (coefficient of omitted var on Y).",
+            "Instrumental variables solve endogeneity when OLS is inconsistent. An instrument Z must satisfy: (1) relevance — Z is correlated with the endogenous regressor X, and (2) exclusion restriction — Z affects Y only through X (not directly). The 2SLS estimator: first stage regresses X on Z and controls, second stage regresses Y on X-hat and controls. The Wald estimator is the IV estimator with a binary instrument: β_IV = (Ȳ₁-Ȳ₀)/(X̄₁-X̄₀). Weak instruments (F<10 in first stage) produce biased IV estimates; test with Cragg-Donald or Kleibergen-Paap.",
+            "Panel data exploits variation across both units and time. The fixed effects (FE) estimator removes time-invariant unobserved heterogeneity by demeaning — β_FE = (X̃'X̃)⁻¹X̃'Ỹ where tilde denotes within-unit deviations. Random effects (RE) is efficient if unobserved effects are uncorrelated with regressors — Hausman test discriminates. DiD identifies causal effects by comparing outcome changes in treatment vs control groups before/after treatment: β_DiD = (Ȳ_T,post - Ȳ_T,pre) - (Ȳ_C,post - Ȳ_C,pre). Parallel trends assumption is key — trends must be the same absent treatment.",
+            "Regression discontinuity (RD) exploits a sharp threshold in an assignment variable. Local average treatment effect (LATE) is identified by comparing outcomes just above vs just below the cutoff. Bandwidth choice trades off bias (wide → non-local comparisons) and variance (narrow → few observations). Test for discontinuities in density (McCrary test) and in covariates at the cutoff — bunching below cutoff suggests manipulation. Sharp RD: assignment deterministic at cutoff. Fuzzy RD: assignment probabilities jump at cutoff — use 2SLS with treatment indicator as IV. Report reduced-form, first-stage, and IV estimates."
+        ]
+        case 2: return [
+            "Econometrics exam — memorize Gauss-Markov assumptions, OLS vs GLS tradeoff, heteroskedasticity-robust SEs, IV validity conditions (relevance + exclusion), DiD parallel trends, and RD manipulation tests. F-stat for weak instruments must be above 10.",
+            "Your econometrics problem set needs both derivations and intuition. For each estimator: write down assumptions, derive the estimator, state when it's biased vs consistent vs efficient. Sandwich standard errors for heteroskedasticity.",
+            "Econometrics homework open — cluster standard errors when errors are correlated within groups (e.g. students within schools), use HAC (Newey-West) for time-series autocorrelation."
+        ]
+        default: return [
+            "CLOSE THIS. your econometrics exam needs OLS assumptions, IV validity, panel data methods, and causal inference frameworks.",
+            "CLOSE THIS. those regression discontinuity and difference-in-differences problems won't estimate themselves.",
+            "CLOSE THIS. your econometrics final won't study itself."
+        ]
+        }
+    }
+
+    private func industrialorganizationCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "Industrial organization analyzes market structure and firm behavior beyond perfect competition. In Cournot oligopoly, firms choose quantities simultaneously; Nash equilibrium has each firm produce where P(Q)=MC given rivals' outputs. With N symmetric firms: Q_i* = (a-c)/((N+1)b), P* = (a+Nc)/(N+1). As N→∞, P→MC (competitive limit). In Bertrand with homogeneous goods and capacity, price war drives P=MC — the Bertrand paradox. Product differentiation or capacity constraints soften Bertrand competition: with asymmetric costs, the more efficient firm wins and prices at the rival's cost.",
+            "Monopolistic competition features free entry, product differentiation, and zero long-run economic profit. Short run: price above MC at tangency of demand and AC. Long run: new entrants drive economic profit to zero — tangency of downward-sloping demand with the U-shaped AC at the same point. This gives excess capacity relative to minimum-efficient scale. Stackelberg leadership: the leader commits first, the follower best-responds. Leader gets more than Cournot profit; follower gets less. First-mover advantage persists in strategic environments with commitment.",
+            "Antitrust economics applies IO theory to competition policy. Horizontal mergers create market power (raise price) but may generate efficiencies (reduce cost). The Williamson tradeoff: efficiency gain (rectangle below MC) vs DWL from price increase (triangle). HHI (Herfindahl-Hirschman Index) = Σs_i² where s_i is market share in %; DoJ guidelines: HHI<1500 unconcentrated, 1500-2500 moderately concentrated, >2500 highly concentrated. Predatory pricing: below-cost pricing to exclude rivals, must be rational ex post via recoupment. Tying and exclusive dealing analyzed via raising-rivals'-cost frameworks.",
+            "Two-sided markets connect two distinct user groups whose value depends on the other side's participation. Platforms choose prices p_B and p_S for buyers and sellers; the key insight is that subsidizing one side can be profit-maximizing if cross-network effects are strong. Rochet-Tirole pricing: p_B+p_S = (c_B+c_S) + [markup reflecting elasticities and network effects]. Examples: credit cards, operating systems, app stores, media. Switching costs create lock-in: rational consumers anticipate high future prices — firms may price below cost initially. Lerner Index L=(P-MC)/P measures market power; L=1/|ε| for a monopolist."
+        ]
+        case 2: return [
+            "IO exam — know Cournot vs Bertrand outcomes, Stackelberg leader profit, monopolistic competition tangency, two-sided market pricing logic, HHI thresholds, and Lerner Index formula. Bertrand paradox and its resolutions are high-probability exam topics.",
+            "Industrial organization problem set: set up each game's payoff matrix or best-response functions, solve for Nash equilibrium, compare outcomes across market structures, calculate DWL and HHI.",
+            "IO class open — every antitrust analysis needs: market definition (SSNIP test), market concentration (HHI), entry barriers, competitive effects theory, and efficiency offsets."
+        ]
+        default: return [
+            "CLOSE THIS. your industrial organization exam needs Cournot/Bertrand equilibria, market structure theory, antitrust economics, and two-sided platforms.",
+            "CLOSE THIS. those oligopoly and market power problems won't solve themselves.",
+            "CLOSE THIS. your IO exam won't study itself."
+        ]
+        }
+    }
+
+    private func organizationalbehaviorCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "Organizational behavior integrates psychology and management to explain individual, group, and organizational-level outcomes. At the individual level: personality (Big Five — OCEAN), values, perception, attitudes (including job satisfaction and organizational commitment), and motivation. Maslow's hierarchy (physiological → safety → social → esteem → self-actualization) predicts deficiency motivation; Herzberg's two-factor theory separates hygiene factors (prevent dissatisfaction) from motivators (drive satisfaction). McClelland's need theory: nAch, nPow, nAff. Self-determination theory: autonomy, competence, relatedness as intrinsic needs.",
+            "Goal-setting theory (Locke & Latham): specific, challenging goals with feedback outperform vague or easy goals. Expectancy theory (Vroom): Motivation = Valence × Instrumentality × Expectancy (VIE). Equity theory (Adams): employees compare their input/outcome ratio to referent others — perceived inequity produces tension and behavioral adjustment. Reinforcement theory: behavior is a function of its consequences; positive reinforcement, negative reinforcement, punishment, extinction. OB Mod uses reinforcement schedules (continuous, fixed-ratio, variable-ratio, fixed-interval, variable-interval) to shape behavior.",
+            "Group dynamics distinguish groups from teams: groups share information; teams pursue collective goals with shared accountability. Group development: Tuckman's stages (forming, storming, norming, performing, adjourning). Social loafing occurs when individual contributions aren't identifiable — counteracted by accountability and team interdependence. Groupthink (Janis): cohesive groups suppress dissent, leading to poor decisions; symptoms include illusion of invulnerability, collective rationalization, stereotyping outgroups. Communication networks: wheel (centralized) vs all-channel (decentralized) — task complexity favors all-channel; simple tasks favor wheel.",
+            "Leadership theories span trait, behavioral, contingency, and transformational approaches. Ohio State studies identified initiating structure vs consideration as independent dimensions. Fiedler's contingency model: leader effectiveness depends on LPC score (relationship vs task oriented) and situation favorability (leader-member relations, task structure, position power). Path-Goal theory (House): effective leaders clarify the path to goals, removing obstacles and providing rewards. Transformational leaders (Burns, Bass) inspire followers via idealized influence, inspirational motivation, intellectual stimulation, individualized consideration — distinguished from transactional (contingent reward, management-by-exception)."
+        ]
+        case 2: return [
+            "OB exam today — master motivation theories (Maslow, Herzberg two-factor, Vroom VIE, Adams equity), leadership models (Ohio State, Fiedler contingency, Path-Goal, transformational vs transactional), and group dynamics (Tuckman stages, groupthink symptoms, social loafing).",
+            "Organizational behavior problem set: apply each theory as a diagnostic lens — what does Vroom's expectancy model predict when instrumentality is low? What does equity theory say when an employee perceives underpayment?",
+            "OB class open — structure your case analysis: identify the OB concept, apply the theory with evidence from the case, generate predictions, and prescribe an intervention."
+        ]
+        default: return [
+            "CLOSE THIS. your OB exam needs motivation theories, leadership models, group dynamics, and organizational culture frameworks.",
+            "CLOSE THIS. those VIE expectancy and equity theory problems won't analyze themselves.",
+            "CLOSE THIS. your organizational behavior final won't study itself."
+        ]
+        }
+    }
+
+    private func moralphilosophyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "Moral philosophy divides into metaethics (what is morality?) and normative ethics (what should we do?). Metaethics positions: moral realism (moral facts are mind-independent), anti-realism (error theory, expressivism, constructivism), relativism. Normative theories: consequentialism (outcomes determine rightness), deontology (duties and rights determine rightness regardless of outcomes), virtue ethics (righteous character determines rightness). Each theory has strengths and counterexamples — your exam likely asks you to apply, compare, and critique.",
+            "Consequentialism: the right action maximizes overall welfare (utility). Act utilitarianism (Bentham, Mill): evaluate each act by its consequences — felicific calculus, greatest happiness principle. Rule utilitarianism: act according to rules whose general acceptance would maximize utility. Objection: violates intuitions about rights (torture an innocent person if it saves five). Preference utilitarianism (Hare, Singer): satisfy informed preferences, not just pleasures. Singer's expanding circle argument for global obligations to the poor. Sidgwick's dualism of practical reason: self-interest vs impartial benevolence as fundamental axioms.",
+            "Kantian deontology: act only on maxims you could will to be universal laws (Formula of Universal Law). Act always to treat humanity as an end in itself, never merely as a means (Formula of Humanity). Perfect duties are absolute (no lying, no murder); imperfect duties allow latitude (beneficence, self-development). Categorical vs hypothetical imperative — morality is categorical, independent of desires. Ross's prima facie duties (fidelity, reparation, gratitude, justice, beneficence, non-maleficence, self-improvement) are defeasible but real moral considerations. Contractualism (Scanlon): an act is wrong if its performance under the circumstances would be disallowed by principles no one could reasonably reject.",
+            "Virtue ethics (Aristotle, MacIntyre, Foot): the central question is 'what kind of person should I be?' not 'what should I do?'. Eudaimonia (flourishing, happiness) is the highest good. Virtues are stable character dispositions that hit the mean between excess and deficiency (courage between cowardice and recklessness). Practical wisdom (phronesis) is the master virtue that guides application of other virtues. Neo-Aristotelian accounts (MacIntyre's After Virtue): virtues are intelligible within practices and traditions. Care ethics (Gilligan, Noddings): emphasizes relationships, responsiveness to particular others, and caring as central to morality — critiques impartial principle-based ethics as gendered."
+        ]
+        case 2: return [
+            "Ethics exam today — know utilitarian calculus (act vs rule, Bentham vs Mill vs Singer), Kantian categorical imperative (both formulations), Ross's prima facie duties, virtue ethics eudaimonia/phronesis, and Scanlon contractualism. Practice applying each theory to trolley-problem-style dilemmas.",
+            "Moral philosophy paper: stake your normative thesis clearly, anticipate the strongest objection from a rival theory, and show why your position survives it. The trolley problem, fat man variant, and transplant surgeon case are canonical test cases for consequentialism vs deontology.",
+            "Ethics class open — metaethics first, then normative theory. Can moral facts be objective? If moral realism, which account? If anti-realism, what grounds moral discourse?"
+        ]
+        default: return [
+            "CLOSE THIS. your ethics exam needs utilitarian theory, Kantian deontology, virtue ethics, and contractualism — all with counterexamples.",
+            "CLOSE THIS. those normative ethics and metaethics analysis problems won't write themselves.",
+            "CLOSE THIS. your moral philosophy final won't study itself."
         ]
         }
     }

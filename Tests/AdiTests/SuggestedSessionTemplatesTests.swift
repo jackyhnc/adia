@@ -8132,4 +8132,49 @@ struct SuggestedSessionTemplatesTests {
     @Test func templateCountAtLeast1357() {
         #expect(SuggestedSessionTemplates.all.count >= 1357, "template catalog must have ≥1357 entries after macroeconomics/operationsmanagement/urbaneconomics/comparativeliterature/politicalphilosophy additions")
     }
+
+    // MARK: - microeconomics templates
+    @Test func microeconomicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("microeconomics for my exam") })
+    }
+    @Test func microeconomicsPaperTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("microeconomics paper") })
+    }
+
+    // MARK: - econometrics templates
+    @Test func econometricsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("econometrics for my exam") })
+    }
+    @Test func econometricsPaperTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("econometrics paper") })
+    }
+
+    // MARK: - industrialorganization templates
+    @Test func industrialorganizationStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("industrial organization for my exam") })
+    }
+    @Test func industrialorganizationPaperTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("industrial organization paper") })
+    }
+
+    // MARK: - organizationalbehavior templates
+    @Test func organizationalbehaviorStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("organizational behavior for my exam") })
+    }
+    @Test func organizationalbehaviorPaperTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("organizational behavior paper") })
+    }
+
+    // MARK: - moralphilosophy templates
+    @Test func moralphilosophyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("moral philosophy for my exam") })
+    }
+    @Test func moralphilosophyPaperTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("moral philosophy paper") })
+    }
+
+    // MARK: - Count guard (≥1365)
+    @Test func templateCountAtLeast1365() {
+        #expect(SuggestedSessionTemplates.all.count >= 1365, "template catalog must have ≥1365 entries after microeconomics/econometrics/industrialorganization/organizationalbehavior/moralphilosophy additions")
+    }
 }

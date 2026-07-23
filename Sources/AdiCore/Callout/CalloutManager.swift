@@ -1165,6 +1165,60 @@ public final class CalloutManager {
             || lower.contains("environmental externality") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("economics")) {
             return "environmentaleconomics"
         }
+        // microeconomics — positioned AFTER environmentaleconomics and BEFORE economics so
+        // consumer/producer theory, elasticity, and utility maximization tasks route here.
+        // economics (fires later) still catches "microeconomics" as a bare word.
+        if lower.contains("microeconomics class") || lower.contains("microeconomics course")
+            || lower.contains("microeconomics exam") || lower.contains("microeconomics homework")
+            || lower.contains("microeconomics paper") || lower.contains("microeconomics assignment")
+            || lower.contains("microeconomics problem set") || lower.contains("microeconomics final")
+            || lower.contains("micro econ class") || lower.contains("micro econ course")
+            || lower.contains("micro econ exam") || lower.contains("intermediate microeconomics")
+            || lower.contains("consumer theory") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("economics") || lower.contains("micro"))
+            || lower.contains("producer theory") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("economics") || lower.contains("micro"))
+            || lower.contains("utility maximization") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("economics") || lower.contains("micro"))
+            || lower.contains("cobb-douglas") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("micro") || lower.contains("production"))
+            || lower.contains("pareto efficiency") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("micro") || lower.contains("paper"))
+            || lower.contains("walrasian equilibrium") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("micro"))
+            || lower.contains("price elasticity") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("micro") || lower.contains("demand"))
+            || lower.contains("indifference curve") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("micro")) {
+            return "microeconomics"
+        }
+        // econometrics — positioned AFTER microeconomics and BEFORE economics so OLS regression,
+        // instrumental variables, and panel data tasks route to a dedicated empirical pool.
+        // economics (fires later) still catches bare "econometrics" phrases.
+        if lower.contains("econometrics class") || lower.contains("econometrics course")
+            || lower.contains("econometrics exam") || lower.contains("econometrics homework")
+            || lower.contains("econometrics paper") || lower.contains("econometrics assignment")
+            || lower.contains("econometrics problem set") || lower.contains("econometrics final")
+            || lower.contains("econometrics textbook") || lower.contains("econometrics lab")
+            || lower.contains("ols regression") && (lower.contains("class") || lower.contains("econometrics") || lower.contains("economics") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("instrumental variables") && (lower.contains("class") || lower.contains("econometrics") || lower.contains("economics") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("panel data") && (lower.contains("class") || lower.contains("econometrics") || lower.contains("economics") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("difference-in-differences") && (lower.contains("class") || lower.contains("econometrics") || lower.contains("economics") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("diff-in-diff") && (lower.contains("class") || lower.contains("econometrics") || lower.contains("economics") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("regression discontinuity") && (lower.contains("class") || lower.contains("econometrics") || lower.contains("economics") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("fixed effects regression") && (lower.contains("class") || lower.contains("econometrics") || lower.contains("economics") || lower.contains("exam"))
+            || lower.contains("heteroskedasticity") && (lower.contains("class") || lower.contains("econometrics") || lower.contains("economics") || lower.contains("exam") || lower.contains("paper")) {
+            return "econometrics"
+        }
+        // industrialorganization — positioned AFTER econometrics and BEFORE economics so
+        // market structure, oligopoly models, and antitrust economics tasks route here.
+        // economics (fires later) still catches generic "economics" terms.
+        if lower.contains("industrial organization class") || lower.contains("industrial organization course")
+            || lower.contains("industrial organization exam") || lower.contains("industrial organization paper")
+            || lower.contains("industrial organization assignment") || lower.contains("io economics class")
+            || lower.contains("io economics course") || lower.contains("io economics exam")
+            || lower.contains("bertrand competition") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("io") || lower.contains("paper"))
+            || lower.contains("cournot competition") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("io") || lower.contains("paper"))
+            || lower.contains("cournot model") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("io") || lower.contains("paper"))
+            || lower.contains("stackelberg") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("io") || lower.contains("paper"))
+            || lower.contains("oligopoly theory") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("paper"))
+            || lower.contains("antitrust economics") && (lower.contains("class") || lower.contains("exam") || lower.contains("paper") || lower.contains("course"))
+            || lower.contains("market power") && (lower.contains("economics class") || lower.contains("io class") || lower.contains("antitrust") || lower.contains("io exam") || lower.contains("economics exam"))
+            || lower.contains("monopolistic competition") && (lower.contains("class") || lower.contains("exam") || lower.contains("economics") || lower.contains("io") || lower.contains("paper")) {
+            return "industrialorganization"
+        }
         // economics — positioned AFTER statistics and BEFORE astronomy so macroeconomics,
         // microeconomics, econometrics, and economics class/course terms route to a dedicated pool.
         // word("economics") catches the discipline name directly. Bare "economy" NOT matched.
@@ -6049,6 +6103,26 @@ public final class CalloutManager {
             || lower.contains("apmg change management") || lower.contains("change agent certification")
             || lower.contains("managing organizational change") {
             return "changemanagement"
+        }
+        // organizationalbehavior — positioned AFTER changemanagement and BEFORE business so
+        // OB class prep, motivation theory, and leadership coursework route to a specialized pool.
+        // business (fires later) still catches "organizational behavior" as a bare phrase.
+        if lower.contains("organizational behavior class") || lower.contains("organizational behavior course")
+            || lower.contains("organizational behavior exam") || lower.contains("organizational behavior paper")
+            || lower.contains("organizational behavior assignment") || lower.contains("organizational behavior final")
+            || lower.contains("organisational behaviour class") || lower.contains("organisational behaviour course")
+            || lower.contains("organisational behaviour exam") || lower.contains("ob class")
+            || lower.contains("ob course") || lower.contains("ob exam") || lower.contains("ob homework")
+            || lower.contains("maslow's hierarchy") && (lower.contains("class") || lower.contains("exam") || lower.contains("ob") || lower.contains("organizational") || lower.contains("management"))
+            || lower.contains("herzberg") && (lower.contains("two-factor") || lower.contains("hygiene")) && (lower.contains("class") || lower.contains("exam") || lower.contains("ob") || lower.contains("organizational"))
+            || lower.contains("theory x and theory y") && (lower.contains("class") || lower.contains("exam") || lower.contains("ob") || lower.contains("organizational"))
+            || lower.contains("vroom's expectancy theory") && (lower.contains("class") || lower.contains("exam") || lower.contains("ob") || lower.contains("organizational"))
+            || lower.contains("group dynamics") && (lower.contains("ob class") || lower.contains("ob course") || lower.contains("ob exam") || lower.contains("organizational behavior") || lower.contains("management class"))
+            || lower.contains("organizational culture class") || lower.contains("organizational culture course")
+            || lower.contains("organizational culture exam") || lower.contains("organizational culture paper")
+            || lower.contains("leadership theory class") || lower.contains("leadership theory course")
+            || lower.contains("leadership theory exam") || lower.contains("transformational leadership class") {
+            return "organizationalbehavior"
         }
         // business/management — positioned before research so "marketing research" and "market analysis"
         // route here rather than the generic research pool. Startup branch above already catches
@@ -13712,6 +13786,28 @@ public final class CalloutManager {
             || lower.contains("non-domination") && (lower.contains("political") || lower.contains("class") || lower.contains("philosophy") || lower.contains("paper"))
             || lower.contains("justice as fairness") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper")) {
             return "politicalphilosophy"
+        }
+        // moralphilosophy — positioned AFTER politicalphilosophy and BEFORE philosophy so
+        // ethics coursework, utilitarian theory, and metaethics tasks route to a dedicated pool.
+        // philosophy (fires later) still catches "moral philosophy" and "ethics paper" as bare phrases.
+        if lower.contains("moral philosophy class") || lower.contains("moral philosophy course")
+            || lower.contains("moral philosophy exam") || lower.contains("moral philosophy paper")
+            || lower.contains("moral philosophy assignment") || lower.contains("moral theory class")
+            || lower.contains("moral theory course") || lower.contains("moral theory exam")
+            || lower.contains("utilitarianism class") || lower.contains("utilitarianism course")
+            || lower.contains("utilitarianism paper") || lower.contains("utilitarianism exam")
+            || lower.contains("kantian ethics") && (lower.contains("class") || lower.contains("exam") || lower.contains("paper") || lower.contains("philosophy"))
+            || lower.contains("deontological ethics") && (lower.contains("class") || lower.contains("exam") || lower.contains("paper") || lower.contains("philosophy"))
+            || lower.contains("virtue ethics class") || lower.contains("virtue ethics course")
+            || lower.contains("virtue ethics exam") || lower.contains("virtue ethics paper")
+            || lower.contains("normative ethics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("philosophy"))
+            || lower.contains("meta-ethics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("philosophy"))
+            || lower.contains("applied ethics class") || lower.contains("applied ethics course")
+            || lower.contains("applied ethics exam") || lower.contains("applied ethics paper") && lower.contains("philosophy")
+            || lower.contains("consequentialism class") || lower.contains("consequentialism paper")
+            || lower.contains("consequentialism exam") || lower.contains("consequentialism course")
+            || lower.contains("trolley problem") && (lower.contains("class") || lower.contains("exam") || lower.contains("paper") || lower.contains("philosophy") || lower.contains("ethics")) {
+            return "moralphilosophy"
         }
         // philosophy — positioned after socialscience (shared "political philosophy" territory)
         // and before legal so "ethics paper" and "philosophical argument" don't fall to legal.
