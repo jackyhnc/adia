@@ -699,6 +699,11 @@ extension CalloutManager {
         case "neonatologyrotation":        return neonatologyrotationCallouts(tier: tier)
         case "developmentalpsychopath":    return developmentalpsychopathCallouts(tier: tier)
         case "humanrights":                return humanrightsCallouts(tier: tier)
+        case "exercisephysiology":         return exercisephysiologyCallouts(tier: tier)
+        case "nutritionscience":           return nutritionscienceCallouts(tier: tier)
+        case "reproductivehealth":         return reproductivehealthCallouts(tier: tier)
+        case "medicalanthropology":        return medicalanthropologyCallouts(tier: tier)
+        case "comparativepolitics":        return comparativepoliticsCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -14357,6 +14362,111 @@ extension CalloutManager {
             "CLOSE THIS. open your human rights textbook or UDHR and treaty notes.",
             "CLOSE THIS. those international humanitarian law and R2P assignments won't complete themselves.",
             "CLOSE THIS. your human rights exam won't study itself."
+        ]
+        }
+    }
+
+    private func exercisephysiologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "exercise physiology doesn't study itself — VO2max, lactate threshold, EPOC, energy systems, the Fick principle, and cardiorespiratory responses are all waiting.",
+            "your exercise physiology exam needs you — aerobic metabolism, anaerobic threshold, oxygen kinetics, cardiac output, and thermoregulation during exercise won't memorize themselves.",
+            "those exercise physiology lab reports and energy systems assignments are still open.",
+            "VO2max, lactate threshold, EPOC, Fick principle, ATP-PCr system — get back to your exercise physiology coursework."
+        ]
+        case 2: return [
+            "stop. your exercise physiology exam and lab report are still open.",
+            "VO2max testing, lactate threshold, EPOC, cardiorespiratory response — your exam won't wait.",
+            "exercise physiology class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your exercise physiology textbook or VO2max and energy systems notes.",
+            "CLOSE THIS. those lactate threshold and cardiorespiratory response lab reports won't write themselves.",
+            "CLOSE THIS. your exercise physiology exam won't study itself."
+        ]
+        }
+    }
+
+    private func nutritionscienceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "nutrition science doesn't study itself — macronutrients, micronutrients, DRI, RDA, dietary assessment methods, and nutrient metabolism are all waiting.",
+            "your human nutrition exam needs you — carbohydrate, protein, and fat metabolism; vitamin and mineral functions; bioavailability; and dietary reference intakes won't memorize themselves.",
+            "those nutrition science assignments and dietary assessment labs are still open.",
+            "macronutrients, micronutrients, DRI/RDA, 24-hour recall, food frequency questionnaire — get back to your nutrition science coursework."
+        ]
+        case 2: return [
+            "stop. your nutrition science exam and dietary assessment assignment are still open.",
+            "macronutrients, micronutrients, dietary reference intakes, bioavailability — your exam won't wait.",
+            "human nutrition class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your nutrition science textbook or macronutrient and DRI notes.",
+            "CLOSE THIS. those dietary assessment and nutrient metabolism assignments won't complete themselves.",
+            "CLOSE THIS. your nutrition science exam won't study itself."
+        ]
+        }
+    }
+
+    private func reproductivehealthCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "reproductive health doesn't study itself — contraception methods, STIs, reproductive physiology, family planning, LARC, and reproductive endocrinology are all waiting.",
+            "your reproductive health exam needs you — contraceptive mechanisms, sexually transmitted infections, fertility, reproductive justice, and human sexuality concepts won't memorize themselves.",
+            "those reproductive health assignments and family planning case studies are still open.",
+            "contraception, STIs, reproductive physiology, LARC, family planning — get back to your reproductive health coursework."
+        ]
+        case 2: return [
+            "stop. your reproductive health exam and contraception assignment are still open.",
+            "contraceptive methods, STIs, reproductive physiology, family planning — your exam won't wait.",
+            "reproductive health class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your reproductive health textbook or contraception and STI notes.",
+            "CLOSE THIS. those family planning and reproductive physiology assignments won't complete themselves.",
+            "CLOSE THIS. your reproductive health exam won't study itself."
+        ]
+        }
+    }
+
+    private func medicalanthropologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "medical anthropology doesn't study itself — biocultural approach, illness vs disease, Kleinman's explanatory model, medicalization, illness narratives, and structural violence in health are all waiting.",
+            "your medical anthropology exam needs you — ethnomedical systems, the sick role, embodiment, critical medical anthropology, and health disparities from an anthropological lens won't memorize themselves.",
+            "those medical anthropology assignments and illness narrative analyses are still open.",
+            "biocultural approach, explanatory model, medicalization, illness narratives, Kleinman — get back to your medical anthropology coursework."
+        ]
+        case 2: return [
+            "stop. your medical anthropology exam and illness narrative paper are still open.",
+            "Kleinman's explanatory model, medicalization, biocultural approach, structural violence — your exam won't wait.",
+            "medical anthropology class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your medical anthropology textbook or explanatory model and medicalization notes.",
+            "CLOSE THIS. those illness narrative and biocultural approach assignments won't complete themselves.",
+            "CLOSE THIS. your medical anthropology exam won't study itself."
+        ]
+        }
+    }
+
+    private func comparativepoliticsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "comparative politics doesn't study itself — regime types, democratization, varieties of capitalism, electoral systems, presidentialism vs parliamentarism, and party systems are all waiting.",
+            "your comparative politics exam needs you — Lipset, Przeworski, Hall and Soskice, liberal vs coordinated market economies, and comparative institutions won't memorize themselves.",
+            "those comparative politics assignments and regime analysis papers are still open.",
+            "regime types, democratization, varieties of capitalism, electoral systems, presidentialism — get back to your comparative politics coursework."
+        ]
+        case 2: return [
+            "stop. your comparative politics exam and regime analysis paper are still open.",
+            "democratization, varieties of capitalism, electoral systems, presidentialism — your exam won't wait.",
+            "comparative politics class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your comparative politics textbook or regime types and democratization notes.",
+            "CLOSE THIS. those varieties of capitalism and electoral systems assignments won't complete themselves.",
+            "CLOSE THIS. your comparative politics exam won't study itself."
         ]
         }
     }

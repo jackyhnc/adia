@@ -27903,8 +27903,153 @@ struct CalloutManagerTests {
         #expect(mgr.taskAwareCallouts(keyword: "humanrights", tier: 3).contains { $0.contains("CLOSE THIS") })
     }
 
-    // MARK: - Count guard (≥1267)
-    @Test func calloutTemplatesCountAtLeast1267() {
-        #expect(SuggestedSessionTemplates.all.count >= 1267, "template catalog must have ≥1267 entries after globalhealth/disasterrisk/neonatologyrotation/developmentalpsychopath/humanrights additions")
+    // MARK: - exercisephysiology
+    @Test func exercisephysiologyRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "exercise physiology class VO2max lactate threshold EPOC energy systems Fick principle cardiorespiratory response exam") == "exercisephysiology")
+    }
+    @Test func exercisephysiologyRoutingFromVO2max() {
+        #expect(CalloutManager.extractTaskKeyword(from: "vo2max lab test graded exercise test exercise physiology course exam") == "exercisephysiology")
+    }
+    @Test func exercisephysiologyRoutingFromEPOC() {
+        #expect(CalloutManager.extractTaskKeyword(from: "epoc exercise physiology exam excess post-exercise oxygen consumption energy systems lab") == "exercisephysiology")
+    }
+    @Test func exercisephysiologyFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "exercise science degree acsm certification program personal training")
+        #expect(kw != "exercisephysiology", "exercise science without physiology class context should not route to exercisephysiology")
+    }
+    @Test @MainActor func exercisephysiologyCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "exercisephysiology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "exercisephysiology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "exercisephysiology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func exercisephysiologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "exercisephysiology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func exercisephysiologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "exercisephysiology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - nutritionscience
+    @Test func nutritionscienceRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "nutrition science class macronutrients micronutrients DRI RDA dietary assessment nutrient metabolism exam") == "nutritionscience")
+    }
+    @Test func nutritionscienceRoutingFromHumanNutrition() {
+        #expect(CalloutManager.extractTaskKeyword(from: "human nutrition course macronutrient metabolism 24-hour recall food frequency questionnaire exam") == "nutritionscience")
+    }
+    @Test func nutritionscienceRoutingFromDRI() {
+        #expect(CalloutManager.extractTaskKeyword(from: "dietary reference intake nutrition class recommended dietary allowance tolerable upper intake exam") == "nutritionscience")
+    }
+    @Test func nutritionscienceFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "sports nutrition athlete fueling performance nutrition cssd exam race day")
+        #expect(kw != "nutritionscience", "sports nutrition with athlete context should route to performancenutrition, not nutritionscience")
+    }
+    @Test @MainActor func nutritionscienceCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "nutritionscience", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "nutritionscience", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "nutritionscience", tier: 3).isEmpty)
+    }
+    @Test @MainActor func nutritionscienceTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "nutritionscience", tier: 1).count >= 4)
+    }
+    @Test @MainActor func nutritionscienceTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "nutritionscience", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - reproductivehealth
+    @Test func reproductivehealthRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "reproductive health class contraception STI family planning LARC reproductive physiology exam") == "reproductivehealth")
+    }
+    @Test func reproductivehealthRoutingFromSRH() {
+        #expect(CalloutManager.extractTaskKeyword(from: "sexual and reproductive health course sexually transmitted infections contraceptive methods family planning exam") == "reproductivehealth")
+    }
+    @Test func reproductivehealthRoutingFromHumanSexuality() {
+        #expect(CalloutManager.extractTaskKeyword(from: "human sexuality class reproductive physiology reproductive endocrinology fertility exam assignment") == "reproductivehealth")
+    }
+    @Test func reproductivehealthFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "obstetrics class prenatal care maternal mortality OB nursing perinatal nursing exam")
+        #expect(kw != "reproductivehealth", "obstetrics and prenatal care should route to maternalhealth, not reproductivehealth")
+    }
+    @Test @MainActor func reproductivehealthCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "reproductivehealth", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "reproductivehealth", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "reproductivehealth", tier: 3).isEmpty)
+    }
+    @Test @MainActor func reproductivehealthTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "reproductivehealth", tier: 1).count >= 4)
+    }
+    @Test @MainActor func reproductivehealthTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "reproductivehealth", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - medicalanthropology
+    @Test func medicalanthropologyRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "medical anthropology class biocultural approach illness vs disease Kleinman explanatory model medicalization exam") == "medicalanthropology")
+    }
+    @Test func medicalanthropologyRoutingFromExplanatoryModel() {
+        #expect(CalloutManager.extractTaskKeyword(from: "explanatory model medical anthropology course illness narratives structural violence Kleinman exam paper") == "medicalanthropology")
+    }
+    @Test func medicalanthropologyRoutingFromMedicalization() {
+        #expect(CalloutManager.extractTaskKeyword(from: "medicalization class anthropology exam critical medical anthropology embodiment ethnomedical") == "medicalanthropology")
+    }
+    @Test func medicalanthropologyFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "physical anthropology class human evolution paleoanthropology osteology primatology exam")
+        #expect(kw != "medicalanthropology", "physical anthropology should route to physicalanthropology, not medicalanthropology")
+    }
+    @Test @MainActor func medicalanthropologyCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "medicalanthropology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "medicalanthropology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "medicalanthropology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func medicalanthropologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "medicalanthropology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func medicalanthropologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "medicalanthropology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - comparativepolitics
+    @Test func comparativepoliticsRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "comparative politics class regime types democratization varieties of capitalism electoral systems presidentialism exam") == "comparativepolitics")
+    }
+    @Test func comparativepoliticsRoutingFromVoC() {
+        #expect(CalloutManager.extractTaskKeyword(from: "varieties of capitalism comparative politics class liberal market economy coordinated market economy Hall Soskice exam") == "comparativepolitics")
+    }
+    @Test func comparativepoliticsRoutingFromDemocratization() {
+        #expect(CalloutManager.extractTaskKeyword(from: "democratization paper comparative politics course Lipset Przeworski authoritarian regime hybrid regime exam") == "comparativepolitics")
+    }
+    @Test func comparativepoliticsFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "international relations class foreign policy realism liberalism IR theory global governance exam")
+        #expect(kw != "comparativepolitics", "international relations without comparative politics context should not route to comparativepolitics")
+    }
+    @Test @MainActor func comparativepoliticsCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "comparativepolitics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "comparativepolitics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "comparativepolitics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func comparativepoliticsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "comparativepolitics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func comparativepoliticsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "comparativepolitics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (≥1277)
+    @Test func calloutTemplatesCountAtLeast1277() {
+        #expect(SuggestedSessionTemplates.all.count >= 1277, "template catalog must have ≥1277 entries after exercisephysiology/nutritionscience/reproductivehealth/medicalanthropology/comparativepolitics additions")
     }
 }

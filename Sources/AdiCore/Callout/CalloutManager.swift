@@ -7023,8 +7023,35 @@ public final class CalloutManager {
             || lower.contains("sports medicine team") && lower.contains("note") {
             return "sportsmedicine"
         }
+        // exercisephysiology — positioned BEFORE exercisescience so exercise physiology class/course/
+        // lab, VO2max, lactate threshold, EPOC, energy systems, Fick principle, and cardiorespiratory
+        // response coursework get a dedicated pool.
+        if lower.contains("exercise physiology class") || lower.contains("exercise physiology course")
+            || lower.contains("exercise physiology exam") || lower.contains("exercise physiology lab")
+            || lower.contains("exercise physiology notes") || lower.contains("exercise physiology assignment")
+            || lower.contains("exercise physiology textbook") || lower.contains("exercise physiology program")
+            || lower.contains("exercise physiology major") || lower.contains("exercise physiology degree")
+            || lower.contains("exercise physiology homework") || lower.contains("exercise physiology lecture")
+            || lower.contains("vo2max") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("test") || lower.contains("course"))
+            || lower.contains("vo2 max") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("test") || lower.contains("course"))
+            || lower.contains("lactate threshold") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("course") || lower.contains("physiology"))
+            || lower.contains("epoc") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("physiology") || lower.contains("exercise"))
+            || lower.contains("excess post-exercise oxygen consumption") && (lower.contains("class") || lower.contains("exam") || lower.contains("physiology"))
+            || lower.contains("fick principle") && (lower.contains("class") || lower.contains("exam") || lower.contains("physiology") || lower.contains("exercise"))
+            || lower.contains("cardiac output") && (lower.contains("exercise") || lower.contains("physiology")) && (lower.contains("class") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("oxygen kinetics") && (lower.contains("class") || lower.contains("exam") || lower.contains("physiology") || lower.contains("exercise"))
+            || lower.contains("energy systems") && (lower.contains("exercise") || lower.contains("physiology")) && (lower.contains("class") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("atp-pcr system") && (lower.contains("class") || lower.contains("exam") || lower.contains("physiology") || lower.contains("exercise"))
+            || lower.contains("phosphocreatine system") && (lower.contains("class") || lower.contains("exam") || lower.contains("physiology") || lower.contains("exercise"))
+            || lower.contains("aerobic metabolism") && (lower.contains("exercise") || lower.contains("physiology")) && (lower.contains("class") || lower.contains("exam") || lower.contains("lab"))
+            || lower.contains("anaerobic threshold") && (lower.contains("class") || lower.contains("exam") || lower.contains("physiology") || lower.contains("exercise"))
+            || lower.contains("cardiorespiratory response") && (lower.contains("class") || lower.contains("exam") || lower.contains("physiology") || lower.contains("exercise"))
+            || lower.contains("exercise metabolism") && (lower.contains("class") || lower.contains("exam") || lower.contains("lab") || lower.contains("physiology"))
+            || lower.contains("thermoregulation") && (lower.contains("exercise") || lower.contains("physiology")) && (lower.contains("class") || lower.contains("exam") || lower.contains("lab")) {
+            return "exercisephysiology"
+        }
         // exercisescience — positioned BEFORE kinesiology so exercise science degree/major
-        // and ACSM exam prep route to a dedicated pool. "exercise physiology" stays in kinesiology.
+        // and ACSM exam prep route to a dedicated pool.
         // Bare word("exercise") stays in fitness.
         if lower.contains("exercise science") || lower.contains("exercise scientist")
             || word("acsm") || lower.contains("acsm exam") || lower.contains("acsm certification")
@@ -7168,6 +7195,40 @@ public final class CalloutManager {
             || lower.contains("corrective exercise") || lower.contains("periodization plan")
             || lower.contains("personal training class") || lower.contains("personal training course") {
             return "personaltraining"
+        }
+        // nutritionscience — positioned BEFORE performancenutrition so human nutrition/nutritional
+        // science class, macronutrients, micronutrients, DRI/RDA, dietary assessment, and nutrient
+        // metabolism coursework get a dedicated pool. Sports nutrition and athlete fueling go to
+        // performancenutrition; clinical dietetics goes to dietetictechnology.
+        if lower.contains("nutrition science class") || lower.contains("nutrition science course")
+            || lower.contains("nutrition science exam") || lower.contains("nutrition science notes")
+            || lower.contains("nutrition science assignment") || lower.contains("nutrition science program")
+            || lower.contains("nutrition science major") || lower.contains("nutrition science degree")
+            || lower.contains("human nutrition class") || lower.contains("human nutrition course")
+            || lower.contains("human nutrition exam") || lower.contains("human nutrition notes")
+            || lower.contains("human nutrition assignment") || lower.contains("human nutrition program")
+            || lower.contains("nutritional science class") || lower.contains("nutritional science course")
+            || lower.contains("nutritional science exam") || lower.contains("nutritional science notes")
+            || lower.contains("nutritional biochemistry class") || lower.contains("nutritional biochemistry course")
+            || lower.contains("nutritional biochemistry exam") || lower.contains("nutritional biochemistry notes")
+            || lower.contains("macronutrient") && (lower.contains("class") || lower.contains("exam") || lower.contains("nutrition") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("micronutrient") && (lower.contains("class") || lower.contains("exam") || lower.contains("nutrition") || lower.contains("course") || lower.contains("lab"))
+            || lower.contains("dietary reference intake") && (lower.contains("class") || lower.contains("exam") || lower.contains("nutrition") || lower.contains("course"))
+            || lower.contains("recommended dietary allowance") && (lower.contains("class") || lower.contains("exam") || lower.contains("nutrition"))
+            || lower.contains("tolerable upper intake") && (lower.contains("class") || lower.contains("exam") || lower.contains("nutrition"))
+            || lower.contains("estimated average requirement") && (lower.contains("class") || lower.contains("exam") || lower.contains("nutrition"))
+            || lower.contains("dri") && (lower.contains("nutrition class") || lower.contains("nutrition exam") || lower.contains("nutrition course"))
+            || lower.contains("nutrient metabolism") && (lower.contains("class") || lower.contains("exam") || lower.contains("nutrition") || lower.contains("course"))
+            || lower.contains("dietary assessment") && (lower.contains("class") || lower.contains("exam") || lower.contains("nutrition") || lower.contains("course"))
+            || lower.contains("24-hour recall") && (lower.contains("class") || lower.contains("exam") || lower.contains("nutrition"))
+            || lower.contains("food frequency questionnaire") && (lower.contains("class") || lower.contains("exam") || lower.contains("nutrition"))
+            || lower.contains("diet history") && (lower.contains("class") || lower.contains("exam") || lower.contains("nutrition") || lower.contains("dietetics"))
+            || lower.contains("nutrient bioavailability") && (lower.contains("class") || lower.contains("exam") || lower.contains("nutrition") || lower.contains("course"))
+            || lower.contains("food composition") && (lower.contains("class") || lower.contains("exam") || lower.contains("nutrition") || lower.contains("course"))
+            || lower.contains("nutritional epidemiology") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("nutrition assessment class") || lower.contains("nutrition assessment course")
+            || lower.contains("nutrition assessment exam") || lower.contains("nutrition assessment notes") {
+            return "nutritionscience"
         }
         // performancenutrition — positioned BEFORE healthcoaching and fitness so sports-dietitian
         // certification prep, CSSD exam, and athlete-fueling tasks route here rather than to the
@@ -10836,6 +10897,35 @@ public final class CalloutManager {
             || lower.contains("midwifery care") && lower.contains("plan") {
             return "midwifery"
         }
+        // reproductivehealth — positioned BEFORE maternalhealth so reproductive health class/course,
+        // sexual and reproductive health (SRH), family planning, contraception, STI coursework, and
+        // reproductive physiology get a dedicated pool. Obstetrics, prenatal care, and maternal-fetal
+        // medicine stay in maternalhealth (fires later).
+        if lower.contains("reproductive health class") || lower.contains("reproductive health course")
+            || lower.contains("reproductive health exam") || lower.contains("reproductive health notes")
+            || lower.contains("reproductive health assignment") || lower.contains("reproductive health program")
+            || lower.contains("sexual and reproductive health") || lower.contains("sexual reproductive health")
+            || lower.contains("srh class") || lower.contains("srh course") || lower.contains("srh exam")
+            || lower.contains("family planning class") || lower.contains("family planning course")
+            || lower.contains("family planning exam") || lower.contains("family planning assignment")
+            || lower.contains("contraception class") || lower.contains("contraception course")
+            || lower.contains("contraception exam") || lower.contains("contraception assignment")
+            || lower.contains("contraceptive method") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("health"))
+            || lower.contains("larc") && (lower.contains("class") || lower.contains("exam") || lower.contains("reproductive") || lower.contains("health") || lower.contains("contraception"))
+            || lower.contains("long-acting reversible contraception") && (lower.contains("class") || lower.contains("exam") || lower.contains("health"))
+            || lower.contains("sexually transmitted infection") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("health"))
+            || lower.contains("sexually transmitted disease") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("health"))
+            || lower.contains("reproductive physiology class") || lower.contains("reproductive physiology course")
+            || lower.contains("reproductive physiology exam") || lower.contains("reproductive physiology notes")
+            || lower.contains("reproductive endocrinology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("fertility and infertility") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("human sexuality class") || lower.contains("human sexuality course")
+            || lower.contains("human sexuality exam") || lower.contains("human sexuality assignment")
+            || lower.contains("reproductive justice class") || lower.contains("reproductive justice course")
+            || lower.contains("reproductive rights class") || lower.contains("reproductive rights course")
+            || lower.contains("reproductive rights exam") || lower.contains("reproductive rights paper") {
+            return "reproductivehealth"
+        }
         // maternalhealth — positioned AFTER midwifery and BEFORE palliativecare. Catches maternal
         // health class/course, maternal mortality coursework, OB nursing class, prenatal care class,
         // perinatal nursing, and maternal-fetal medicine programs. Midwifery-specific charting/notes
@@ -12580,6 +12670,32 @@ public final class CalloutManager {
             || lower.contains("geopolitics research") || lower.contains("geopolitics essay") {
             return "geopolitics"
         }
+        // medicalanthropology — positioned BEFORE physicalanthropology and culturalanthropology so
+        // medical anthropology class, biocultural approach, illness vs disease, Kleinman's explanatory
+        // model, medicalization, illness narratives, and health disparities from anthropological lens
+        // route to a dedicated pool.
+        if lower.contains("medical anthropology class") || lower.contains("medical anthropology course")
+            || lower.contains("medical anthropology exam") || lower.contains("medical anthropology notes")
+            || lower.contains("medical anthropology assignment") || lower.contains("medical anthropology paper")
+            || lower.contains("medical anthropology seminar") || lower.contains("medical anthropology program")
+            || lower.contains("medical anthropology major") || lower.contains("medical anthropology textbook")
+            || lower.contains("biocultural approach") && (lower.contains("class") || lower.contains("exam") || lower.contains("anthropology") || lower.contains("health") || lower.contains("medicine"))
+            || lower.contains("illness vs disease") && (lower.contains("class") || lower.contains("exam") || lower.contains("anthropology") || lower.contains("medical"))
+            || lower.contains("illness and disease") && (lower.contains("anthropology") || lower.contains("class") || lower.contains("exam") || lower.contains("medical"))
+            || lower.contains("explanatory model") && (lower.contains("class") || lower.contains("anthropology") || lower.contains("medical") || lower.contains("exam") || lower.contains("kleinman"))
+            || lower.contains("kleinman") && (lower.contains("class") || lower.contains("anthropology") || lower.contains("medical") || lower.contains("exam") || lower.contains("health"))
+            || lower.contains("medicalization") && (lower.contains("class") || lower.contains("anthropology") || lower.contains("exam") || lower.contains("medical") || lower.contains("course"))
+            || lower.contains("sick role") && (lower.contains("class") || lower.contains("anthropology") || lower.contains("medical") || lower.contains("exam") || lower.contains("sociology"))
+            || lower.contains("ethnomedical") && (lower.contains("class") || lower.contains("exam") || lower.contains("anthropology") || lower.contains("medical"))
+            || lower.contains("illness narrative") && (lower.contains("class") || lower.contains("anthropology") || lower.contains("medical") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("illness narratives") && (lower.contains("class") || lower.contains("anthropology") || lower.contains("medical") || lower.contains("exam"))
+            || lower.contains("embodiment") && (lower.contains("anthropology") || lower.contains("medical")) && (lower.contains("class") || lower.contains("exam") || lower.contains("health"))
+            || lower.contains("critical medical anthropology") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("anthropology of medicine") || lower.contains("anthropology of health")
+            || lower.contains("anthropology of illness") || lower.contains("anthropology of the body")
+            || lower.contains("structural violence") && (lower.contains("anthropology") || lower.contains("health")) && (lower.contains("class") || lower.contains("exam") || lower.contains("medical")) {
+            return "medicalanthropology"
+        }
         // physicalanthropology — positioned BEFORE culturalanthropology and anthropology so
         // human evolution, paleoanthropology, osteology, and primatology class triggers route here.
         // Biological/physical anthropology coursework distinct from cultural ethnography-focused work.
@@ -12771,6 +12887,34 @@ public final class CalloutManager {
             || lower.contains("social mobility") && (lower.contains("sociology") || lower.contains("class") || lower.contains("course")) {
             return "sociology"
         }
+        // comparativepolitics — positioned BEFORE socialscience so comparative politics class/course,
+        // regime types, democratization, varieties of capitalism, electoral systems, and comparative
+        // institutions coursework route to a dedicated pool.
+        if lower.contains("comparative politics class") || lower.contains("comparative politics course")
+            || lower.contains("comparative politics exam") || lower.contains("comparative politics paper")
+            || lower.contains("comparative politics notes") || lower.contains("comparative politics assignment")
+            || lower.contains("comparative politics seminar") || lower.contains("comparative politics textbook")
+            || lower.contains("comparative politics major") || lower.contains("comparative politics program")
+            || lower.contains("comparative government class") || lower.contains("comparative government course")
+            || lower.contains("comparative government exam") || lower.contains("comparative government assignment")
+            || lower.contains("regime type") && (lower.contains("class") || lower.contains("exam") || lower.contains("comparative") || lower.contains("politics") || lower.contains("course"))
+            || lower.contains("democratization") && (lower.contains("class") || lower.contains("exam") || lower.contains("comparative") || lower.contains("politics") || lower.contains("course") || lower.contains("paper"))
+            || lower.contains("varieties of capitalism") && (lower.contains("class") || lower.contains("exam") || lower.contains("comparative") || lower.contains("politics") || lower.contains("course"))
+            || lower.contains("liberal market economy") && (lower.contains("class") || lower.contains("exam") || lower.contains("comparative") || lower.contains("politics") || lower.contains("capitalism"))
+            || lower.contains("coordinated market economy") && (lower.contains("class") || lower.contains("exam") || lower.contains("comparative") || lower.contains("politics") || lower.contains("capitalism"))
+            || lower.contains("presidentialism") && (lower.contains("class") || lower.contains("exam") || lower.contains("comparative") || lower.contains("politics") || lower.contains("course"))
+            || lower.contains("parliamentarism") && (lower.contains("class") || lower.contains("exam") || lower.contains("comparative") || lower.contains("politics") || lower.contains("course"))
+            || lower.contains("electoral system") && (lower.contains("comparative") || lower.contains("politics")) && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("party system") && (lower.contains("comparative") || lower.contains("politics")) && (lower.contains("class") || lower.contains("exam") || lower.contains("political"))
+            || lower.contains("lipset") && (lower.contains("class") || lower.contains("exam") || lower.contains("comparative") || lower.contains("politics") || lower.contains("democratization"))
+            || lower.contains("przeworski") && (lower.contains("class") || lower.contains("exam") || lower.contains("comparative") || lower.contains("politics") || lower.contains("democratization"))
+            || lower.contains("authoritarian regime") && (lower.contains("class") || lower.contains("exam") || lower.contains("comparative") || lower.contains("politics") || lower.contains("course"))
+            || lower.contains("hybrid regime") && (lower.contains("class") || lower.contains("exam") || lower.contains("comparative") || lower.contains("politics") || lower.contains("course"))
+            || lower.contains("proportional representation") && (lower.contains("comparative") || lower.contains("politics")) && (lower.contains("class") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("comparative institutions") && (lower.contains("class") || lower.contains("exam") || lower.contains("politics") || lower.contains("course"))
+            || lower.contains("welfare state") && (lower.contains("comparative") || lower.contains("politics")) && (lower.contains("class") || lower.contains("exam") || lower.contains("course")) {
+            return "comparativepolitics"
+        }
         // socialscience — positioned after criminaljustice (which now owns criminology/criminal justice)
         // and before legal (LSAT is pre-law, not a bar-exam term). "social work" routes to socialwork.
         // "public administration" now has its own branch below (fires between theology and policy).
@@ -12781,7 +12925,7 @@ public final class CalloutManager {
             || word("lsat")
             || lower.contains("pre-law") || word("prelaw")
             || lower.contains("public policy")
-            || lower.contains("comparative politics") || lower.contains("international relations") {
+            || lower.contains("international relations") {
             return "socialscience"
         }
         // classicalstudies — positioned BEFORE philosophy so Latin translation, ancient Greek,

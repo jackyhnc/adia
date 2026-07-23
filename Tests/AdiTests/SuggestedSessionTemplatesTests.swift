@@ -7798,8 +7798,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func humanrightsAssignmentTemplateExists() {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("human rights") && $0.task.lowercased().contains("paper") })
     }
-    // MARK: - Count guard (≥1267)
-    @Test func templateCountAtLeast1267() {
-        #expect(SuggestedSessionTemplates.all.count >= 1267, "template catalog must have ≥1267 entries after globalhealth/disasterrisk/neonatologyrotation/developmentalpsychopath/humanrights additions")
+    // MARK: - exercisephysiology templates
+    @Test func exercisephysiologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("exercise physiology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func exercisephysiologyLabTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("exercise physiology") && $0.task.lowercased().contains("lab report") })
+    }
+    // MARK: - nutritionscience templates
+    @Test func nutritionscienceStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("nutrition science") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func nutritionscienceAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("nutrition science") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - reproductivehealth templates
+    @Test func reproductivehealthStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("reproductive health") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func reproductivehealthAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("reproductive health") && $0.task.lowercased().contains("paper") })
+    }
+    // MARK: - medicalanthropology templates
+    @Test func medicalanthropologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("medical anthropology") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func medicalanthropologyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("medical anthropology") && $0.task.lowercased().contains("paper") })
+    }
+    // MARK: - comparativepolitics templates
+    @Test func comparativepoliticsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("comparative politics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func comparativepoliticsAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("comparative politics") && $0.task.lowercased().contains("paper") })
+    }
+    // MARK: - Count guard (≥1277)
+    @Test func templateCountAtLeast1277() {
+        #expect(SuggestedSessionTemplates.all.count >= 1277, "template catalog must have ≥1277 entries after exercisephysiology/nutritionscience/reproductivehealth/medicalanthropology/comparativepolitics additions")
     }
 }
