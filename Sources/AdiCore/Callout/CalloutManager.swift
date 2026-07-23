@@ -6759,6 +6759,26 @@ public final class CalloutManager {
             || lower.contains("gait biomechanics") || lower.contains("gait lab") && (lower.contains("class") || lower.contains("research") || lower.contains("biomechanics")) {
             return "biomechanics"
         }
+        // physicaltherapy — positioned BEFORE kinesiology so DPT students, PT clinical
+        // internships, and NPTE board exam prep route to a dedicated pool. Generic "physical
+        // therapy" and "physiotherapy" stay in kinesiology for broader non-DPT usage.
+        if lower.contains("dpt student") || lower.contains("dpt program") || lower.contains("dpt school")
+            || lower.contains("doctor of physical therapy") || lower.contains("physical therapy student")
+            || lower.contains("physical therapy school") || lower.contains("physical therapy program")
+            || lower.contains("physical therapy internship")
+            || lower.contains("pt clinical internship") || lower.contains("pt clinical rotation")
+            || lower.contains("pt clinical placement") || lower.contains("pt clinical practicum")
+            || lower.contains("npte") || lower.contains("national physical therapy exam")
+            || lower.contains("pt licensure exam") || lower.contains("physical therapist licensure")
+            || lower.contains("physical therapy rotation") && (lower.contains("musculoskeletal") || lower.contains("neuro") || lower.contains("cardiopulmonary") || lower.contains("pediatric") || lower.contains("geriatric"))
+            || lower.contains("pt soap notes") || lower.contains("physical therapy soap notes")
+            || lower.contains("pt session notes") || lower.contains("physical therapy session notes")
+            || lower.contains("pta program") || lower.contains("pta school") || lower.contains("pta student")
+            || lower.contains("physical therapist assistant program") || lower.contains("physical therapist assistant student")
+            || lower.contains("physical therapy major") || lower.contains("physical therapy degree")
+            || lower.contains("clinical decision making") && (lower.contains("pt") || lower.contains("physical therapy") || lower.contains("physiotherapy")) {
+            return "physicaltherapy"
+        }
         // kinesiology — positioned before fitness so exercise physiology,
         // and physical therapy professional terms route here rather than the generic fitness pool.
         // word("biomechanics") now caught by biomechanics branch above.
@@ -7105,6 +7125,26 @@ public final class CalloutManager {
             || word("compose") || word("composing") || word("composition") || word("compositions")
             || word("lyric") || word("lyrics") || word("melody") || word("melodies") {
             return "musicproduction"
+        }
+        // musicology — positioned BEFORE musictheory so musicology degree, ethnomusicology,
+        // music history dissertation, and AMS conference prep route to a dedicated academic pool.
+        // "music history" as a bare phrase stays in musictheory (fires later) for casual use.
+        if word("musicology") || word("musicologist")
+            || word("ethnomusicology") || word("ethnomusicologist")
+            || lower.contains("musicology program") || lower.contains("musicology degree")
+            || lower.contains("musicology major") || lower.contains("musicology class")
+            || lower.contains("musicology course") || lower.contains("musicology exam")
+            || lower.contains("musicology dissertation") || lower.contains("musicology thesis")
+            || lower.contains("ethnomusicology program") || lower.contains("ethnomusicology class")
+            || lower.contains("ethnomusicology course") || lower.contains("ethnomusicology research")
+            || lower.contains("music history dissertation") || lower.contains("music history thesis")
+            || lower.contains("music history seminar") && (lower.contains("graduate") || lower.contains("phd") || lower.contains("ma ") || lower.contains("doctoral"))
+            || lower.contains("ams conference") && lower.contains("music")
+            || lower.contains("ams paper") && lower.contains("music")
+            || lower.contains("music historiography") || lower.contains("musical analysis paper")
+            || lower.contains("organology") || lower.contains("popular music studies")
+            || lower.contains("popular music research") && (lower.contains("paper") || lower.contains("thesis") || lower.contains("dissertation") || lower.contains("class") || lower.contains("course")) {
+            return "musicology"
         }
         // musictheory — catches theory study, ear training, sight reading.
         if lower.contains("music theory") || lower.contains("ear training")
@@ -7517,6 +7557,25 @@ public final class CalloutManager {
             || lower.contains("machine translation quality") || lower.contains("mt post-editing") {
             return "translationstudies"
         }
+        // medicalspanish — positioned BEFORE language so medical Spanish class, clinical
+        // vocabulary courses, and interpreter competency certification route to a dedicated pool.
+        // Generic Spanish learning stays in language (fires after).
+        if lower.contains("medical spanish") || lower.contains("clinical spanish")
+            || lower.contains("spanish for healthcare") || lower.contains("spanish for medical")
+            || lower.contains("spanish for health professionals") || lower.contains("spanish for nurses")
+            || lower.contains("medical spanish class") || lower.contains("medical spanish course")
+            || lower.contains("medical spanish exam") || lower.contains("medical spanish certification")
+            || lower.contains("medical interpreter") && (lower.contains("spanish") || lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("certification"))
+            || lower.contains("medical interpreting") && (lower.contains("spanish") || lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("clinical interpreter") && (lower.contains("spanish") || lower.contains("certification") || lower.contains("exam"))
+            || lower.contains("ncihc") && lower.contains("spanish")
+            || lower.contains("cchi exam") || lower.contains("cchi certification")
+            || lower.contains("healthcare interpreter certification") && lower.contains("spanish")
+            || lower.contains("osce") && lower.contains("spanish")
+            || lower.contains("patient history") && lower.contains("spanish") && (lower.contains("class") || lower.contains("course") || lower.contains("practice") || lower.contains("role play"))
+            || lower.contains("clinical vocabulary spanish") || lower.contains("medical vocabulary spanish") {
+            return "medicalspanish"
+        }
         if word("spanish") || word("french") || word("japanese") || word("mandarin")
             || word("german") || word("italian") || word("portuguese") || word("korean")
             || word("arabic") || word("hindi") || word("cantonese") || word("russian")
@@ -7581,6 +7640,23 @@ public final class CalloutManager {
             || lower.contains("feedlot management") || lower.contains("feed formulation class")
             || (lower.contains("farm management") && (lower.contains("livestock") || lower.contains("animal") || lower.contains("production"))) {
             return "animalhusbandry"
+        }
+        // animallaw — positioned BEFORE animalwelfare so animal law class, animal rights legal
+        // advocacy, AWA litigation, and animal law clinic work route here. Generic animal welfare
+        // research and IACUC protocol stay in animalwelfare (fires after).
+        if lower.contains("animal law") || lower.contains("animal rights law")
+            || lower.contains("animal legal") || lower.contains("animal law class")
+            || lower.contains("animal law course") || lower.contains("animal law clinic")
+            || lower.contains("animal law exam") || lower.contains("animal law seminar")
+            || lower.contains("animal law journal") || lower.contains("animal law moot court")
+            || lower.contains("awa litigation") || lower.contains("animal welfare act litigation")
+            || lower.contains("anti-cruelty statute") || lower.contains("anti-cruelty law")
+            || lower.contains("cruelty statute") && (lower.contains("law") || lower.contains("class") || lower.contains("exam"))
+            || lower.contains("animal rights advocacy") && (lower.contains("law") || lower.contains("legal") || lower.contains("class") || lower.contains("course"))
+            || lower.contains("standing for animals") || lower.contains("legal personhood for animals")
+            || lower.contains("factory farming law") || lower.contains("livestock welfare law")
+            || lower.contains("exotic animal law") || lower.contains("wildlife trafficking law") {
+            return "animallaw"
         }
         // animalwelfare — positioned BEFORE veterinarytechnology and veterinary so zoo
         // management, IACUC protocol, and wildlife rehabilitation tasks get a dedicated pool.
@@ -9168,6 +9244,23 @@ public final class CalloutManager {
             || lower.contains("never event") && (lower.contains("class") || lower.contains("course") || lower.contains("healthcare") || lower.contains("patient"))
             || lower.contains("healthcare accreditation") && (lower.contains("class") || lower.contains("course") || lower.contains("exam")) {
             return "healthcarequality"
+        }
+        // patientadvocacy — positioned BEFORE healthcareadmin so patient advocacy programs,
+        // healthcare advocacy certification, and patient rights coursework get a dedicated pool.
+        // Hospital administration and healthcare management stay in healthcareadmin (fires after).
+        if lower.contains("patient advocacy") || lower.contains("patient advocate")
+            || lower.contains("patient advocacy program") || lower.contains("patient advocacy class")
+            || lower.contains("patient advocacy course") || lower.contains("patient advocacy certification")
+            || lower.contains("patient advocacy training") || lower.contains("patient advocacy seminar")
+            || lower.contains("patient advocacy internship") || lower.contains("patient advocacy practicum")
+            || lower.contains("health advocacy") && (lower.contains("program") || lower.contains("class") || lower.contains("course") || lower.contains("certification") || lower.contains("training"))
+            || lower.contains("healthcare advocacy") && (lower.contains("program") || lower.contains("class") || lower.contains("course") || lower.contains("certification"))
+            || lower.contains("patient rights") && (lower.contains("advocacy") || lower.contains("class") || lower.contains("course") || lower.contains("program"))
+            || lower.contains("hospital patient advocate") || lower.contains("clinical patient advocate")
+            || lower.contains("board-certified patient advocate") || lower.contains("bcpa exam")
+            || lower.contains("bcpa certification") || lower.contains("patient advocacy navigator")
+            || lower.contains("care navigation") && (lower.contains("patient") || lower.contains("advocacy") || lower.contains("class") || lower.contains("certification")) {
+            return "patientadvocacy"
         }
         // healthcareadmin — positioned after molecularbiology and before premed so healthcare
         // administration, health informatics, and HIM certification prep route here.

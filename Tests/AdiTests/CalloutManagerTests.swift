@@ -26661,8 +26661,148 @@ struct CalloutManagerTests {
         #expect(mgr.taskAwareCallouts(keyword: "administrativelaw", tier: 3).contains { $0.contains("CLOSE THIS") })
     }
 
-    // MARK: - Count guard (≥1179)
-    @Test func calloutTemplatesCountAtLeast1179() {
-        #expect(SuggestedSessionTemplates.all.count >= 1179, "template catalog must have ≥1179 entries after clinicaltoxicology/globalenvironmentalgovernance/corporatelaw/taxlaw/administrativelaw additions")
+    // MARK: - physicaltherapy
+    @Test func physicaltherapyRoutingFromDPT() {
+        #expect(CalloutManager.extractTaskKeyword(from: "DPT student physical therapy clinical rotation musculoskeletal neuro cardiopulmonary NPTE exam") == "physicaltherapy")
+    }
+    @Test func physicaltherapyRoutingFromNPTE() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study for NPTE national physical therapy exam board prep") == "physicaltherapy")
+    }
+    @Test func physicaltherapyRoutingFromSOAP() {
+        #expect(CalloutManager.extractTaskKeyword(from: "write PT SOAP notes physical therapy session documentation DPT program") == "physicaltherapy")
+    }
+    @Test func physicaltherapyFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "exercise physiology kinesiology class strength and conditioning") != "physicaltherapy")
+    }
+    @Test @MainActor func physicaltherapyCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "physicaltherapy", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "physicaltherapy", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "physicaltherapy", tier: 3).isEmpty)
+    }
+    @Test @MainActor func physicaltherapyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "physicaltherapy", tier: 1).count >= 4)
+    }
+    @Test @MainActor func physicaltherapyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "physicaltherapy", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - medicalspanish
+    @Test func medicalspanishRoutingFromMedicalSpanishClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "medical spanish class clinical vocabulary patient history phrases OSCE in Spanish") == "medicalspanish")
+    }
+    @Test func medicalspanishRoutingFromInterpreterCert() {
+        #expect(CalloutManager.extractTaskKeyword(from: "CCHI certification medical interpreter spanish healthcare exam prep") == "medicalspanish")
+    }
+    @Test func medicalspanishRoutingFromSpanishHealthcare() {
+        #expect(CalloutManager.extractTaskKeyword(from: "spanish for healthcare professionals clinical communication class nursing") == "medicalspanish")
+    }
+    @Test func medicalspanishFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "study spanish language duolingo vocabulary conjugation flashcards") != "medicalspanish")
+    }
+    @Test @MainActor func medicalspanishCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "medicalspanish", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "medicalspanish", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "medicalspanish", tier: 3).isEmpty)
+    }
+    @Test @MainActor func medicalspanishTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "medicalspanish", tier: 1).count >= 4)
+    }
+    @Test @MainActor func medicalspanishTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "medicalspanish", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - musicology
+    @Test func musicologyRoutingFromMusicologyProgram() {
+        #expect(CalloutManager.extractTaskKeyword(from: "musicology program dissertation ethnomusicology fieldwork AMS conference paper") == "musicology")
+    }
+    @Test func musicologyRoutingFromEthnomusicology() {
+        #expect(CalloutManager.extractTaskKeyword(from: "ethnomusicology class course fieldwork primary sources music historiography") == "musicology")
+    }
+    @Test func musicologyRoutingFromMusicHistoryDissertation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "music history dissertation graduate seminar doctoral program") == "musicology")
+    }
+    @Test func musicologyFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "music theory ear training sight reading chord progressions aural skills") != "musicology")
+    }
+    @Test @MainActor func musicologyCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "musicology", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "musicology", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "musicology", tier: 3).isEmpty)
+    }
+    @Test @MainActor func musicologyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "musicology", tier: 1).count >= 4)
+    }
+    @Test @MainActor func musicologyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "musicology", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - patientadvocacy
+    @Test func patientadvocacyRoutingFromProgram() {
+        #expect(CalloutManager.extractTaskKeyword(from: "patient advocacy program BCPA certification care navigation patient rights") == "patientadvocacy")
+    }
+    @Test func patientadvocacyRoutingFromBCPA() {
+        #expect(CalloutManager.extractTaskKeyword(from: "BCPA exam board certified patient advocate certification preparation") == "patientadvocacy")
+    }
+    @Test func patientadvocacyRoutingFromHealthAdvocacy() {
+        #expect(CalloutManager.extractTaskKeyword(from: "health advocacy program class certification training healthcare navigation") == "patientadvocacy")
+    }
+    @Test func patientadvocacyFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "healthcare administration hospital management health informatics MHA program") != "patientadvocacy")
+    }
+    @Test @MainActor func patientadvocacyCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "patientadvocacy", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "patientadvocacy", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "patientadvocacy", tier: 3).isEmpty)
+    }
+    @Test @MainActor func patientadvocacyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "patientadvocacy", tier: 1).count >= 4)
+    }
+    @Test @MainActor func patientadvocacyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "patientadvocacy", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - animallaw
+    @Test func animallawRoutingFromAnimalLawClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "animal law class exam AWA litigation anti-cruelty statutes animal rights legal theory") == "animallaw")
+    }
+    @Test func animallawRoutingFromAnimalLawClinic() {
+        #expect(CalloutManager.extractTaskKeyword(from: "animal law clinic casefile legal personhood wildlife trafficking law") == "animallaw")
+    }
+    @Test func animallawRoutingFromStandingForAnimals() {
+        #expect(CalloutManager.extractTaskKeyword(from: "standing for animals legal personhood animal rights advocacy law paper") == "animallaw")
+    }
+    @Test func animallawFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "animal welfare IACUC protocol zoo management wildlife rehabilitation") != "animallaw")
+    }
+    @Test @MainActor func animallawCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "animallaw", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "animallaw", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "animallaw", tier: 3).isEmpty)
+    }
+    @Test @MainActor func animallawTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "animallaw", tier: 1).count >= 4)
+    }
+    @Test @MainActor func animallawTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "animallaw", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (≥1189)
+    @Test func calloutTemplatesCountAtLeast1189() {
+        #expect(SuggestedSessionTemplates.all.count >= 1189, "template catalog must have ≥1189 entries after physicaltherapy/medicalspanish/musicology/patientadvocacy/animallaw additions")
     }
 }

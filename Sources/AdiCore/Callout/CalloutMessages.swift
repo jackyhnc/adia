@@ -650,6 +650,11 @@ extension CalloutManager {
         case "corporatelaw":               return corporatelawCallouts(tier: tier)
         case "taxlaw":                     return taxlawCallouts(tier: tier)
         case "administrativelaw":          return administrativelawCallouts(tier: tier)
+        case "physicaltherapy":            return physicaltherapyCallouts(tier: tier)
+        case "medicalspanish":             return medicalspanishCallouts(tier: tier)
+        case "musicology":                 return musicologyCallouts(tier: tier)
+        case "patientadvocacy":            return patientadvocacyCallouts(tier: tier)
+        case "animallaw":                  return animallawCallouts(tier: tier)
         case "metamaterials":              return metamaterialsCallouts(tier: tier)
         case "nondestructivetesting":      return nondestructivetestingCallouts(tier: tier)
         case "optimalcontrol":             return optimalcontrolCallouts(tier: tier)
@@ -13389,6 +13394,111 @@ extension CalloutManager {
             "CLOSE THIS. open your administrative law textbook.",
             "CLOSE THIS. those APA and agency adjudication analysis problems won't solve themselves.",
             "CLOSE THIS. your administrative law exam won't study itself."
+        ]
+        }
+    }
+
+    private func physicaltherapyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your DPT program isn't going to complete itself — NPTE prep, clinical notes, and PT coursework are waiting.",
+            "physical therapy clinical isn't paused — musculoskeletal, neuro, and cardiopulmonary practice still need your attention.",
+            "those PT SOAP notes and clinical documentation won't write themselves.",
+            "NPTE board exam, PT clinical rotation, DPT coursework — get back to your physical therapy studies."
+        ]
+        case 2: return [
+            "stop. your PT clinical notes and DPT coursework are still open.",
+            "NPTE prep, PT SOAP documentation, clinical decision-making — your exam and CI won't wait.",
+            "DPT program doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your physical therapy textbook or clinical notes.",
+            "CLOSE THIS. those PT SOAP notes and NPTE practice questions won't complete themselves.",
+            "CLOSE THIS. your DPT coursework won't study itself."
+        ]
+        }
+    }
+
+    private func medicalspanishCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your medical Spanish assignment isn't going to finish itself — clinical vocabulary, patient history phrases, and OSCE prep are waiting.",
+            "medical Spanish class doesn't wait — clinical terms, symptom descriptions, and patient communication practice are still open.",
+            "those medical interpreter certification materials and clinical Spanish exercises are still open.",
+            "CCHI exam prep, clinical vocabulary, patient-history phrases in Spanish — get back to your medical Spanish coursework."
+        ]
+        case 2: return [
+            "stop. your medical Spanish assignment and clinical vocabulary practice are still open.",
+            "medical interpreter certification, clinical vocabulary, OSCE in Spanish — your exam won't wait.",
+            "medical Spanish class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your medical Spanish textbook or clinical vocabulary notes.",
+            "CLOSE THIS. those clinical vocabulary flashcards and patient-history phrases won't review themselves.",
+            "CLOSE THIS. your medical Spanish exam won't study itself."
+        ]
+        }
+    }
+
+    private func musicologyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your musicology paper isn't going to write itself — analytical frameworks, primary sources, and music historiography are waiting.",
+            "ethnomusicology fieldwork, music history dissertation, and AMS paper — your academic music research won't do itself.",
+            "those musicology seminar readings and analytical essays are still open.",
+            "music historiography, organology, popular music studies, ethnomusicology theory — get back to your musicology coursework."
+        ]
+        case 2: return [
+            "stop. your musicology paper and seminar readings are still open.",
+            "music history dissertation, ethnomusicology analysis, AMS conference deadline — your research won't wait.",
+            "musicology program doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your musicology textbook or research notes.",
+            "CLOSE THIS. those musicology analytical essays and primary sources won't review themselves.",
+            "CLOSE THIS. your musicology dissertation chapter won't write itself."
+        ]
+        }
+    }
+
+    private func patientadvocacyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "your patient advocacy coursework isn't going to complete itself — care navigation, patient rights, and BCPA certification prep are waiting.",
+            "patient advocacy class doesn't wait — healthcare navigation, discharge planning, and patient rights exercises are still open.",
+            "those patient advocacy case studies and healthcare navigation scenarios are still open.",
+            "BCPA exam prep, care coordination, patient rights advocacy — get back to your patient advocacy coursework."
+        ]
+        case 2: return [
+            "stop. your patient advocacy assignment and BCPA prep materials are still open.",
+            "BCPA certification, care navigation, patient rights — your exam won't wait.",
+            "patient advocacy program doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your patient advocacy textbook or case study notes.",
+            "CLOSE THIS. those patient advocacy case studies and BCPA practice questions won't complete themselves.",
+            "CLOSE THIS. your patient advocacy certification exam won't study itself."
+        ]
+        }
+    }
+
+    private func animallawCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "animal law isn't going to study itself — AWA litigation, anti-cruelty statutes, and animal rights legal theory are waiting.",
+            "your animal law exam is approaching — standing for animals, legal personhood, factory farming law, and wildlife trafficking need review.",
+            "those animal law case briefs and AWA analysis problems are still open.",
+            "anti-cruelty statutes, legal personhood for animals, AWA compliance, animal law clinic — get back to your animal law coursework."
+        ]
+        case 2: return [
+            "stop. your animal law exam prep and clinic casefile are still open.",
+            "AWA litigation, animal rights legal theory, anti-cruelty statutes — your exam won't wait.",
+            "animal law class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your animal law casebook.",
+            "CLOSE THIS. those AWA analysis problems and animal law case briefs won't write themselves.",
+            "CLOSE THIS. your animal law exam won't study itself."
         ]
         }
     }

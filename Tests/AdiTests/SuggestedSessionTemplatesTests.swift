@@ -7478,8 +7478,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func administrativelawPaperTemplateExists() {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("administrative law") && $0.task.lowercased().contains("paper") })
     }
-    // MARK: - Count guard (≥1179)
-    @Test func templateCountAtLeast1179() {
-        #expect(SuggestedSessionTemplates.all.count >= 1179, "template catalog must have ≥1179 entries after clinicaltoxicology/globalenvironmentalgovernance/corporatelaw/taxlaw/administrativelaw additions")
+    // MARK: - physicaltherapy templates
+    @Test func physicaltherapyNotesTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("pt clinical notes") || ($0.task.lowercased().contains("physical therapy") && $0.task.lowercased().contains("clinical notes")) })
+    }
+    @Test func physicaltherapyNPTETemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("npte") || ($0.task.lowercased().contains("physical therapy") && $0.task.lowercased().contains("exam")) })
+    }
+    // MARK: - medicalspanish templates
+    @Test func medicalspanishVocabularyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("medical spanish") && $0.task.lowercased().contains("vocabulary") })
+    }
+    @Test func medicalspanishPracticeTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("medical spanish") && $0.task.lowercased().contains("practice") })
+    }
+    // MARK: - musicology templates
+    @Test func musicologyPaperTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("musicology") && $0.task.lowercased().contains("paper") })
+    }
+    @Test func musicologyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("musicology") && $0.task.lowercased().contains("exam") })
+    }
+    // MARK: - patientadvocacy templates
+    @Test func patientadvocacyCourseworkTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("patient advocacy") && $0.task.lowercased().contains("bcpa") })
+    }
+    @Test func patientadvocacyCaseStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("patient advocacy") && $0.task.lowercased().contains("case study") })
+    }
+    // MARK: - animallaw templates
+    @Test func animallawStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("animal law") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func animallawWritingTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("animal law") && $0.task.lowercased().contains("memo") })
+    }
+    // MARK: - Count guard (≥1189)
+    @Test func templateCountAtLeast1189() {
+        #expect(SuggestedSessionTemplates.all.count >= 1189, "template catalog must have ≥1189 entries after physicaltherapy/medicalspanish/musicology/patientadvocacy/animallaw additions")
     }
 }
