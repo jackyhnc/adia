@@ -28193,8 +28193,153 @@ struct CalloutManagerTests {
         #expect(mgr.taskAwareCallouts(keyword: "globalstudies", tier: 3).contains { $0.contains("CLOSE THIS") })
     }
 
-    // MARK: - Count guard (≥1287)
-    @Test func calloutTemplatesCountAtLeast1287() {
-        #expect(SuggestedSessionTemplates.all.count >= 1287, "template catalog must have ≥1287 entries after foodsystems/musichistory/genderstudies/peacestudies/globalstudies additions")
+    // MARK: - socialinnovation
+    @Test func socialinnovationRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "social innovation class systems change design thinking theory of change impact measurement exam") == "socialinnovation")
+    }
+    @Test func socialinnovationRoutingFromTheoryOfChange() {
+        #expect(CalloutManager.extractTaskKeyword(from: "theory of change paper social innovation course systems thinking scaling social impact exam") == "socialinnovation")
+    }
+    @Test func socialinnovationRoutingFromImpactMeasurement() {
+        #expect(CalloutManager.extractTaskKeyword(from: "impact measurement social innovation course SROI logic model scaling paper") == "socialinnovation")
+    }
+    @Test func socialinnovationFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "social entrepreneurship class venture startup pitch social enterprise funding exam")
+        #expect(kw != "socialinnovation", "social entrepreneurship without social innovation context should not route to socialinnovation")
+    }
+    @Test @MainActor func socialinnovationCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "socialinnovation", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "socialinnovation", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "socialinnovation", tier: 3).isEmpty)
+    }
+    @Test @MainActor func socialinnovationTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "socialinnovation", tier: 1).count >= 4)
+    }
+    @Test @MainActor func socialinnovationTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "socialinnovation", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - philosophyofscience
+    @Test func philosophyofscienceRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "philosophy of science class Kuhn paradigm shift Popper falsificationism demarcation problem exam") == "philosophyofscience")
+    }
+    @Test func philosophyofscienceRoutingFromParadigmShift() {
+        #expect(CalloutManager.extractTaskKeyword(from: "paradigm shift paper philosophy of science course Kuhn scientific revolution exam") == "philosophyofscience")
+    }
+    @Test func philosophyofscienceRoutingFromScientificRealism() {
+        #expect(CalloutManager.extractTaskKeyword(from: "scientific realism philosophy course underdetermination falsifiability Popper exam paper") == "philosophyofscience")
+    }
+    @Test func philosophyofscienceFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "philosophy class ethics metaphysics epistemology free will moral philosophy exam")
+        #expect(kw != "philosophyofscience", "general philosophy without philosophy-of-science keywords should not route to philosophyofscience")
+    }
+    @Test @MainActor func philosophyofscienceCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "philosophyofscience", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "philosophyofscience", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "philosophyofscience", tier: 3).isEmpty)
+    }
+    @Test @MainActor func philosophyofscienceTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "philosophyofscience", tier: 1).count >= 4)
+    }
+    @Test @MainActor func philosophyofscienceTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "philosophyofscience", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - environmentalhumanities
+    @Test func environmentalhumanitiesRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "environmental humanities class ecocriticism posthumanism more-than-human multispecies studies exam") == "environmentalhumanities")
+    }
+    @Test func environmentalhumanitiesRoutingFromEcocriticism() {
+        #expect(CalloutManager.extractTaskKeyword(from: "ecocriticism paper environmental humanities course nature-culture posthumanism Haraway multispecies exam") == "environmentalhumanities")
+    }
+    @Test func environmentalhumanitiesRoutingFromPosthumanism() {
+        #expect(CalloutManager.extractTaskKeyword(from: "posthumanism paper environmental humanities class more-than-human theory multispecies Haraway exam") == "environmentalhumanities")
+    }
+    @Test func environmentalhumanitiesFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "environmental science class ecology biology climate change carbon cycle ecosystem exam")
+        #expect(kw != "environmentalhumanities", "environmental science without humanities keywords should not route to environmentalhumanities")
+    }
+    @Test @MainActor func environmentalhumanitiesCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "environmentalhumanities", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "environmentalhumanities", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "environmentalhumanities", tier: 3).isEmpty)
+    }
+    @Test @MainActor func environmentalhumanitiesTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "environmentalhumanities", tier: 1).count >= 4)
+    }
+    @Test @MainActor func environmentalhumanitiesTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "environmentalhumanities", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - africanstudies
+    @Test func africanstudiesRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "african studies class Pan-Africanism African political economy decolonization Negritude exam") == "africanstudies")
+    }
+    @Test func africanstudiesRoutingFromPanAfricanism() {
+        #expect(CalloutManager.extractTaskKeyword(from: "Pan-Africanism paper african studies course Nkrumah neocolonialism African unity exam") == "africanstudies")
+    }
+    @Test func africanstudiesRoutingFromAfricanDiaspora() {
+        #expect(CalloutManager.extractTaskKeyword(from: "african diaspora course African studies program Negritude Fanon decolonization paper") == "africanstudies")
+    }
+    @Test func africanstudiesFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "ethnic studies class race diaspora cultural studies intersectionality postcolonial theory exam")
+        #expect(kw != "africanstudies", "ethnic studies without African studies specific keywords should not route to africanstudies")
+    }
+    @Test @MainActor func africanstudiesCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "africanstudies", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "africanstudies", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "africanstudies", tier: 3).isEmpty)
+    }
+    @Test @MainActor func africanstudiesTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "africanstudies", tier: 1).count >= 4)
+    }
+    @Test @MainActor func africanstudiesTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "africanstudies", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - sciencetechnologystudies
+    @Test func sciencetechnologystudiesRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "science and technology studies class actor-network theory Latour SCOT social construction of science exam") == "sciencetechnologystudies")
+    }
+    @Test func sciencetechnologystudiesRoutingFromANT() {
+        #expect(CalloutManager.extractTaskKeyword(from: "actor-network theory paper STS course Latour translation obligatory passage point technoscience exam") == "sciencetechnologystudies")
+    }
+    @Test func sciencetechnologystudiesRoutingFromSCOT() {
+        #expect(CalloutManager.extractTaskKeyword(from: "social construction of technology paper STS class SCOT interpretive flexibility Pinch Bijker exam") == "sciencetechnologystudies")
+    }
+    @Test func sciencetechnologystudiesFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "statistics class regression analysis hypothesis testing p-value confidence interval exam")
+        #expect(kw != "sciencetechnologystudies", "statistics without STS keywords should not route to sciencetechnologystudies")
+    }
+    @Test @MainActor func sciencetechnologystudiesCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "sciencetechnologystudies", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "sciencetechnologystudies", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "sciencetechnologystudies", tier: 3).isEmpty)
+    }
+    @Test @MainActor func sciencetechnologystudiesTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "sciencetechnologystudies", tier: 1).count >= 4)
+    }
+    @Test @MainActor func sciencetechnologystudiesTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "sciencetechnologystudies", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (≥1297)
+    @Test func calloutTemplatesCountAtLeast1297() {
+        #expect(SuggestedSessionTemplates.all.count >= 1297, "template catalog must have ≥1297 entries after socialinnovation/philosophyofscience/environmentalhumanities/africanstudies/sciencetechnologystudies additions")
     }
 }

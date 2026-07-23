@@ -709,6 +709,11 @@ extension CalloutManager {
         case "genderstudies":              return genderstudiesCallouts(tier: tier)
         case "peacestudies":               return peacestudiesCallouts(tier: tier)
         case "globalstudies":              return globalstudiesCallouts(tier: tier)
+        case "socialinnovation":           return socialinnovationCallouts(tier: tier)
+        case "philosophyofscience":        return philosophyofscienceCallouts(tier: tier)
+        case "environmentalhumanities":    return environmentalhumanitiesCallouts(tier: tier)
+        case "africanstudies":             return africanstudiesCallouts(tier: tier)
+        case "sciencetechnologystudies":   return sciencetechnologystudiesCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -14577,6 +14582,111 @@ extension CalloutManager {
             "CLOSE THIS. open your global studies textbook or globalization and global citizenship notes.",
             "CLOSE THIS. those transnational issues and cross-cultural competency assignments won't complete themselves.",
             "CLOSE THIS. your global studies exam won't study itself."
+        ]
+        }
+    }
+
+    private func socialinnovationCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "social innovation doesn't study itself — systems change, design thinking, theory of change, impact measurement, and scaling social impact are all waiting.",
+            "your social innovation exam needs you — systems thinking frameworks, design thinking for social impact, theory of change, impact measurement, and scaling strategies won't memorize themselves.",
+            "those social innovation assignments and theory of change papers are still open.",
+            "systems change, design thinking, impact measurement, theory of change — get back to your social innovation coursework."
+        ]
+        case 2: return [
+            "stop. your social innovation exam and systems change paper are still open.",
+            "systems thinking, design thinking, theory of change, impact measurement — your exam won't wait.",
+            "social innovation class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your social innovation textbook or systems change and design thinking notes.",
+            "CLOSE THIS. those theory of change and impact measurement assignments won't complete themselves.",
+            "CLOSE THIS. your social innovation exam won't study itself."
+        ]
+        }
+    }
+
+    private func philosophyofscienceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "philosophy of science doesn't study itself — Kuhn's paradigm shifts, Popper's falsificationism, the demarcation problem, scientific realism, and underdetermination are all waiting.",
+            "your philosophy of science exam needs you — Kuhn, Popper, Lakatos, Feyerabend, scientific revolutions, and the structure of scientific theories won't memorize themselves.",
+            "those philosophy of science assignments and scientific realism papers are still open.",
+            "paradigm shifts, falsificationism, scientific realism, demarcation problem — get back to your philosophy of science coursework."
+        ]
+        case 2: return [
+            "stop. your philosophy of science exam and scientific realism paper are still open.",
+            "Kuhn, Popper, paradigm shifts, falsificationism, demarcation problem — your exam won't wait.",
+            "philosophy of science class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your philosophy of science textbook or Kuhn and Popper notes.",
+            "CLOSE THIS. those paradigm shift and falsificationism assignments won't complete themselves.",
+            "CLOSE THIS. your philosophy of science exam won't study itself."
+        ]
+        }
+    }
+
+    private func environmentalhumanitiesCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "environmental humanities doesn't study itself — ecocriticism, posthumanism, more-than-human theory, multispecies studies, and nature-culture relationships are all waiting.",
+            "your environmental humanities exam needs you — ecocriticism frameworks, posthumanism, Haraway's multispecies thinking, and environmental justice narratives won't memorize themselves.",
+            "those environmental humanities assignments and ecocriticism papers are still open.",
+            "ecocriticism, posthumanism, more-than-human theory, multispecies studies — get back to your environmental humanities coursework."
+        ]
+        case 2: return [
+            "stop. your environmental humanities exam and ecocriticism paper are still open.",
+            "ecocriticism, posthumanism, more-than-human, multispecies — your exam won't wait.",
+            "environmental humanities class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your environmental humanities textbook or ecocriticism and posthumanism notes.",
+            "CLOSE THIS. those more-than-human and multispecies assignments won't complete themselves.",
+            "CLOSE THIS. your environmental humanities exam won't study itself."
+        ]
+        }
+    }
+
+    private func africanstudiesCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "African studies doesn't study itself — Pan-Africanism, African political economy, decolonization, Negritude, and the African diaspora are all waiting.",
+            "your African studies exam needs you — Pan-Africanism, African postcolonial thought, African political economy, Negritude, and decolonization frameworks won't memorize themselves.",
+            "those African studies assignments and decolonization papers are still open.",
+            "Pan-Africanism, African political economy, Negritude, decolonization — get back to your African studies coursework."
+        ]
+        case 2: return [
+            "stop. your African studies exam and decolonization paper are still open.",
+            "Pan-Africanism, African political economy, Negritude, decolonization — your exam won't wait.",
+            "African studies class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your African studies textbook or Pan-Africanism and decolonization notes.",
+            "CLOSE THIS. those African political economy and Negritude assignments won't complete themselves.",
+            "CLOSE THIS. your African studies exam won't study itself."
+        ]
+        }
+    }
+
+    private func sciencetechnologystudiesCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "science and technology studies doesn't study itself — actor-network theory, social construction of science and technology, Latour, Haraway, and technoscience are all waiting.",
+            "your STS exam needs you — Latour's ANT, social construction of technology (SCOT), Haraway's situated knowledge, sociology of scientific knowledge, and technological determinism won't memorize themselves.",
+            "those STS assignments and technoscience papers are still open.",
+            "actor-network theory, SCOT, situated knowledge, social construction of science — get back to your STS coursework."
+        ]
+        case 2: return [
+            "stop. your STS exam and actor-network theory paper are still open.",
+            "Latour, actor-network theory, SCOT, social construction of science, situated knowledge — your exam won't wait.",
+            "science and technology studies class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your STS textbook or Latour and actor-network theory notes.",
+            "CLOSE THIS. those social construction of science and technoscience assignments won't complete themselves.",
+            "CLOSE THIS. your STS exam won't study itself."
         ]
         }
     }

@@ -7868,8 +7868,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func globalstudiesAssignmentTemplateExists() {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("global studies") && $0.task.lowercased().contains("paper") })
     }
-    // MARK: - Count guard (≥1287)
-    @Test func templateCountAtLeast1287() {
-        #expect(SuggestedSessionTemplates.all.count >= 1287, "template catalog must have ≥1287 entries after foodsystems/musichistory/genderstudies/peacestudies/globalstudies additions")
+    // MARK: - socialinnovation templates
+    @Test func socialinnovationStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("social innovation") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func socialinnovationAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("social innovation") && $0.task.lowercased().contains("paper") })
+    }
+    // MARK: - philosophyofscience templates
+    @Test func philosophyofscienceStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("philosophy of science") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func philosophyofscienceAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("philosophy of science") && $0.task.lowercased().contains("paper") })
+    }
+    // MARK: - environmentalhumanities templates
+    @Test func environmentalhumanitiesStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("environmental humanities") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func environmentalhumanitiesAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("environmental humanities") && $0.task.lowercased().contains("paper") })
+    }
+    // MARK: - africanstudies templates
+    @Test func africanstudiesStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("african studies") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func africanstudiesAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("african studies") && $0.task.lowercased().contains("paper") })
+    }
+    // MARK: - sciencetechnologystudies templates
+    @Test func sciencetechnologystudiesStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("science and technology studies") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func sciencetechnologystudiesAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("science and technology studies") && $0.task.lowercased().contains("paper") })
+    }
+    // MARK: - Count guard (≥1297)
+    @Test func templateCountAtLeast1297() {
+        #expect(SuggestedSessionTemplates.all.count >= 1297, "template catalog must have ≥1297 entries after socialinnovation/philosophyofscience/environmentalhumanities/africanstudies/sciencetechnologystudies additions")
     }
 }

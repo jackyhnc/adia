@@ -12760,6 +12760,94 @@ public final class CalloutManager {
             || (lower.contains("global governance") && (lower.contains("political economy") || lower.contains("ipe"))) {
             return "globalpoliticaleconomy"
         }
+        // socialinnovation — positioned AFTER globalpoliticaleconomy and BEFORE geopolitics.
+        // Catches social innovation coursework: systems change, design thinking for social impact,
+        // theory of change, and impact measurement. Distinct from socialentrepreneurship (startup/venture).
+        if lower.contains("social innovation class") || lower.contains("social innovation course")
+            || lower.contains("social innovation exam") || lower.contains("social innovation program")
+            || lower.contains("social innovation major") || lower.contains("social innovation paper")
+            || lower.contains("social innovation assignment") || lower.contains("social innovation notes")
+            || lower.contains("social innovation textbook") || lower.contains("social innovation seminar")
+            || (lower.contains("design thinking for social") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("impact")))
+            || (lower.contains("systems change") && (lower.contains("class") || lower.contains("course") || lower.contains("paper") || lower.contains("exam") || lower.contains("social")))
+            || (lower.contains("impact measurement") && (lower.contains("class") || lower.contains("course") || lower.contains("social") || lower.contains("exam") || lower.contains("paper")))
+            || (lower.contains("scaling social") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("impact") || lower.contains("innovation")))
+            || (lower.contains("theory of change") && (lower.contains("class") || lower.contains("course") || lower.contains("social") || lower.contains("exam") || lower.contains("paper"))) {
+            return "socialinnovation"
+        }
+        // philosophyofscience — positioned AFTER socialinnovation and BEFORE geopolitics.
+        // Catches philosophy of science coursework: Kuhn, Popper, falsificationism, paradigm shifts,
+        // demarcation problem, scientific realism. Distinct from philosophy and sociology of science.
+        if lower.contains("philosophy of science class") || lower.contains("philosophy of science course")
+            || lower.contains("philosophy of science exam") || lower.contains("philosophy of science paper")
+            || lower.contains("philosophy of science notes") || lower.contains("philosophy of science textbook")
+            || lower.contains("philosophy of science major") || lower.contains("philosophy of science program")
+            || (lower.contains("scientific paradigm") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("philosophy") || lower.contains("kuhn")))
+            || (lower.contains("paradigm shift") && (lower.contains("class") || lower.contains("course") || lower.contains("philosophy") || lower.contains("exam") || lower.contains("paper")))
+            || (lower.contains("falsificationism") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper")))
+            || (lower.contains("falsifiability") && (lower.contains("class") || lower.contains("course") || lower.contains("philosophy") || lower.contains("exam") || lower.contains("paper")))
+            || (lower.contains("demarcation problem") && (lower.contains("class") || lower.contains("course") || lower.contains("philosophy") || lower.contains("exam")))
+            || (lower.contains("kuhn") && (lower.contains("class") || lower.contains("course") || lower.contains("philosophy of") || lower.contains("paradigm") || lower.contains("exam")))
+            || (lower.contains("popper") && (lower.contains("class") || lower.contains("philosophy") || lower.contains("science") || lower.contains("exam") || lower.contains("falsifi")))
+            || (lower.contains("underdetermination") && (lower.contains("class") || lower.contains("philosophy") || lower.contains("science") || lower.contains("exam")))
+            || (lower.contains("scientific realism") && (lower.contains("class") || lower.contains("philosophy") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))) {
+            return "philosophyofscience"
+        }
+        // environmentalhumanities — positioned AFTER philosophyofscience and BEFORE geopolitics.
+        // Catches ecocriticism, posthumanism, more-than-human theory, and nature-culture coursework.
+        // Distinct from environmentalscience (natural science) and environmentalstudies (policy/social).
+        if lower.contains("environmental humanities class") || lower.contains("environmental humanities course")
+            || lower.contains("environmental humanities exam") || lower.contains("environmental humanities paper")
+            || lower.contains("environmental humanities program") || lower.contains("environmental humanities major")
+            || lower.contains("ecocriticism class") || lower.contains("ecocriticism course")
+            || lower.contains("ecocriticism exam") || lower.contains("ecocriticism paper")
+            || (lower.contains("posthumanism") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("humanities")))
+            || (lower.contains("more-than-human") && (lower.contains("class") || lower.contains("course") || lower.contains("paper") || lower.contains("theory") || lower.contains("humanities")))
+            || (lower.contains("multispecies") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("humanities") || lower.contains("studies")))
+            || (lower.contains("nature-culture") && (lower.contains("class") || lower.contains("course") || lower.contains("theory") || lower.contains("exam") || lower.contains("humanities")))
+            || (lower.contains("environmental justice narrative") && (lower.contains("class") || lower.contains("course") || lower.contains("paper") || lower.contains("humanities")))
+            || (lower.contains("haraway") && (lower.contains("class") || lower.contains("humanities") || lower.contains("posthumanism") || lower.contains("multispecies") || lower.contains("exam"))) {
+            return "environmentalhumanities"
+        }
+        // africanstudies — positioned AFTER environmentalhumanities and BEFORE geopolitics.
+        // Catches African studies coursework: Pan-Africanism, African political economy, decolonization,
+        // Negritude. Distinct from ethnicstudies (broader diaspora) and internationalrelations.
+        if lower.contains("african studies class") || lower.contains("african studies course")
+            || lower.contains("african studies exam") || lower.contains("african studies paper")
+            || lower.contains("african studies program") || lower.contains("african studies major")
+            || lower.contains("african studies notes") || lower.contains("african studies textbook")
+            || (lower.contains("pan-africanism") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("african") || lower.contains("studies")))
+            || (lower.contains("pan africanism") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("african") || lower.contains("studies")))
+            || (lower.contains("african political economy") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("studies")))
+            || (lower.contains("african political thought") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper")))
+            || (lower.contains("decolonization in africa") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("studies")))
+            || (lower.contains("afrocentrism") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper")))
+            || (lower.contains("negritude") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("african")))
+            || lower.contains("sub-saharan africa class") || lower.contains("sub-saharan africa course")
+            || lower.contains("sub-saharan africa exam") || lower.contains("sub-saharan africa notes")
+            || lower.contains("african diaspora class") || lower.contains("african diaspora course")
+            || lower.contains("african diaspora exam") || lower.contains("african diaspora paper")
+            || (lower.contains("africa class") && !lower.contains("south africa") && !lower.contains("north africa") && (lower.contains("politics") || lower.contains("history") || lower.contains("economics") || lower.contains("development"))) {
+            return "africanstudies"
+        }
+        // sciencetechnologystudies — positioned AFTER africanstudies and BEFORE geopolitics.
+        // Catches STS coursework: Latour, Haraway (STS context), ANT, social construction of science/tech.
+        // Distinct from computerscience, engineeringmanagement, and philosophyofscience.
+        if lower.contains("science and technology studies") || lower.contains("science, technology and society")
+            || (lower.contains("sts class") && !lower.contains("statistics"))
+            || (lower.contains("sts course") && !lower.contains("statistics"))
+            || (lower.contains("sts exam") && !lower.contains("statistics"))
+            || lower.contains("sts program") || lower.contains("sts major") || lower.contains("sts seminar")
+            || (lower.contains("actor-network theory") && (lower.contains("class") || lower.contains("course") || lower.contains("paper") || lower.contains("exam") || lower.contains("sts")))
+            || (lower.contains("actor network theory") && (lower.contains("class") || lower.contains("course") || lower.contains("paper") || lower.contains("sts")))
+            || (lower.contains("social construction of science") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper")))
+            || (lower.contains("social construction of technology") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper")))
+            || (lower.contains("sociology of scientific knowledge") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper")))
+            || (lower.contains("latour") && (lower.contains("class") || lower.contains("sts") || lower.contains("actor-network") || lower.contains("actor network") || lower.contains("science studies") || lower.contains("exam")))
+            || (lower.contains("technological determinism") && (lower.contains("class") || lower.contains("course") || lower.contains("sts") || lower.contains("exam") || lower.contains("paper")))
+            || (lower.contains("technoscience") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("studies"))) {
+            return "sciencetechnologystudies"
+        }
         // geopolitics — positioned AFTER globalpoliticaleconomy and BEFORE socialscience.
         // Catches geopolitical analysis, risk assessment, and strategy tasks. Note: "geopolitics
         // class/course/exam" already fires internationalrelations above; this branch handles
