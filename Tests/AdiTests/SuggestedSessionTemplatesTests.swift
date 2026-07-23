@@ -8253,8 +8253,48 @@ struct SuggestedSessionTemplatesTests {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("islamic finance paper") })
     }
 
-    // MARK: - Count guard (≥1387)
-    @Test func templateCountAtLeast1387() {
-        #expect(SuggestedSessionTemplates.all.count >= 1387, "template catalog must have ≥1387 entries after islamicfinance/gamedesign/forensiccriminology/publicinternationallaw/neuroeconomics additions")
+    // MARK: - medievalhistory templates
+    @Test func medievalhistoryStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("study medieval history for my exam") })
+    }
+    @Test func medievalhistoryPaperTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("write my medieval history paper") })
+    }
+
+    // MARK: - disabilitystudies templates
+    @Test func disabilitystudiesStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("study disability studies for my exam") })
+    }
+    @Test func disabilitystudiesPaperTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("write my disability studies paper") })
+    }
+
+    // MARK: - asianstudies templates
+    @Test func asianstudiesStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("study asian studies for my exam") })
+    }
+    @Test func asianstudiesPaperTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("write my asian studies paper") })
+    }
+
+    // MARK: - philosophyoflanguage templates
+    @Test func philosophyoflanguageStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("study philosophy of language for my exam") })
+    }
+    @Test func philosophyoflanguagePaperTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("write my philosophy of language paper") })
+    }
+
+    // MARK: - jurisprudence templates
+    @Test func jurisprudenceStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("study jurisprudence for my exam") })
+    }
+    @Test func jurisprudencePaperTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("write my jurisprudence paper") })
+    }
+
+    // MARK: - Count guard (≥1397)
+    @Test func templateCountAtLeast1397() {
+        #expect(SuggestedSessionTemplates.all.count >= 1397, "template catalog must have ≥1397 entries after medievalhistory/disabilitystudies/asianstudies/philosophyoflanguage/jurisprudence additions")
     }
 }

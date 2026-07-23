@@ -13328,6 +13328,34 @@ public final class CalloutManager {
             || lower.contains("war studies") || lower.contains("conflict studies") {
             return "militarystudies"
         }
+        // medievalhistory — positioned AFTER militarystudies and BEFORE ethnicstudies so
+        // feudalism, Crusades, Black Death, Byzantine Empire, Carolingian, and scholasticism
+        // tasks route to a dedicated pool. Distinct from worldhistory (general), classicalstudies
+        // (ancient period), and militarystudies (military strategy/ROTC).
+        if lower.contains("medieval history class") || lower.contains("medieval history course")
+            || lower.contains("medieval history exam") || lower.contains("medieval history paper")
+            || lower.contains("medieval history seminar") || lower.contains("medieval history notes")
+            || lower.contains("medieval history textbook") || lower.contains("medieval history assignment")
+            || lower.contains("medieval studies class") || lower.contains("medieval studies course")
+            || lower.contains("medieval studies exam") || lower.contains("medieval studies paper")
+            || lower.contains("middle ages class") || lower.contains("middle ages course")
+            || lower.contains("middle ages exam") || lower.contains("middle ages paper") || lower.contains("middle ages history")
+            || lower.contains("medieval europe class") || lower.contains("medieval europe course")
+            || lower.contains("medieval europe exam") || lower.contains("medieval europe paper")
+            || lower.contains("feudalism") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("history") || lower.contains("paper") || lower.contains("medieval"))
+            || lower.contains("crusades") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("history") || lower.contains("paper") || lower.contains("medieval"))
+            || lower.contains("black death") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("history") || lower.contains("paper") || lower.contains("medieval"))
+            || lower.contains("black plague") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("history") || lower.contains("paper") || lower.contains("medieval"))
+            || lower.contains("byzantine empire") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("history") || lower.contains("paper") || lower.contains("medieval"))
+            || lower.contains("norman conquest") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("history") || lower.contains("paper") || lower.contains("medieval"))
+            || lower.contains("magna carta") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("history") || lower.contains("paper") || lower.contains("medieval"))
+            || lower.contains("charlemagne") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("history") || lower.contains("paper") || lower.contains("medieval") || lower.contains("carolingian"))
+            || lower.contains("carolingian") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("history") || lower.contains("paper") || lower.contains("medieval"))
+            || lower.contains("scholasticism") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("history") || lower.contains("paper") || lower.contains("medieval"))
+            || lower.contains("hundred years war") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("history") || lower.contains("paper"))
+            || lower.contains("islamic golden age") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("history") || lower.contains("paper") || lower.contains("medieval")) {
+            return "medievalhistory"
+        }
         // ethnicstudies — positioned BEFORE socialscience so ethnic/gender/women's studies tasks
         // get a dedicated callout pool. Bare "gender" or "culture" are NOT matched (too broad).
         if lower.contains("ethnic studies") || lower.contains("ethnicity studies")
@@ -13367,6 +13395,29 @@ public final class CalloutManager {
             || lower.contains("gender equity") && (lower.contains("class") || lower.contains("course") || lower.contains("paper") || lower.contains("research"))
             || lower.contains("feminist scholarship") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper")) {
             return "genderstudies"
+        }
+        // disabilitystudies — positioned AFTER genderstudies and BEFORE humanrights so
+        // disability theory, social/medical model, crip theory, ableism, neurodiversity, and
+        // deaf culture tasks route to a dedicated pool. Distinct from specialeducation (pedagogy)
+        // and humanrights (treaty law).
+        if lower.contains("disability studies class") || lower.contains("disability studies course")
+            || lower.contains("disability studies exam") || lower.contains("disability studies paper")
+            || lower.contains("disability studies major") || lower.contains("disability studies seminar")
+            || lower.contains("disability studies program") || lower.contains("disability studies notes")
+            || lower.contains("disability theory") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("social model of disability") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("studies"))
+            || lower.contains("medical model of disability") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("studies"))
+            || lower.contains("crip theory") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("disability"))
+            || lower.contains("crip studies") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("ableism") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("disability") || lower.contains("studies"))
+            || lower.contains("neurodiversity") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("disability") || lower.contains("studies"))
+            || lower.contains("deaf culture") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("disability") || lower.contains("studies"))
+            || lower.contains("disability justice") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("disability history") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("disability rights") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("studies") || lower.contains("movement"))
+            || lower.contains("garland-thomson") && (lower.contains("class") || lower.contains("exam") || lower.contains("disability") || lower.contains("paper") || lower.contains("studies"))
+            || lower.contains("ada") && lower.contains("disability") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("studies") || lower.contains("paper")) {
+            return "disabilitystudies"
         }
         // humanrights — positioned AFTER ethnicstudies and BEFORE internationalrelations so international
         // human rights law, UDHR, ICCPR, ICESCR, ICC, and R2P coursework get a dedicated pool.
@@ -13577,6 +13628,37 @@ public final class CalloutManager {
             || lower.contains("african diaspora exam") || lower.contains("african diaspora paper")
             || (lower.contains("africa class") && !lower.contains("south africa") && !lower.contains("north africa") && (lower.contains("politics") || lower.contains("history") || lower.contains("economics") || lower.contains("development"))) {
             return "africanstudies"
+        }
+        // asianstudies — positioned AFTER africanstudies and BEFORE sciencetechnologystudies so
+        // South Asian, Southeast Asian, East Asian, and Asian history/politics tasks route to a
+        // dedicated pool. Distinct from ethnicstudies (Asian-American focus) and
+        // internationalrelations (IR theory).
+        if lower.contains("asian studies class") || lower.contains("asian studies course")
+            || lower.contains("asian studies exam") || lower.contains("asian studies paper")
+            || lower.contains("asian studies major") || lower.contains("asian studies program")
+            || lower.contains("asian studies seminar") || lower.contains("asian studies notes")
+            || lower.contains("south asian studies class") || lower.contains("south asian studies course")
+            || lower.contains("south asian studies exam") || lower.contains("south asian studies paper")
+            || lower.contains("southeast asian studies class") || lower.contains("southeast asian studies course")
+            || lower.contains("southeast asian studies exam") || lower.contains("southeast asian studies paper")
+            || lower.contains("central asian studies class") || lower.contains("central asian studies course")
+            || lower.contains("east asian studies class") || lower.contains("east asian studies course")
+            || lower.contains("east asian studies exam") || lower.contains("east asian studies paper")
+            || lower.contains("south asia") && lower.contains("class") && (lower.contains("history") || lower.contains("politics") || lower.contains("culture") || lower.contains("economics"))
+            || lower.contains("south asia") && lower.contains("course") && (lower.contains("history") || lower.contains("politics") || lower.contains("culture") || lower.contains("economics"))
+            || lower.contains("south asia") && lower.contains("exam") && (lower.contains("history") || lower.contains("politics") || lower.contains("culture"))
+            || lower.contains("southeast asia") && lower.contains("class") && (lower.contains("history") || lower.contains("politics") || lower.contains("culture") || lower.contains("economics"))
+            || lower.contains("southeast asia") && lower.contains("course") && (lower.contains("history") || lower.contains("politics") || lower.contains("culture") || lower.contains("economics"))
+            || lower.contains("southeast asia") && lower.contains("exam") && (lower.contains("history") || lower.contains("politics") || lower.contains("culture"))
+            || lower.contains("mughal empire") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("history") || lower.contains("paper"))
+            || lower.contains("indian history class") || lower.contains("indian history course")
+            || lower.contains("indian history exam") || lower.contains("indian history paper")
+            || lower.contains("hindu nationalism") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("colonialism in asia") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("history"))
+            || lower.contains("asean") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("politics") || lower.contains("paper")) && lower.contains("asia")
+            || lower.contains("asian political economy") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("indo-pacific") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("politics") || lower.contains("policy")) {
+            return "asianstudies"
         }
         // sciencetechnologystudies — positioned AFTER africanstudies and BEFORE geopolitics.
         // Catches STS coursework: Latour, Haraway (STS context), ANT, social construction of science/tech.
@@ -13996,6 +14078,40 @@ public final class CalloutManager {
             || lower.contains("trolley problem") && (lower.contains("class") || lower.contains("exam") || lower.contains("paper") || lower.contains("philosophy") || lower.contains("ethics")) {
             return "moralphilosophy"
         }
+        // philosophyoflanguage — positioned AFTER moralphilosophy and BEFORE philosophy so
+        // Frege sense/reference, Russell's theory of descriptions, Wittgenstein (picture theory
+        // and language games), Austin speech acts, Grice conversational implicature, Kripke
+        // naming and necessity, and Putnam Twin Earth tasks route to a dedicated pool. Distinct
+        // from philosophy (general) and linguistics/appliedlinguistics.
+        if lower.contains("philosophy of language class") || lower.contains("philosophy of language course")
+            || lower.contains("philosophy of language exam") || lower.contains("philosophy of language paper")
+            || lower.contains("philosophy of language seminar") || lower.contains("philosophy of language notes")
+            || lower.contains("phil of language class") || lower.contains("phil of language course")
+            || lower.contains("phil of language exam") || lower.contains("phil of language paper")
+            || lower.contains("frege") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("sense") || lower.contains("reference") || lower.contains("language") || lower.contains("philosophy"))
+            || lower.contains("sense and reference") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("philosophy"))
+            || lower.contains("russell theory of descriptions") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("philosophy"))
+            || lower.contains("theory of descriptions") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("philosophy") || lower.contains("language"))
+            || lower.contains("definite description") && (lower.contains("class") || lower.contains("exam") || lower.contains("philosophy") || lower.contains("language") || lower.contains("paper"))
+            || lower.contains("wittgenstein") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper")) && (lower.contains("language") || lower.contains("tractatus") || lower.contains("language game") || lower.contains("private language") || lower.contains("meaning") || lower.contains("philosophy"))
+            || lower.contains("tractatus") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("philosophy") || lower.contains("language"))
+            || lower.contains("language games") && (lower.contains("wittgenstein") || lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("philosophy"))
+            || lower.contains("private language argument") && (lower.contains("class") || lower.contains("exam") || lower.contains("philosophy") || lower.contains("paper"))
+            || lower.contains("speech act theory") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("philosophy"))
+            || lower.contains("illocutionary") && (lower.contains("class") || lower.contains("exam") || lower.contains("philosophy") || lower.contains("language") || lower.contains("paper"))
+            || lower.contains("perlocutionary") && (lower.contains("class") || lower.contains("exam") || lower.contains("philosophy") || lower.contains("language") || lower.contains("paper"))
+            || lower.contains("gricean") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("philosophy"))
+            || lower.contains("conversational implicature") && (lower.contains("class") || lower.contains("exam") || lower.contains("philosophy") || lower.contains("language") || lower.contains("paper"))
+            || lower.contains("cooperative principle") && (lower.contains("class") || lower.contains("exam") || lower.contains("philosophy") || lower.contains("language") || lower.contains("grice"))
+            || lower.contains("kripke") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("naming") || lower.contains("language") || lower.contains("philosophy"))
+            || lower.contains("naming and necessity") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("philosophy"))
+            || lower.contains("rigid designator") && (lower.contains("class") || lower.contains("exam") || lower.contains("philosophy") || lower.contains("language") || lower.contains("paper"))
+            || lower.contains("causal theory of reference") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("philosophy"))
+            || lower.contains("semantic externalism") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("philosophy"))
+            || lower.contains("putnam") && lower.contains("twin earth") && (lower.contains("class") || lower.contains("exam") || lower.contains("philosophy") || lower.contains("paper") || lower.contains("language"))
+            || lower.contains("possible worlds semantics") && (lower.contains("class") || lower.contains("exam") || lower.contains("philosophy") || lower.contains("language") || lower.contains("logic")) {
+            return "philosophyoflanguage"
+        }
         // philosophy — positioned after socialscience (shared "political philosophy" territory)
         // and before legal so "ethics paper" and "philosophical argument" don't fall to legal.
         if word("philosophy") || word("philosophical") || word("philosopher")
@@ -14171,6 +14287,36 @@ public final class CalloutManager {
             || lower.contains("tuskegee") && (lower.contains("class") || lower.contains("ethics") || lower.contains("paper") || lower.contains("research"))
             || lower.contains("research integrity") || lower.contains("responsible conduct of research") || lower.contains("rcr training") {
             return "bioethics"
+        }
+        // jurisprudence — positioned AFTER bioethics and BEFORE healthcarelaw so legal theory
+        // and philosophy of law tasks (Hart, Fuller, Dworkin, Kelsen, legal positivism, natural
+        // law, CLS, legal realism) route to a dedicated pool. Distinct from constitutionallaw
+        // (doctrine), constitutionaltheory (interpretation), and the general legal catchall.
+        if lower.contains("jurisprudence class") || lower.contains("jurisprudence course")
+            || lower.contains("jurisprudence exam") || lower.contains("jurisprudence paper")
+            || lower.contains("jurisprudence seminar") || lower.contains("jurisprudence notes")
+            || lower.contains("jurisprudence assignment") || lower.contains("jurisprudence textbook")
+            || lower.contains("legal theory class") || lower.contains("legal theory course")
+            || lower.contains("legal theory exam") || lower.contains("legal theory paper")
+            || lower.contains("legal theory seminar") || lower.contains("legal theory notes")
+            || lower.contains("philosophy of law class") || lower.contains("philosophy of law course")
+            || lower.contains("philosophy of law exam") || lower.contains("philosophy of law paper")
+            || lower.contains("philosophy of law seminar")
+            || lower.contains("rule of recognition") && (lower.contains("class") || lower.contains("exam") || lower.contains("jurisprudence") || lower.contains("legal theory") || lower.contains("paper"))
+            || lower.contains("legal positivism") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("jurisprudence") || lower.contains("paper"))
+            || lower.contains("natural law theory") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("jurisprudence") || lower.contains("philosophy of law") || lower.contains("paper"))
+            || lower.contains("natural law") && (lower.contains("jurisprudence") || lower.contains("legal theory") || lower.contains("philosophy of law")) && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("dworkin") && (lower.contains("jurisprudence") || lower.contains("legal theory") || lower.contains("philosophy of law") || lower.contains("law's empire") || lower.contains("law as integrity"))
+            || lower.contains("law as integrity") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("jurisprudence") || lower.contains("paper"))
+            || lower.contains("law's empire") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("jurisprudence"))
+            || lower.contains("fuller") && (lower.contains("inner morality") || lower.contains("morality of law")) && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("inner morality of law") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("kelsen") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("jurisprudence") || lower.contains("legal theory") || lower.contains("paper"))
+            || lower.contains("grundnorm") && (lower.contains("class") || lower.contains("exam") || lower.contains("jurisprudence") || lower.contains("paper") || lower.contains("legal theory"))
+            || lower.contains("legal realism") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("jurisprudence") || lower.contains("paper"))
+            || lower.contains("critical legal studies") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("austin command theory") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("jurisprudence")) {
+            return "jurisprudence"
         }
         // healthcarelaw — positioned BEFORE legal so health-law courses, HIPAA-as-law,
         // and medical malpractice tasks route here. "health policy" stays in the policy branch.

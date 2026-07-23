@@ -21688,3 +21688,26 @@ politicalphilosophy < moralphilosophy(~13810) < philosophy
 - Suggested domains (verify absence first): `institutionaleconomics`, `developmenteconomics`, `healthpolicyanalysis`, `socialpsychology`, `cognitivebehavioraltherapy`
 - Note: `socialwork`, `cognitivescience`, `cognitivepsychology`, `laborlaw`, `gametheory`, `healtheconomics` are already present — skip them
 - Follow same pattern: routing block → switch case → pool function (4+3+3 messages) → 2 templates → 7 CalloutManagerTests + 2 SuggestedSessionTemplatesTests + count guard
+
+## Run 427 — medievalhistory, disabilitystudies, asianstudies, philosophyoflanguage, jurisprudence
+
+**Added 5 new keyword domains:**
+
+1. **`medievalhistory`** — feudalism, Crusades, Black Death, Byzantine Empire, scholasticism
+2. **`disabilitystudies`** — social/medical model, crip theory, ableism, neurodiversity, deaf culture
+3. **`asianstudies`** — Mughal Empire, Partition 1947, ASEAN, Japanese imperialism, postcolonial theory
+4. **`philosophyoflanguage`** — Frege, Russell's descriptions, Wittgenstein, Austin speech acts, Grice, Kripke
+5. **`jurisprudence`** — Hart, Dworkin, Fuller, Kelsen, natural law, CLS/CRT/feminist jurisprudence
+
+**Files changed:**
+- `CalloutManager.swift` — 5 routing blocks inserted at correct positions
+- `CalloutMessages.swift` — 5 switch cases + 5 pool functions (tier 1: 4 msgs, tier 2: 3 msgs, tier 3: 3 CLOSE THIS msgs)
+- `SuggestedSessionTemplates.swift` — 10 new templates (study + paper per domain); catalog: 1387 → 1397
+- `CalloutManagerTests.swift` — 35 new @Test functions (7 per domain) + count guard updated to ≥1397
+- `SuggestedSessionTemplatesTests.swift` — 10 new @Test functions (2 per domain) + count guard updated to ≥1397
+
+**Next agent should:**
+- Continue domain expansion with 5 more keyword domains
+- Suggested domains (verify absence first): `institutionaleconomics`, `developmenteconomics`, `healthpolicyanalysis`, `socialpsychology`, `cognitivebehavioraltherapy`
+- Note: `socialwork`, `cognitivescience`, `cognitivepsychology`, `laborlaw`, `gametheory`, `healtheconomics` are already present — skip them
+- Follow same pattern: routing block → switch case → pool function (4+3+3 messages) → 2 templates → 7 CalloutManagerTests + 2 SuggestedSessionTemplatesTests + count guard bump

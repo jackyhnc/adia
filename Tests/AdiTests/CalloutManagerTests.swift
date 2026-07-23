@@ -29658,8 +29658,153 @@ struct CalloutManagerTests {
         #expect(mgr.taskAwareCallouts(keyword: "islamicfinance", tier: 3).contains { $0.contains("CLOSE THIS") })
     }
 
-    // MARK: - Count guard (≥1387)
-    @Test func calloutTemplatesCountAtLeast1387() {
-        #expect(SuggestedSessionTemplates.all.count >= 1387, "template catalog must have ≥1387 entries after islamicfinance/gamedesign/forensiccriminology/publicinternationallaw/neuroeconomics additions")
+    // MARK: - medievalhistory
+    @Test func medievalhistoryRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "medieval history class feudalism crusades black death scholasticism exam") == "medievalhistory")
+    }
+    @Test func medievalhistoryRoutingFromFeudalismHistory() {
+        #expect(CalloutManager.extractTaskKeyword(from: "feudalism medieval history paper manorialism serf demesne") == "medievalhistory")
+    }
+    @Test func medievalhistoryRoutingFromCrusades() {
+        #expect(CalloutManager.extractTaskKeyword(from: "crusades medieval history exam saladin third crusade jerusalem") == "medievalhistory")
+    }
+    @Test func medievalhistoryFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "ancient civilizations class greece rome mesopotamia egypt")
+        #expect(kw != "medievalhistory", "ancient history without medieval context should not route to medievalhistory")
+    }
+    @Test @MainActor func medievalhistoryCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "medievalhistory", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "medievalhistory", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "medievalhistory", tier: 3).isEmpty)
+    }
+    @Test @MainActor func medievalhistoryTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "medievalhistory", tier: 1).count >= 4)
+    }
+    @Test @MainActor func medievalhistoryTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "medievalhistory", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - disabilitystudies
+    @Test func disabilitystudiesRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "disability studies class social model medical model crip theory ableism exam") == "disabilitystudies")
+    }
+    @Test func disabilitystudiesRoutingFromCripTheory() {
+        #expect(CalloutManager.extractTaskKeyword(from: "crip theory disability paper neurodiversity deaf culture disability justice") == "disabilitystudies")
+    }
+    @Test func disabilitystudiesRoutingFromAda() {
+        #expect(CalloutManager.extractTaskKeyword(from: "ada disability studies class accommodation rights neurodiversity exam") == "disabilitystudies")
+    }
+    @Test func disabilitystudiesFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "special education class iep learning differences pedagogy differentiated instruction exam")
+        #expect(kw != "disabilitystudies", "special education pedagogy without disability studies framing should not route to disabilitystudies")
+    }
+    @Test @MainActor func disabilitystudiesCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "disabilitystudies", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "disabilitystudies", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "disabilitystudies", tier: 3).isEmpty)
+    }
+    @Test @MainActor func disabilitystudiesTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "disabilitystudies", tier: 1).count >= 4)
+    }
+    @Test @MainActor func disabilitystudiesTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "disabilitystudies", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - asianstudies
+    @Test func asianstudiesRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "asian studies class mughal empire partition india asean indo-pacific politics exam") == "asianstudies")
+    }
+    @Test func asianstudiesRoutingFromMughalEmpire() {
+        #expect(CalloutManager.extractTaskKeyword(from: "mughal empire asian history paper akbar babur taj mahal") == "asianstudies")
+    }
+    @Test func asianstudiesRoutingFromSouthAsianStudies() {
+        #expect(CalloutManager.extractTaskKeyword(from: "south asian studies class partition 1947 nehru gandhi colonial history exam") == "asianstudies")
+    }
+    @Test func asianstudiesFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "asian american studies class identity immigration community diaspora exam")
+        #expect(kw != "asianstudies", "asian american studies is an ethnic studies course and should not route to asianstudies")
+    }
+    @Test @MainActor func asianstudiesCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "asianstudies", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "asianstudies", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "asianstudies", tier: 3).isEmpty)
+    }
+    @Test @MainActor func asianstudiesTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "asianstudies", tier: 1).count >= 4)
+    }
+    @Test @MainActor func asianstudiesTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "asianstudies", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - philosophyoflanguage
+    @Test func philosophyoflanguageRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "philosophy of language class frege sense reference kripke naming necessity exam") == "philosophyoflanguage")
+    }
+    @Test func philosophyoflanguageRoutingFromFrege() {
+        #expect(CalloutManager.extractTaskKeyword(from: "frege sense and reference philosophy paper morning star evening star hesperus") == "philosophyoflanguage")
+    }
+    @Test func philosophyoflanguageRoutingFromKripke() {
+        #expect(CalloutManager.extractTaskKeyword(from: "kripke naming and necessity philosophy of language exam rigid designator paper") == "philosophyoflanguage")
+    }
+    @Test func philosophyoflanguageFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "linguistics class syntax morphology phonology semantics pragmatics exam")
+        #expect(kw != "philosophyoflanguage", "general linguistics without philosophy of language framing should not route to philosophyoflanguage")
+    }
+    @Test @MainActor func philosophyoflanguageCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "philosophyoflanguage", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "philosophyoflanguage", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "philosophyoflanguage", tier: 3).isEmpty)
+    }
+    @Test @MainActor func philosophyoflanguageTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "philosophyoflanguage", tier: 1).count >= 4)
+    }
+    @Test @MainActor func philosophyoflanguageTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "philosophyoflanguage", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - jurisprudence
+    @Test func jurisprudenceRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "jurisprudence class hart dworkin legal positivism natural law kelsen exam") == "jurisprudence")
+    }
+    @Test func jurisprudenceRoutingFromLegalPositivism() {
+        #expect(CalloutManager.extractTaskKeyword(from: "legal positivism jurisprudence paper hart rule of recognition kelsen grundnorm") == "jurisprudence")
+    }
+    @Test func jurisprudenceRoutingFromKelsen() {
+        #expect(CalloutManager.extractTaskKeyword(from: "kelsen jurisprudence class grundnorm pure theory of law stufenbau exam") == "jurisprudence")
+    }
+    @Test func jurisprudenceFalsePositiveGuard() {
+        let kw = CalloutManager.extractTaskKeyword(from: "political philosophy class dworkin rawls liberalism justice exam")
+        #expect(kw != "jurisprudence", "political philosophy with dworkin but no jurisprudence context should route to politicalphilosophy not jurisprudence")
+    }
+    @Test @MainActor func jurisprudenceCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "jurisprudence", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "jurisprudence", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "jurisprudence", tier: 3).isEmpty)
+    }
+    @Test @MainActor func jurisprudenceTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "jurisprudence", tier: 1).count >= 4)
+    }
+    @Test @MainActor func jurisprudenceTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "jurisprudence", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (≥1397)
+    @Test func calloutTemplatesCountAtLeast1397() {
+        #expect(SuggestedSessionTemplates.all.count >= 1397, "template catalog must have ≥1397 entries after medievalhistory/disabilitystudies/asianstudies/philosophyoflanguage/jurisprudence additions")
     }
 }
