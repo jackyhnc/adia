@@ -20772,3 +20772,49 @@ All GOAL.md tasks remain checked. Continue expanding keyword domains. Suggested 
 - `environmentaleconomics` — environmental economics class, Pigouvian tax, Coase theorem, externalities, cap-and-trade, ecosystem services valuation, benefit-cost analysis for environmental policy (distinct from environmentalpolicy and economics)
 - `lawandeconomics` — law and economics class, Coase theorem (legal context), efficient breach, Posner, Calabresi, optimal deterrence theory, economic analysis of tort law (distinct from microeconomics and property/tort law)
 - `medicalethics` — medical ethics class, principles of biomedical ethics (Beauchamp and Childress), autonomy, beneficence, non-maleficence, justice, informed consent, end-of-life ethics, resource allocation (distinct from bioethics which may already exist — check first)
+
+---
+
+## Run 412 — 2026-07-23
+
+### What shipped
+5 new keyword domains: **environmentaleconomics**, **socialepigenetics**, **behavioralneuroscience**, **medicalethics**, **lawandeconomics** — template catalog grows 1209→1219.
+
+**environmentaleconomics** — Pigouvian tax, Coase theorem (environmental/externality context), ecosystem services valuation, contingent valuation, hedonic pricing, tragedy of the commons, cap-and-trade (economics), market failure + environmental context, pollution economics. Positioned BEFORE `economics`. Removed `environmental economics` from the general `economics` branch. 4+3+3 callout pool. 2 templates (study exam / problem set, policy memo, valuation analysis).
+
+**socialepigenetics** — epigenetics class/course/exam/assignment/lab, DNA methylation, histone modification, chromatin remodeling, stress-induced methylation, early adversity + epigenetics, intergenerational/transgenerational epigenetic inheritance, social genomics, gene-environment interaction + epigenetics, bisulfite sequencing, epigenetic clock. Positioned BEFORE `genetics`. 4+3+3 callout pool. 2 templates (study exam / lab report & research paper).
+
+**behavioralneuroscience** — lab-procedure-specific triggers distinct from `psychobiologyclass` (which owns "behavioral neuroscience class/course/exam/notes/major"): fear conditioning lab/experiment, Morris water maze, elevated plus maze, open field test + lab/neuroscience context, stereotaxic surgery/injection/coordinates, conditioned place preference/aversion, reward circuit + lab/research, operant conditioning chamber + neuroscience, forced swim test, Barnes maze, radial arm maze, rodent behavior + lab, lesion study + neuroscience, brain lesion + behavior. Positioned BEFORE `psychobiologyclass`. 4+3+3 callout pool. 2 templates (study exam / lab report).
+
+**medicalethics** — Beauchamp and Childress, four principles of biomedical ethics, principlism + class/medical/ethics, autonomy + beneficence + class, medical ethics class/course/exam/textbook/program/notes/assignment, medical futility, resource allocation + medical ethics, end-of-life + medical ethics, clinical ethics consultation, Hippocratic oath, informed consent + medical ethics, physician ethics, doctor-patient relationship. Positioned BEFORE `bioethics`. 4+3+3 callout pool. 2 templates (study exam / case analysis & ethics consultation memo).
+
+**lawandeconomics** — law and economics class/course/exam/paper/seminar/textbook, law & economics variants, economic analysis of law + class/exam, Coase theorem + law/legal/tort/contract/liability context, efficient breach + law/contract, Posner + law and economics context, Calabresi + law/torts, optimal deterrence + law/torts, Kaldor-Hicks + law, pareto efficiency + law, transaction costs + law/coase, Chicago school of law. Positioned BEFORE `legal` catch-all. 4+3+3 callout pool. 2 templates (study exam / analysis paper).
+
+### Tests added
+**CalloutManagerTests.swift** — 36 new @Test functions:
+- 3 routing tests + 1 false-positive guard + 3 pool tests (all-tiers, tier-1-count, tier-3-CLOSE-THIS) per domain × 5 domains + count guard ≥1219
+
+**SuggestedSessionTemplatesTests.swift** — 12 new @Test functions:
+- 2 template existence tests per domain × 5 domains + count guard ≥1219
+
+### Verification
+- `grep -c "preferredDuration:" SuggestedSessionTemplates.swift` → 1219 ✓
+- Brace balance: CalloutMessages.swift 1263/1263 ✓; CalloutManager.swift 659/659 ✓
+- 5 routing returns confirmed in CalloutManager.swift ✓
+- 5 case entries + 5 pool functions confirmed in CalloutMessages.swift ✓
+- Routing ordering:
+  - environmentaleconomics BEFORE economics ✓
+  - socialepigenetics BEFORE genetics ✓
+  - behavioralneuroscience BEFORE psychobiologyclass ✓
+  - medicalethics BEFORE bioethics ✓
+  - lawandeconomics BEFORE legal catch-all (after internationallaw) ✓
+
+### Blocked
+Swift toolchain unavailable on Linux container — no `swift build` or `swift test` possible.
+
+### Suggested next domains
+- `clinicalneurology` — clinical neurology clerkship/elective (movement disorder clinic, neuro-ICU, epilepsy monitoring unit, MS clinic, stroke neurology — distinct from neuroscience basic science)
+- `radiologyrotation` — radiology clerkship (chest X-ray interpretation, CT reads, MRI basics, interventional radiology, ABR Core exam — distinct from radiochemistry/physics)
+- `behavioralbiology` — behavioral biology class (ultimate vs proximate causation, Hamilton's kin selection, ESS, honest signaling, mate choice, parental investment — distinct from behavioralneuroscience and psychobiologyclass)
+- `agingneuroscience` — neuroscience of aging class (neurodegeneration, Alzheimer's pathology — amyloid cascade, tau tangles, APOE4, synaptic loss; Parkinson's α-synuclein; normal vs pathological aging — distinct from clinical neurology and neuroscience)
+- `healtheconomics` — health economics class (demand for health (Grossman model), moral hazard in insurance, adverse selection, Medicaid/Medicare financing, QALY, cost-effectiveness analysis in healthcare — distinct from environmentaleconomics and economics)
