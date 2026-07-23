@@ -20818,3 +20818,43 @@ Swift toolchain unavailable on Linux container — no `swift build` or `swift te
 - `behavioralbiology` — behavioral biology class (ultimate vs proximate causation, Hamilton's kin selection, ESS, honest signaling, mate choice, parental investment — distinct from behavioralneuroscience and psychobiologyclass)
 - `agingneuroscience` — neuroscience of aging class (neurodegeneration, Alzheimer's pathology — amyloid cascade, tau tangles, APOE4, synaptic loss; Parkinson's α-synuclein; normal vs pathological aging — distinct from clinical neurology and neuroscience)
 - `healtheconomics` — health economics class (demand for health (Grossman model), moral hazard in insurance, adverse selection, Medicaid/Medicare financing, QALY, cost-effectiveness analysis in healthcare — distinct from environmentaleconomics and economics)
+
+---
+
+## Run 413 — 2026-07-23
+
+### What shipped
+5 new keyword domains: **scientificwriting**, **behavioralbiology**, **agingneuroscience**, **computationalsocialscience**, **publicpolicy** — template catalog grows 1219→1229.
+
+**scientificwriting** — IMRAD format, methods/results/discussion sections, scientific abstract, peer review process, journal submission, writing a scientific paper/manuscript, science writing class/course/exam. Positioned BEFORE general writing (which owns bare "abstract", "peer review", "draft"). 4+3+3 callout pool. 2 templates (study exam / draft manuscript & revise sections).
+
+**behavioralbiology** — behavioral biology class/course/exam, ultimate vs proximate causation (Tinbergen), Hamilton's rule, inclusive fitness, kin selection, ESS, Zahavian handicap, runaway selection, parental investment (Trivers), reciprocal altruism, intrasexual/intersexual selection, eusociality, cooperative breeding, alarm calls. Positioned BEFORE zoology. 4+3+3 callout pool. 2 templates (study exam / evolutionary analysis paper).
+
+**agingneuroscience** — neuroscience of aging class/course/exam, neurobiology of aging, amyloid cascade hypothesis, amyloid beta, tau tangles, neurofibrillary tangles, APOE4, Alzheimer's pathology, alpha-synuclein, Lewy body, neuroinflammation and aging, cognitive reserve, synaptic loss, brain aging. Positioned BEFORE clinicalneurology. 4+3+3 callout pool. 2 templates (study exam / research paper).
+
+**computationalsocialscience** — computational social science class/course/exam, CSS methods, agent-based model (social science context), NetLogo, Repast, ABM, social simulation, computational sociology, digital trace data, text analysis for social science, scraping social media (research). Positioned BEFORE sociology. 4+3+3 callout pool. 2 templates (study exam / paper).
+
+**publicpolicy** — public policy class/course/exam/major/degree, policy analysis class/course, Bardach's eightfold path, Kingdon's agenda setting/policy window, Weimer and Vining, program evaluation, cost-benefit analysis (policy context), stakeholder analysis, logic model, theory of change. Positioned BEFORE policy (which owns generic "policy brief", "policy memo"). 4+3+3 callout pool. 2 templates (study exam / analysis paper).
+
+**Tests**: 35 new CalloutManagerTests (3 routing + 1 false-positive guard + 3 pool tests per domain × 5 domains) + 12 new SuggestedSessionTemplatesTests (2 existence tests per domain × 5 domains + count guard ≥1229).
+
+### Verification
+- `grep -c "preferredDuration:" SuggestedSessionTemplates.swift` → 1229 ✓
+- Brace balance: CalloutMessages.swift 1273/1273 ✓; CalloutManager.swift 664/664 ✓
+- Routing ordering:
+  - scientificwriting BEFORE writing ✓
+  - behavioralbiology BEFORE zoology ✓
+  - agingneuroscience BEFORE clinicalneurology ✓
+  - computationalsocialscience BEFORE sociology ✓
+  - publicpolicy BEFORE policy ✓
+
+### Blocked
+Swift toolchain unavailable on Linux container — no `swift build` or `swift test` possible.
+
+### Next agent pick-up
+All GOAL.md tasks remain checked. Continue expanding keyword domains. Suggested next 5:
+- `healthbehavior` — health behavior theory class (Health Belief Model, Theory of Planned Behavior, Social Cognitive Theory, Transtheoretical Model/stages of change, motivational interviewing — distinct from publichealth and healthpromotion)
+- `globalhealth` — global health class (DALYs, burden of disease, SDGs for health, PEPFAR, health systems strengthening, tropical medicine context — distinct from publichealth)
+- `sciencecommunication` — science communication class (communicating to lay audiences, science journalism, risk communication, deficit model, framing science — distinct from scientificwriting)
+- `industrialorganizational` — I-O psychology class (job analysis, personnel selection, criterion validity, predictive validity, organizational behavior OB topics — distinct from organizationalbehavior and clinicalpsychology)
+- `developmentalbiologycourse` — developmental biology class (induction, competence, morphogen gradients, Hox genes, gastrulation, somitogenesis — distinct from cellbiology and genetics; avoid "developmental psychology" false positive)
