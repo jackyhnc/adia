@@ -1057,9 +1057,30 @@ public final class CalloutManager {
             || lower.contains("extensive form game") && (lower.contains("class") || lower.contains("exam")) {
             return "gametheory"
         }
+        // environmentaleconomics — positioned BEFORE economics so environmental economics class,
+        // Pigouvian tax, Coase theorem (environmental context), ecosystem services valuation,
+        // and benefit-cost analysis for environmental policy route here. Distinct from
+        // environmentalpolicy (regulation/legislation) and economics (general principles).
+        if lower.contains("environmental economics")
+            || lower.contains("natural resource economics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("assignment"))
+            || lower.contains("pigouvian tax") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("economics") || lower.contains("environmental"))
+            || lower.contains("pigou tax") && (lower.contains("class") || lower.contains("economics") || lower.contains("exam") || lower.contains("environmental"))
+            || lower.contains("coase theorem") && (lower.contains("environmental") || lower.contains("externality") || lower.contains("pollution") || lower.contains("class") && lower.contains("economics"))
+            || lower.contains("ecosystem services valuation") || lower.contains("ecosystem service valuation")
+            || lower.contains("willingness to pay") && (lower.contains("environmental") || lower.contains("nonmarket") || lower.contains("non-market"))
+            || lower.contains("contingent valuation") && (lower.contains("environmental") || lower.contains("economics") || lower.contains("class") || lower.contains("exam"))
+            || lower.contains("hedonic pricing") && (lower.contains("environmental") || lower.contains("economics") || lower.contains("class") || lower.contains("exam"))
+            || lower.contains("environmental valuation") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("market failure") && lower.contains("environmental") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("economics"))
+            || lower.contains("tragedy of the commons") && (lower.contains("economics") || lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("environmental"))
+            || lower.contains("pollution economics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("environmental externality") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("economics")) {
+            return "environmentaleconomics"
+        }
         // economics — positioned AFTER statistics and BEFORE astronomy so macroeconomics,
         // microeconomics, econometrics, and economics class/course terms route to a dedicated pool.
         // word("economics") catches the discipline name directly. Bare "economy" NOT matched.
+        // "environmental economics" now owned by environmentaleconomics (fires earlier).
         if word("economics") || word("economist") || word("econometrics")
             || lower.contains("macroeconomics") || lower.contains("microeconomics")
             || lower.contains("principles of economics") || lower.contains("intro to economics")
@@ -1079,7 +1100,7 @@ public final class CalloutManager {
             || lower.contains("econometrics class") || lower.contains("econometrics course")
             || lower.contains("econometrics exam") || lower.contains("econometrics homework")
             || lower.contains("labor economics") || lower.contains("health economics")
-            || lower.contains("environmental economics") || lower.contains("public economics")
+            || lower.contains("public economics")
             || lower.contains("game theory class") || lower.contains("game theory course")
             || lower.contains("game theory exam") || lower.contains("game theory homework")
             || lower.contains("monetary economics") || lower.contains("international economics")
@@ -8479,6 +8500,32 @@ public final class CalloutManager {
             || lower.contains("deletion syndrome") && (lower.contains("class") || lower.contains("genetics") || lower.contains("exam")) {
             return "humangeneticsclass"
         }
+        // socialepigenetics — positioned BEFORE genetics so social/environmental epigenetics
+        // coursework (stress-induced methylation, early adversity, intergenerational epigenetic
+        // inheritance, social genomics) routes here. Classical genetics (Mendelian, Hardy-Weinberg,
+        // pedigree) stays in genetics below.
+        if lower.contains("social epigenetics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("notes") || lower.contains("assignment") || lower.contains("textbook") || lower.contains("seminar"))
+            || lower.contains("epigenetics class") || lower.contains("epigenetics course")
+            || lower.contains("epigenetics exam") || lower.contains("epigenetics assignment")
+            || lower.contains("epigenetics notes") || lower.contains("epigenetics paper")
+            || lower.contains("epigenetics textbook") || lower.contains("epigenetics seminar")
+            || lower.contains("epigenetics lab") || lower.contains("epigenetics homework")
+            || lower.contains("epigenome and environment") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("stress-induced methylation") || lower.contains("stress induced methylation")
+            || lower.contains("stress and methylation") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("epigenetics"))
+            || lower.contains("early adversity") && (lower.contains("epigenetics") || lower.contains("methylation") || lower.contains("gene expression") || lower.contains("class") || lower.contains("lab"))
+            || lower.contains("intergenerational epigenetic") || lower.contains("transgenerational epigenetics") || lower.contains("transgenerational epigenetic")
+            || lower.contains("epigenetic inheritance") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("intergenerational") || lower.contains("transgenerational"))
+            || lower.contains("social genomics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("gene environment interaction") && (lower.contains("epigenetics") || lower.contains("methylation")) && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("dna methylation") && (lower.contains("social") || lower.contains("adversity") || lower.contains("stress") || lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("epigenetics") || lower.contains("lab"))
+            || lower.contains("histone modification") && (lower.contains("social") || lower.contains("stress") || lower.contains("environment") || lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("epigenetics") || lower.contains("lab"))
+            || lower.contains("chromatin remodeling") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("stress") || lower.contains("social") || lower.contains("epigenetics") || lower.contains("lab"))
+            || lower.contains("epigenetic clock") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("aging") || lower.contains("social") || lower.contains("study"))
+            || lower.contains("methylation analysis") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("epigenetics"))
+            || lower.contains("bisulfite sequencing") && (lower.contains("class") || lower.contains("lab") || lower.contains("exam") || lower.contains("epigenetics")) {
+            return "socialepigenetics"
+        }
         // genetics — positioned AFTER developmentalbiology and BEFORE biochemistry so classical
         // genetics (Mendelian, Hardy-Weinberg, pedigree analysis, population genetics) routes here.
         // "molecular genetics" stays in molecularbiology (earlier). Bare word("genetics") without
@@ -11414,6 +11461,33 @@ public final class CalloutManager {
             || lower.contains("acetylcholine synthesis") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("pathway") || lower.contains("neurochemistry")) {
             return "neurochemistry"
         }
+        // behavioralneuroscience — positioned BEFORE psychobiologyclass so rodent behavior lab
+        // procedures (fear conditioning, Morris water maze, elevated plus maze, open field test,
+        // stereotaxic surgery, conditioned place preference) route here. "behavioral neuroscience
+        // class/course/exam/notes/major" is owned by psychobiologyclass below.
+        if lower.contains("fear conditioning lab") || lower.contains("fear conditioning experiment")
+            || lower.contains("fear conditioning study") && (lower.contains("neuroscience") || lower.contains("lab") || lower.contains("class") || lower.contains("behavior"))
+            || lower.contains("morris water maze")
+            || lower.contains("elevated plus maze")
+            || lower.contains("open field test") && (lower.contains("lab") || lower.contains("neuroscience") || lower.contains("behavior") || lower.contains("class") || lower.contains("exam"))
+            || lower.contains("stereotaxic surgery") || lower.contains("stereotaxic injection") || lower.contains("stereotaxic coordinates")
+            || lower.contains("conditioned place preference") || lower.contains("conditioned place aversion")
+            || lower.contains("reward circuit") && (lower.contains("lab") || lower.contains("neuroscience") || lower.contains("study") || lower.contains("research") || lower.contains("class") || lower.contains("exam"))
+            || lower.contains("operant conditioning chamber") && (lower.contains("neuroscience") || lower.contains("lab") || lower.contains("behavior") || lower.contains("class"))
+            || lower.contains("forced swim test") && (lower.contains("neuroscience") || lower.contains("lab") || lower.contains("behavior") || lower.contains("class"))
+            || lower.contains("barnes maze") && (lower.contains("lab") || lower.contains("neuroscience") || lower.contains("behavior") || lower.contains("class"))
+            || lower.contains("radial arm maze") && (lower.contains("lab") || lower.contains("neuroscience") || lower.contains("class"))
+            || lower.contains("behavioral neuroscience lab") || lower.contains("behavioral neuroscience assignment")
+            || lower.contains("rodent behavior") && (lower.contains("lab") || lower.contains("neuroscience") || lower.contains("class") || lower.contains("exam"))
+            || lower.contains("animal behavior model") && (lower.contains("neuroscience") || lower.contains("class") || lower.contains("lab") || lower.contains("behavioral"))
+            || lower.contains("animal model") && lower.contains("behavioral neuroscience")
+            || lower.contains("lesion study") && (lower.contains("neuroscience") || lower.contains("behavior") || lower.contains("class") || lower.contains("lab"))
+            || lower.contains("brain lesion") && lower.contains("behavior") && (lower.contains("class") || lower.contains("lab") || lower.contains("neuroscience"))
+            || lower.contains("optomotor reflex") && (lower.contains("lab") || lower.contains("neuroscience") || lower.contains("class"))
+            || lower.contains("tail flick test") && (lower.contains("lab") || lower.contains("neuroscience") || lower.contains("behavior"))
+            || lower.contains("sucrose preference test") && (lower.contains("lab") || lower.contains("neuroscience") || lower.contains("behavior")) {
+            return "behavioralneuroscience"
+        }
         // psychobiologyclass — positioned BEFORE neuroscience to catch biopsychology and biological
         // psychology coursework (behavioral neuroscience class, hemispheric lateralization, hormones
         // and behavior). Bare "behavioral neuroscience" and "brain and behavior" stay in neuroscience.
@@ -12312,6 +12386,30 @@ public final class CalloutManager {
             || lower.contains("population health law") {
             return "publichealthlaw"
         }
+        // medicalethics — positioned BEFORE bioethics so medical ethics class/course/exam/textbook,
+        // Beauchamp and Childress, four principles (autonomy/beneficence/nonmaleficence/justice),
+        // and clinical decision-making ethics route here. IRB/research ethics stays in bioethics.
+        if lower.contains("medical ethics class") || lower.contains("medical ethics course")
+            || lower.contains("medical ethics exam") || lower.contains("medical ethics textbook")
+            || lower.contains("medical ethics program") || lower.contains("medical ethics notes")
+            || lower.contains("medical ethics assignment")
+            || lower.contains("beauchamp and childress") || lower.contains("beauchamp & childress")
+            || lower.contains("principles of biomedical ethics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper") || lower.contains("study"))
+            || lower.contains("four principles of biomedical ethics") || lower.contains("four principles of medical ethics")
+            || lower.contains("principlism") && (lower.contains("class") || lower.contains("medical") || lower.contains("course") || lower.contains("exam") || lower.contains("ethics"))
+            || lower.contains("autonomy") && lower.contains("beneficence") && (lower.contains("class") || lower.contains("medical") || lower.contains("ethics") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("medical futility") && (lower.contains("class") || lower.contains("course") || lower.contains("ethics") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("resource allocation") && lower.contains("medical ethics")
+            || lower.contains("resource allocation") && (lower.contains("healthcare") || lower.contains("health care")) && (lower.contains("ethics") || lower.contains("class") || lower.contains("course") || lower.contains("exam"))
+            || lower.contains("end-of-life") && lower.contains("medical ethics")
+            || lower.contains("end of life") && lower.contains("medical ethics")
+            || lower.contains("clinical ethics consultation") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("hippocratic oath") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("medical ethics") || lower.contains("paper"))
+            || lower.contains("informed consent") && lower.contains("medical ethics")
+            || lower.contains("physician ethics") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("doctor-patient relationship") && (lower.contains("ethics") || lower.contains("class") || lower.contains("course") || lower.contains("exam")) {
+            return "medicalethics"
+        }
         // bioethics — positioned AFTER publichealthlaw and BEFORE healthcarelaw so bioethics
         // research papers, IRB protocol work, clinical ethics consultations, and research-ethics
         // coursework get a dedicated pool. "bioethics class/course/exam" is intercepted here
@@ -12933,6 +13031,28 @@ public final class CalloutManager {
             || lower.contains("international criminal court") && (lower.contains("class") || lower.contains("exam") || lower.contains("law") || lower.contains("icc"))
             || lower.contains("ICC") && (lower.contains("class") || lower.contains("international law") || lower.contains("exam")) {
             return "internationallaw"
+        }
+        // lawandeconomics — positioned BEFORE legal so law and economics class, Coase theorem
+        // (legal/contractual context), efficient breach, Posner, Calabresi, and economic analysis
+        // of law route here. Distinct from environmentaleconomics (environmental Coase/Pigou).
+        if lower.contains("law and economics class") || lower.contains("law and economics course")
+            || lower.contains("law and economics exam") || lower.contains("law and economics paper")
+            || lower.contains("law and economics notes") || lower.contains("law and economics assignment")
+            || lower.contains("law and economics seminar") || lower.contains("law and economics textbook")
+            || lower.contains("law & economics class") || lower.contains("law & economics course")
+            || lower.contains("law & economics exam") || lower.contains("law & economics paper")
+            || lower.contains("economic analysis of law") && (lower.contains("class") || lower.contains("course") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("coase theorem") && (lower.contains("law") || lower.contains("legal") || lower.contains("tort") || lower.contains("contract") || lower.contains("liability"))
+            || lower.contains("efficient breach") && (lower.contains("class") || lower.contains("law") || lower.contains("economics") || lower.contains("contract") || lower.contains("exam"))
+            || lower.contains("posner") && (lower.contains("law and economics") || lower.contains("economic analysis of law") || lower.contains("class") && lower.contains("law") || lower.contains("class") && lower.contains("economics") && lower.contains("law"))
+            || lower.contains("calabresi") && (lower.contains("law") || lower.contains("economics") || lower.contains("class") || lower.contains("exam") || lower.contains("torts"))
+            || lower.contains("optimal deterrence") && (lower.contains("law") || lower.contains("class") || lower.contains("exam") || lower.contains("torts") || lower.contains("economics"))
+            || lower.contains("kaldor-hicks") && (lower.contains("law") || lower.contains("class") || lower.contains("economics") || lower.contains("legal") || lower.contains("exam"))
+            || lower.contains("kaldor hicks") && (lower.contains("law") || lower.contains("class") || lower.contains("economics") || lower.contains("legal") || lower.contains("exam"))
+            || lower.contains("pareto efficiency") && (lower.contains("law") || lower.contains("legal") || lower.contains("law and economics"))
+            || lower.contains("transaction costs") && (lower.contains("law") || lower.contains("legal") || lower.contains("coase") || lower.contains("law and economics")) && (lower.contains("class") || lower.contains("exam") || lower.contains("paper"))
+            || lower.contains("chicago school of law") || lower.contains("chicago school law and economics") {
+            return "lawandeconomics"
         }
         if word("brief") || word("briefs") || word("pleading") || word("pleadings")
             || word("deposition") || word("depositions") || word("statute") || word("statutes")

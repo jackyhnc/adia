@@ -7591,4 +7591,43 @@ struct SuggestedSessionTemplatesTests {
     @Test func templateCountAtLeast1209() {
         #expect(SuggestedSessionTemplates.all.count >= 1209, "template catalog must have ≥1209 entries after deepseabiology/constructionestimating/internationallaw/urbansociology/politicalsociology additions")
     }
+    // MARK: - environmentaleconomics templates
+    @Test func environmentaleconomicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("environmental economics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func environmentaleconomicsProblemSetTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("environmental economics") && $0.task.lowercased().contains("problem set") })
+    }
+    // MARK: - socialepigenetics templates
+    @Test func socialepigeneticsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("epigenetics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func socialepigeneticsLabTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("epigenetics") && $0.task.lowercased().contains("lab report") })
+    }
+    // MARK: - behavioralneuroscience templates
+    @Test func behavioralneuroscienceStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("behavioral neuroscience") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func behavioralneuroscienceLabTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("behavioral neuroscience") && $0.task.lowercased().contains("lab report") })
+    }
+    // MARK: - medicalethics templates
+    @Test func medicalethicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("medical ethics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func medicalethicsCaseTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("medical ethics") && $0.task.lowercased().contains("case") })
+    }
+    // MARK: - lawandeconomics templates
+    @Test func lawandeconomicsStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("law and economics") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func lawandeconomicsPaperTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("law and economics") && $0.task.lowercased().contains("paper") })
+    }
+    // MARK: - Count guard (≥1219)
+    @Test func templateCountAtLeast1219() {
+        #expect(SuggestedSessionTemplates.all.count >= 1219, "template catalog must have ≥1219 entries after environmentaleconomics/socialepigenetics/behavioralneuroscience/medicalethics/lawandeconomics additions")
+    }
 }

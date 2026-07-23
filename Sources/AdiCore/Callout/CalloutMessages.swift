@@ -670,6 +670,11 @@ extension CalloutManager {
         case "internationallaw":           return internationallawCallouts(tier: tier)
         case "urbansociology":             return urbansociologyCallouts(tier: tier)
         case "politicalsociology":         return politicalsociologyCallouts(tier: tier)
+        case "environmentaleconomics":     return environmentaleconomicsCallouts(tier: tier)
+        case "socialepigenetics":          return socialepigeneticsCallouts(tier: tier)
+        case "behavioralneuroscience":     return behavioralneuroscienceCallouts(tier: tier)
+        case "medicalethics":              return medicalethicsCallouts(tier: tier)
+        case "lawandeconomics":            return lawandeconomicsCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -13719,6 +13724,111 @@ extension CalloutManager {
             "CLOSE THIS. open your political sociology textbook or social movements readings.",
             "CLOSE THIS. those hegemony theory and collective action analyses won't write themselves.",
             "CLOSE THIS. your political sociology exam won't study itself."
+        ]
+        }
+    }
+
+    private func environmentaleconomicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "environmental economics doesn't study itself — Pigouvian taxes, Coase theorem, ecosystem services valuation, cap-and-trade, and benefit-cost analysis are all waiting.",
+            "your environmental economics exam needs you — externalities, market failure, contingent valuation, willingness to pay, and tragedy of the commons won't memorize themselves.",
+            "those environmental economics problem sets and natural resource economics assignments are still open.",
+            "pigouvian tax, coase theorem, hedonic pricing, ecosystem services — get back to your environmental economics coursework."
+        ]
+        case 2: return [
+            "stop. your environmental economics exam and valuation assignment are still open.",
+            "externalities, pigouvian tax, coase theorem, cap-and-trade economics — your exam won't wait.",
+            "environmental economics class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your environmental economics textbook or valuation problem set.",
+            "CLOSE THIS. those ecosystem services valuation and pollution externality analyses won't complete themselves.",
+            "CLOSE THIS. your environmental economics exam won't study itself."
+        ]
+        }
+    }
+
+    private func socialepigeneticsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "epigenetics doesn't study itself — DNA methylation, histone modifications, chromatin remodeling, stress-induced epigenetic changes, and intergenerational inheritance are all waiting.",
+            "your epigenetics exam needs you — bisulfite sequencing, ChIP-seq, epigenetic clocks, early adversity and gene expression, and social genomics won't memorize themselves.",
+            "those epigenetics lab reports and social epigenetics assignments are still open.",
+            "methylation analysis, transgenerational epigenetics, gene-environment interactions, chromatin remodeling — get back to your epigenetics coursework."
+        ]
+        case 2: return [
+            "stop. your epigenetics exam and methylation analysis assignment are still open.",
+            "histone modifications, dna methylation, bisulfite sequencing, epigenetic inheritance — your exam won't wait.",
+            "epigenetics class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your epigenetics textbook or chromatin remodeling lab notes.",
+            "CLOSE THIS. those methylation analysis and intergenerational epigenetics assignments won't complete themselves.",
+            "CLOSE THIS. your epigenetics exam won't study itself."
+        ]
+        }
+    }
+
+    private func behavioralneuroscienceCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "behavioral neuroscience doesn't run itself — your fear conditioning lab, Morris water maze protocol, elevated plus maze analysis, and open field test data are all waiting.",
+            "your behavioral neuroscience lab report needs you — conditioned place preference, stereotaxic coordinates, reward circuit data, and rodent behavior scoring won't write themselves.",
+            "those behavioral neuroscience lab reports and animal model assignments are still open.",
+            "fear conditioning, Morris water maze, elevated plus maze, stereotaxic surgery — get back to your behavioral neuroscience lab."
+        ]
+        case 2: return [
+            "stop. your behavioral neuroscience lab report and open field test analysis are still open.",
+            "conditioned place preference, forced swim test, Barnes maze, reward circuit data — your lab won't finish itself.",
+            "behavioral neuroscience lab doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your behavioral neuroscience lab notebook or fear conditioning data.",
+            "CLOSE THIS. those rodent behavior analysis and stereotaxic surgery reports won't write themselves.",
+            "CLOSE THIS. your behavioral neuroscience lab report won't finish itself."
+        ]
+        }
+    }
+
+    private func medicalethicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "medical ethics doesn't study itself — Beauchamp and Childress, the four principles (autonomy, beneficence, nonmaleficence, justice), informed consent, and end-of-life decision-making are all waiting.",
+            "your medical ethics exam needs you — principlism, the Hippocratic oath, medical futility, resource allocation, and the doctor-patient relationship won't memorize themselves.",
+            "those medical ethics papers and clinical ethics case analyses are still open.",
+            "four principles of biomedical ethics, Beauchamp and Childress, principlism, clinical ethics consultation — get back to your medical ethics coursework."
+        ]
+        case 2: return [
+            "stop. your medical ethics exam and case analysis are still open.",
+            "autonomy, beneficence, nonmaleficence, justice — your exam won't wait.",
+            "medical ethics class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your medical ethics textbook or Beauchamp and Childress notes.",
+            "CLOSE THIS. those four-principles analyses and clinical ethics case studies won't write themselves.",
+            "CLOSE THIS. your medical ethics exam won't study itself."
+        ]
+        }
+    }
+
+    private func lawandeconomicsCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "law and economics doesn't study itself — Coase theorem, efficient breach, Posner, Calabresi, Kaldor-Hicks efficiency, and optimal deterrence theory are all waiting.",
+            "your law and economics exam needs you — transaction costs, pareto efficiency, economic analysis of tort law, and the Learned Hand formula won't memorize themselves.",
+            "those law and economics papers and economic analysis of law assignments are still open.",
+            "efficient breach, coase theorem, calabresi, posner — get back to your law and economics coursework."
+        ]
+        case 2: return [
+            "stop. your law and economics exam and economic analysis paper are still open.",
+            "coase theorem, efficient breach, kaldor-hicks, optimal deterrence — your exam won't wait.",
+            "law and economics class doesn't pause because you're distracted."
+        ]
+        default: return [
+            "CLOSE THIS. open your law and economics textbook or Posner casebook.",
+            "CLOSE THIS. those economic analysis of tort and contract law assignments won't complete themselves.",
+            "CLOSE THIS. your law and economics exam won't study itself."
         ]
         }
     }

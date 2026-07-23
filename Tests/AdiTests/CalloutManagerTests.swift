@@ -27090,4 +27090,149 @@ struct CalloutManagerTests {
     @Test func calloutTemplatesCountAtLeast1209() {
         #expect(SuggestedSessionTemplates.all.count >= 1209, "template catalog must have ≥1209 entries after deepseabiology/constructionestimating/internationallaw/urbansociology/politicalsociology additions")
     }
+
+    // MARK: - environmentaleconomics
+    @Test func environmentaleconomicsRoutingFromPigouvianTax() {
+        #expect(CalloutManager.extractTaskKeyword(from: "pigouvian tax environmental economics class externality market failure exam") == "environmentaleconomics")
+    }
+    @Test func environmentaleconomicsRoutingFromEcosystemServices() {
+        #expect(CalloutManager.extractTaskKeyword(from: "ecosystem services valuation contingent valuation willingness to pay environmental economics") == "environmentaleconomics")
+    }
+    @Test func environmentaleconomicsRoutingFromCoaseTheorem() {
+        #expect(CalloutManager.extractTaskKeyword(from: "coase theorem environmental externality class cap-and-trade economics exam") == "environmentaleconomics")
+    }
+    @Test func environmentaleconomicsFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "environmental policy climate legislation carbon tax regulation class green new deal") != "environmentaleconomics")
+    }
+    @Test @MainActor func environmentaleconomicsCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "environmentaleconomics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "environmentaleconomics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "environmentaleconomics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func environmentaleconomicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "environmentaleconomics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func environmentaleconomicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "environmentaleconomics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - socialepigenetics
+    @Test func socialepigeneticsRoutingFromEpigeneticsClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "epigenetics class dna methylation histone modification exam chromatin remodeling") == "socialepigenetics")
+    }
+    @Test func socialepigeneticsRoutingFromStressMethylation() {
+        #expect(CalloutManager.extractTaskKeyword(from: "stress-induced methylation early adversity epigenetics lab intergenerational epigenetic inheritance") == "socialepigenetics")
+    }
+    @Test func socialepigeneticsRoutingFromBisulfiteSequencing() {
+        #expect(CalloutManager.extractTaskKeyword(from: "bisulfite sequencing epigenetics lab dna methylation analysis social genomics") == "socialepigenetics")
+    }
+    @Test func socialepigeneticsFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "genetics class mendelian inheritance punnett square hardy-weinberg exam population genetics") != "socialepigenetics")
+    }
+    @Test @MainActor func socialepigeneticsCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "socialepigenetics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "socialepigenetics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "socialepigenetics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func socialepigeneticsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "socialepigenetics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func socialepigeneticsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "socialepigenetics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - behavioralneuroscience
+    @Test func behavioralneuroscienceRoutingFromFearConditioning() {
+        #expect(CalloutManager.extractTaskKeyword(from: "fear conditioning lab amygdala behavioral neuroscience freezing behavior CS US pairing") == "behavioralneuroscience")
+    }
+    @Test func behavioralneuroscienceRoutingFromMorrisWaterMaze() {
+        #expect(CalloutManager.extractTaskKeyword(from: "morris water maze spatial memory lab hippocampus probe trial behavioral neuroscience") == "behavioralneuroscience")
+    }
+    @Test func behavioralneuroscienceRoutingFromStereotaxic() {
+        #expect(CalloutManager.extractTaskKeyword(from: "stereotaxic surgery coordinates cannula implantation behavioral neuroscience lab rodent") == "behavioralneuroscience")
+    }
+    @Test func behavioralneuroscienceFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "behavioral neuroscience class course exam notes major study brain and behavior") != "behavioralneuroscience")
+    }
+    @Test @MainActor func behavioralneuroscienceCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "behavioralneuroscience", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "behavioralneuroscience", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "behavioralneuroscience", tier: 3).isEmpty)
+    }
+    @Test @MainActor func behavioralneuroscienceTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "behavioralneuroscience", tier: 1).count >= 4)
+    }
+    @Test @MainActor func behavioralneuroscienceTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "behavioralneuroscience", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - medicalethics
+    @Test func medicalethicsRoutingFromBeauchampChildress() {
+        #expect(CalloutManager.extractTaskKeyword(from: "beauchamp and childress four principles of biomedical ethics autonomy beneficence class exam") == "medicalethics")
+    }
+    @Test func medicalethicsRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "medical ethics class principlism informed consent hippocratic oath exam paper") == "medicalethics")
+    }
+    @Test func medicalethicsRoutingFromMedicalFutility() {
+        #expect(CalloutManager.extractTaskKeyword(from: "medical futility ethics class resource allocation healthcare end-of-life medical ethics paper") == "medicalethics")
+    }
+    @Test func medicalethicsFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "bioethics irb protocol research ethics human subjects protection belmont report") != "medicalethics")
+    }
+    @Test @MainActor func medicalethicsCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "medicalethics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "medicalethics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "medicalethics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func medicalethicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "medicalethics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func medicalethicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "medicalethics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - lawandeconomics
+    @Test func lawandeconomicsRoutingFromClass() {
+        #expect(CalloutManager.extractTaskKeyword(from: "law and economics class efficient breach coase theorem posner calabresi exam") == "lawandeconomics")
+    }
+    @Test func lawandeconomicsRoutingFromEfficientBreach() {
+        #expect(CalloutManager.extractTaskKeyword(from: "efficient breach law economics class expectation damages optimal deterrence kaldor-hicks") == "lawandeconomics")
+    }
+    @Test func lawandeconomicsRoutingFromCalabresI() {
+        #expect(CalloutManager.extractTaskKeyword(from: "calabresi torts law economics class posner economic analysis of law property liability rule") == "lawandeconomics")
+    }
+    @Test func lawandeconomicsFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "contracts law class offer acceptance consideration breach remedies bar exam") != "lawandeconomics")
+    }
+    @Test @MainActor func lawandeconomicsCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "lawandeconomics", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "lawandeconomics", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "lawandeconomics", tier: 3).isEmpty)
+    }
+    @Test @MainActor func lawandeconomicsTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "lawandeconomics", tier: 1).count >= 4)
+    }
+    @Test @MainActor func lawandeconomicsTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "lawandeconomics", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (≥1219)
+    @Test func calloutTemplatesCountAtLeast1219() {
+        #expect(SuggestedSessionTemplates.all.count >= 1219, "template catalog must have ≥1219 entries after environmentaleconomics/socialepigenetics/behavioralneuroscience/medicalethics/lawandeconomics additions")
+    }
 }
