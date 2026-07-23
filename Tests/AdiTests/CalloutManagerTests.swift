@@ -27371,8 +27371,120 @@ struct CalloutManagerTests {
         #expect(mgr.taskAwareCallouts(keyword: "publicpolicy", tier: 3).contains { $0.contains("CLOSE THIS") })
     }
 
-    // MARK: - Count guard (≥1229)
-    @Test func calloutTemplatesCountAtLeast1229() {
-        #expect(SuggestedSessionTemplates.all.count >= 1229, "template catalog must have ≥1229 entries after scientificwriting/behavioralbiology/agingneuroscience/computationalsocialscience/publicpolicy additions")
+    // MARK: - quantumtransport
+    @Test func quantumtransportRoutingFromLandauer() {
+        #expect(CalloutManager.extractTaskKeyword(from: "landauer-büttiker formalism quantum transport class conductance quantization exam") == "quantumtransport")
+    }
+    @Test func quantumtransportRoutingFromNEGF() {
+        #expect(CalloutManager.extractTaskKeyword(from: "non-equilibrium green's function negf transport quantum transport course homework") == "quantumtransport")
+    }
+    @Test func quantumtransportRoutingFromMesoscopic() {
+        #expect(CalloutManager.extractTaskKeyword(from: "mesoscopic physics quantum transport class ballistic transport conductance quantization assignment") == "quantumtransport")
+    }
+    @Test func quantumtransportFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "quantum hall effect condensed matter physics fermi liquid topological insulator") != "quantumtransport")
+    }
+    @Test @MainActor func quantumtransportCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "quantumtransport", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "quantumtransport", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "quantumtransport", tier: 3).isEmpty)
+    }
+    @Test @MainActor func quantumtransportTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "quantumtransport", tier: 1).count >= 4)
+    }
+    @Test @MainActor func quantumtransportTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "quantumtransport", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - geophysicsinversion
+    @Test func geophysicsinversionRoutingFromFWI() {
+        #expect(CalloutManager.extractTaskKeyword(from: "full-waveform inversion seismic inversion class exam gradient adjoint") == "geophysicsinversion")
+    }
+    @Test func geophysicsinversionRoutingFromAVO() {
+        #expect(CalloutManager.extractTaskKeyword(from: "amplitude versus offset avo analysis seismic inversion course shuey approximation exam") == "geophysicsinversion")
+    }
+    @Test func geophysicsinversionRoutingFromPrestack() {
+        #expect(CalloutManager.extractTaskKeyword(from: "pre-stack inversion seismic inversion exam impedance class") == "geophysicsinversion")
+    }
+    @Test func geophysicsinversionFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "seismic survey gravity survey magnetic survey ground penetrating radar resistivity") != "geophysicsinversion")
+    }
+    @Test @MainActor func geophysicsinversionCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "geophysicsinversion", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "geophysicsinversion", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "geophysicsinversion", tier: 3).isEmpty)
+    }
+    @Test @MainActor func geophysicsinversionTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "geophysicsinversion", tier: 1).count >= 4)
+    }
+    @Test @MainActor func geophysicsinversionTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "geophysicsinversion", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - constitutivemodeling
+    @Test func constitutiivemodelingRoutingFromHyperelastic() {
+        #expect(CalloutManager.extractTaskKeyword(from: "constitutive modeling class hyperelasticity neo-hookean plasticity model exam") == "constitutivemodeling")
+    }
+    @Test func constitutivemodelingRoutingFromViscoplastic() {
+        #expect(CalloutManager.extractTaskKeyword(from: "viscoplasticity constitutive model material parameter identification class exam") == "constitutivemodeling")
+    }
+    @Test func constitutivemodelingRoutingFromKinematicHardening() {
+        #expect(CalloutManager.extractTaskKeyword(from: "kinematic hardening constitutive modeling exam armstrong-frederick class assignment") == "constitutivemodeling")
+    }
+    @Test func constitutivemodelingFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "stress strain mohr's circle fracture mechanics fatigue solid mechanics exam") != "constitutivemodeling")
+    }
+    @Test @MainActor func constitutivemodelingCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "constitutivemodeling", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "constitutivemodeling", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "constitutivemodeling", tier: 3).isEmpty)
+    }
+    @Test @MainActor func constitutivemodelingTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "constitutivemodeling", tier: 1).count >= 4)
+    }
+    @Test @MainActor func constitutivemodelingTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "constitutivemodeling", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - infraredspectroscopy
+    @Test func infraredspectroscopyRoutingFromFTIR() {
+        #expect(CalloutManager.extractTaskKeyword(from: "ftir exam fourier transform infrared spectroscopy peak assignment class") == "infraredspectroscopy")
+    }
+    @Test func infraredspectroscopyRoutingFromATR() {
+        #expect(CalloutManager.extractTaskKeyword(from: "atr-ftir spectroscopy class attenuated total reflectance infrared exam") == "infraredspectroscopy")
+    }
+    @Test func infraredspectroscopyRoutingFromNIR() {
+        #expect(CalloutManager.extractTaskKeyword(from: "near-infrared spectroscopy class nir spectroscopy analysis exam") == "infraredspectroscopy")
+    }
+    @Test func infraredspectroscopyFalsePositiveGuard() {
+        #expect(CalloutManager.extractTaskKeyword(from: "nmr spectroscopy mass spectrometry uv-vis proton carbon nmr spectrum class") != "infraredspectroscopy")
+    }
+    @Test @MainActor func infraredspectroscopyCalloutsAllTiers() {
+        let mgr = CalloutManager()
+        #expect(!mgr.taskAwareCallouts(keyword: "infraredspectroscopy", tier: 1).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "infraredspectroscopy", tier: 2).isEmpty)
+        #expect(!mgr.taskAwareCallouts(keyword: "infraredspectroscopy", tier: 3).isEmpty)
+    }
+    @Test @MainActor func infraredspectroscopyTier1HasAtLeastFour() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "infraredspectroscopy", tier: 1).count >= 4)
+    }
+    @Test @MainActor func infraredspectroscopyTier3ContainsClosethis() {
+        let mgr = CalloutManager()
+        #expect(mgr.taskAwareCallouts(keyword: "infraredspectroscopy", tier: 3).contains { $0.contains("CLOSE THIS") })
+    }
+
+    // MARK: - Count guard (≥1237)
+    @Test func calloutTemplatesCountAtLeast1237() {
+        #expect(SuggestedSessionTemplates.all.count >= 1237, "template catalog must have ≥1237 entries after quantumtransport/geophysicsinversion/constitutivemodeling/infraredspectroscopy additions")
     }
 }

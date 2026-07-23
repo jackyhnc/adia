@@ -2110,6 +2110,29 @@ public final class CalloutManager {
             || lower.contains("variational method") && (lower.contains("quantum") || lower.contains("class") || lower.contains("course") || lower.contains("physics")) {
             return "quantummechanics"
         }
+        // quantumtransport — positioned BEFORE condensedmatterphysics so quantum transport class/exam
+        // (Landauer-Büttiker formalism, scattering matrix, conductance quantization, ballistic transport,
+        // non-equilibrium Green's functions, mesoscopic physics) routes to a dedicated pool distinct
+        // from solid-state and condensed matter physics. Bare "quantum Hall effect" without transport
+        // context stays in condensedmatterphysics (fires after).
+        if lower.contains("quantum transport class") || lower.contains("quantum transport course")
+            || lower.contains("quantum transport exam") || lower.contains("quantum transport homework")
+            || lower.contains("quantum transport assignment") || lower.contains("quantum transport notes")
+            || lower.contains("landauer-büttiker") && (lower.contains("class") || lower.contains("exam") || lower.contains("transport") || lower.contains("formalism"))
+            || lower.contains("landauer buttiker") && (lower.contains("class") || lower.contains("exam") || lower.contains("transport"))
+            || lower.contains("landauer formula") && (lower.contains("class") || lower.contains("exam") || lower.contains("transport") || lower.contains("conductance"))
+            || lower.contains("scattering matrix") && lower.contains("transport") && (lower.contains("class") || lower.contains("exam") || lower.contains("quantum"))
+            || lower.contains("conductance quantization") && (lower.contains("class") || lower.contains("exam") || lower.contains("transport") || lower.contains("quantum"))
+            || lower.contains("ballistic transport") && (lower.contains("class") || lower.contains("exam") || lower.contains("quantum") || lower.contains("mesoscopic"))
+            || lower.contains("non-equilibrium green") && (lower.contains("class") || lower.contains("exam") || lower.contains("transport") || lower.contains("function"))
+            || lower.contains("nonequilibrium green") && (lower.contains("class") || lower.contains("exam") || lower.contains("transport") || lower.contains("function"))
+            || lower.contains("negf") && lower.contains("transport") && (lower.contains("class") || lower.contains("exam") || lower.contains("quantum"))
+            || lower.contains("mesoscopic physics") && (lower.contains("class") || lower.contains("exam") || lower.contains("transport") || lower.contains("course"))
+            || lower.contains("mesoscopic transport") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("quantum point contact") && (lower.contains("class") || lower.contains("exam") || lower.contains("transport") || lower.contains("conductance"))
+            || lower.contains("aharonov-bohm") && lower.contains("transport") && (lower.contains("class") || lower.contains("exam") || lower.contains("quantum")) {
+            return "quantumtransport"
+        }
         // condensedmatterphysics — positioned BEFORE solidstatephysics so advanced condensed
         // matter coursework (Fermi liquid theory, Landau levels, topological insulators, fractional
         // quantum Hall effect, Berry phase, Weyl semimetals, Kondo effect) routes to a dedicated pool
@@ -2741,6 +2764,28 @@ public final class CalloutManager {
             || lower.contains("marine geochemistry") && (lower.contains("class") || lower.contains("course") || lower.contains("exam"))
             || word("geochemistry") || word("geochemist") || word("geochemists") {
             return "geochemistry"
+        }
+        // geophysicsinversion — positioned BEFORE geophysics so advanced seismic inversion class/exam
+        // (full-waveform inversion, FWI, migration velocity analysis, AVO, pre-stack inversion)
+        // routes to a dedicated pool distinct from general geophysics surveys. Bare "geophysical
+        // inversion" without class context still falls through to geophysics (fires after).
+        if lower.contains("seismic inversion class") || lower.contains("seismic inversion course")
+            || lower.contains("seismic inversion exam") || lower.contains("seismic inversion homework")
+            || lower.contains("seismic inversion assignment") || lower.contains("seismic inversion textbook")
+            || lower.contains("geophysical inversion class") || lower.contains("geophysical inversion course")
+            || lower.contains("geophysical inversion exam") || lower.contains("geophysical inversion homework")
+            || lower.contains("full-waveform inversion") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("seismic") || lower.contains("geophysics"))
+            || lower.contains("full waveform inversion") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("seismic"))
+            || lower.contains("fwi") && lower.contains("seismic") && (lower.contains("class") || lower.contains("exam") || lower.contains("inversion"))
+            || lower.contains("migration velocity analysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("seismic"))
+            || lower.contains("amplitude versus offset") && (lower.contains("class") || lower.contains("exam") || lower.contains("seismic") || lower.contains("inversion"))
+            || lower.contains("amplitude vs offset") && (lower.contains("class") || lower.contains("exam") || lower.contains("seismic") || lower.contains("inversion"))
+            || lower.contains("avo analysis") && (lower.contains("class") || lower.contains("exam") || lower.contains("seismic"))
+            || lower.contains("pre-stack inversion") && (lower.contains("class") || lower.contains("exam") || lower.contains("seismic"))
+            || lower.contains("post-stack inversion") && (lower.contains("class") || lower.contains("exam") || lower.contains("seismic"))
+            || lower.contains("seismic impedance inversion") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("reflection seismology") && lower.contains("inversion") && (lower.contains("class") || lower.contains("exam")) {
+            return "geophysicsinversion"
         }
         // geophysics — positioned BEFORE geologylab and geology so geophysics class/exam and
         // seismic/gravity/magnetic survey coursework get a dedicated pool.
@@ -4534,6 +4579,31 @@ public final class CalloutManager {
             || lower.contains("machine automation") && (lower.contains("class") || lower.contains("exam") || lower.contains("mechatronics") || lower.contains("course"))
             || lower.contains("industrial automation") && (lower.contains("class") || lower.contains("exam") || lower.contains("mechatronics") || lower.contains("course") || lower.contains("lab")) {
             return "mechatronics"
+        }
+        // constitutivemodeling — positioned BEFORE solidmechanics so constitutive modeling class/exam
+        // (material constitutive laws, plasticity models, viscoplasticity, hyperelasticity, damage
+        // mechanics, material parameter identification) routes to a dedicated pool distinct from
+        // general solid mechanics (stress-strain, Mohr's circle, fracture mechanics).
+        if lower.contains("constitutive modeling class") || lower.contains("constitutive modeling course")
+            || lower.contains("constitutive modeling exam") || lower.contains("constitutive modeling homework")
+            || lower.contains("constitutive modeling assignment") || lower.contains("constitutive modeling notes")
+            || lower.contains("constitutive modelling class") || lower.contains("constitutive modelling course")
+            || lower.contains("constitutive modelling exam") || lower.contains("constitutive modelling homework")
+            || lower.contains("constitutive model") && lower.contains("material") && (lower.contains("class") || lower.contains("exam") || lower.contains("derive") || lower.contains("calibrate"))
+            || lower.contains("plasticity model") && (lower.contains("class") || lower.contains("exam") || lower.contains("constitutive") || lower.contains("material"))
+            || lower.contains("viscoplasticity") && (lower.contains("class") || lower.contains("exam") || lower.contains("constitutive") || lower.contains("material") || lower.contains("model"))
+            || lower.contains("viscoplastic model") && (lower.contains("class") || lower.contains("exam") || lower.contains("material"))
+            || lower.contains("hyperelasticity") && (lower.contains("class") || lower.contains("exam") || lower.contains("constitutive") || lower.contains("material") || lower.contains("model"))
+            || lower.contains("hyperelastic model") && (lower.contains("class") || lower.contains("exam") || lower.contains("material"))
+            || lower.contains("neo-hookean") && (lower.contains("class") || lower.contains("exam") || lower.contains("constitutive") || lower.contains("material"))
+            || lower.contains("damage mechanics") && lower.contains("constitutive") && (lower.contains("class") || lower.contains("exam"))
+            || lower.contains("isotropic hardening") && (lower.contains("class") || lower.contains("exam") || lower.contains("constitutive") || lower.contains("plasticity"))
+            || lower.contains("kinematic hardening") && (lower.contains("class") || lower.contains("exam") || lower.contains("constitutive") || lower.contains("plasticity"))
+            || lower.contains("drucker-prager") && (lower.contains("class") || lower.contains("exam") || lower.contains("constitutive") || lower.contains("plasticity"))
+            || lower.contains("drucker prager") && (lower.contains("class") || lower.contains("exam") || lower.contains("constitutive") || lower.contains("plasticity"))
+            || lower.contains("material parameter identification") && (lower.contains("class") || lower.contains("exam") || lower.contains("constitutive"))
+            || lower.contains("material parameter calibration") && (lower.contains("class") || lower.contains("exam") || lower.contains("constitutive")) {
+            return "constitutivemodeling"
         }
         // solidmechanics — positioned BEFORE mechanicalengineering so mechanics of materials,
         // solid mechanics, and continuum mechanics coursework (stress-strain, Mohr's circle,
@@ -8859,6 +8929,29 @@ public final class CalloutManager {
             || lower.contains("infrared spectrum") && (lower.contains("organic") || lower.contains("orgo") || lower.contains("lab") || lower.contains("class"))
             || lower.contains("column chromatography") && (lower.contains("organic") || lower.contains("orgo") || lower.contains("lab") || lower.contains("class")) {
             return "organicchemistrylab"
+        }
+        // infraredspectroscopy — positioned BEFORE spectroscopy so dedicated FTIR/ATR/NIR class/exam
+        // (Fourier transform infrared, ATR-FTIR, Beer-Lambert, peak assignment, functional groups,
+        // near-infrared, mid-infrared) routes to a dedicated pool distinct from the broader
+        // spectroscopy branch (NMR, UV-Vis, mass spec). "ir spectrum organic lab" routes to
+        // organicchemistrylab (fires earlier).
+        if lower.contains("ftir class") || lower.contains("ftir course") || lower.contains("ftir exam")
+            || lower.contains("ftir homework") || lower.contains("ftir assignment") || lower.contains("ftir notes")
+            || lower.contains("fourier transform infrared") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("spectroscopy") || lower.contains("analysis"))
+            || lower.contains("atr-ftir") && (lower.contains("class") || lower.contains("exam") || lower.contains("spectroscopy") || lower.contains("analysis") || lower.contains("sampling"))
+            || lower.contains("atr ftir") && (lower.contains("class") || lower.contains("exam") || lower.contains("spectroscopy") || lower.contains("analysis"))
+            || lower.contains("attenuated total reflectance") && (lower.contains("class") || lower.contains("exam") || lower.contains("infrared") || lower.contains("ftir") || lower.contains("spectroscopy"))
+            || lower.contains("near-infrared spectroscopy") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("analysis"))
+            || lower.contains("near infrared spectroscopy") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("nir spectroscopy") && (lower.contains("class") || lower.contains("exam") || lower.contains("course") || lower.contains("analysis"))
+            || lower.contains("mid-infrared spectroscopy") && (lower.contains("class") || lower.contains("exam") || lower.contains("course"))
+            || lower.contains("infrared spectroscopy class") || lower.contains("infrared spectroscopy course")
+            || lower.contains("infrared spectroscopy exam") || lower.contains("infrared spectroscopy homework")
+            || lower.contains("infrared spectroscopy assignment") || lower.contains("infrared spectroscopy textbook")
+            || lower.contains("ftir spectrum") && (lower.contains("interpret") || lower.contains("analyze") || lower.contains("assign") || lower.contains("class") || lower.contains("exam"))
+            || lower.contains("infrared absorption") && (lower.contains("class") || lower.contains("exam") || lower.contains("ftir") || lower.contains("spectroscopy") || lower.contains("functional group"))
+            || lower.contains("peak assignment") && (lower.contains("infrared") || lower.contains("ftir") || lower.contains("ir spectroscopy")) && (lower.contains("class") || lower.contains("exam")) {
+            return "infraredspectroscopy"
         }
         // spectroscopy — positioned BEFORE analyticalchemistry so dedicated spectroscopy class/exam
         // terms (NMR, IR, mass spec, UV-Vis) route here. "raman spectroscopy" without class context

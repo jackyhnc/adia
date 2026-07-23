@@ -7665,8 +7665,36 @@ struct SuggestedSessionTemplatesTests {
     @Test func publicpolicyPaperTemplateExists() {
         #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("public policy") && $0.task.lowercased().contains("paper") })
     }
-    // MARK: - Count guard (≥1229)
-    @Test func templateCountAtLeast1229() {
-        #expect(SuggestedSessionTemplates.all.count >= 1229, "template catalog must have ≥1229 entries after scientificwriting/behavioralbiology/agingneuroscience/computationalsocialscience/publicpolicy additions")
+    // MARK: - quantumtransport templates
+    @Test func quantumtransportStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("quantum transport") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func quantumtransportAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("quantum transport") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - geophysicsinversion templates
+    @Test func geophysicsinversionStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("seismic inversion") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func geophysicsinversionAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("seismic inversion") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - constitutivemodeling templates
+    @Test func constitutiivemodelingStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("constitutive modeling") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func constitutivemodelingAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("constitutive modeling") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - infraredspectroscopy templates
+    @Test func infraredspectroscopyStudyTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("infrared spectroscopy") && $0.task.lowercased().contains("exam") })
+    }
+    @Test func infraredspectroscopyAssignmentTemplateExists() {
+        #expect(SuggestedSessionTemplates.all.contains { $0.task.lowercased().contains("infrared spectroscopy") && $0.task.lowercased().contains("assignment") })
+    }
+    // MARK: - Count guard (≥1237)
+    @Test func templateCountAtLeast1237() {
+        #expect(SuggestedSessionTemplates.all.count >= 1237, "template catalog must have ≥1237 entries after quantumtransport/geophysicsinversion/constitutivemodeling/infraredspectroscopy additions")
     }
 }

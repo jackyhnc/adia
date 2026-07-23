@@ -680,6 +680,10 @@ extension CalloutManager {
         case "agingneuroscience":          return agingneuroscienceCallouts(tier: tier)
         case "computationalsocialscience": return computationalsocialscienceCallouts(tier: tier)
         case "publicpolicy":               return publicpolicyCallouts(tier: tier)
+        case "quantumtransport":           return quantumtransportCallouts(tier: tier)
+        case "geophysicsinversion":        return geophysicsinversionCallouts(tier: tier)
+        case "constitutivemodeling":       return constitutivemodelingCallouts(tier: tier)
+        case "infraredspectroscopy":       return infraredspectroscopyCallouts(tier: tier)
         default:               return genericKeywordCallouts(keyword: keyword, tier: tier)
         }
     }
@@ -13939,6 +13943,90 @@ extension CalloutManager {
             "CLOSE THIS. open your public policy textbook or Bardach eightfold path notes.",
             "CLOSE THIS. those policy analysis and program evaluation assignments won't complete themselves.",
             "CLOSE THIS. your public policy exam won't study itself."
+        ]
+        }
+    }
+
+    private func quantumtransportCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those Landauer-Büttiker and conductance quantization problems won't solve themselves.",
+            "your quantum transport exam doesn't care that you're scrolling.",
+            "get back to your NEGF and mesoscopic physics study notes.",
+            "close this and open your quantum transport textbook.",
+        ]
+        case 2: return [
+            "no one masters quantum transport by scrolling.",
+            "close this and work on your quantum transport problem set.",
+            "those non-equilibrium Green's function and scattering matrix problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your quantum transport textbook.",
+            "CLOSE THIS. those Landauer formula and ballistic transport problems won't solve themselves.",
+            "CLOSE THIS. your quantum transport exam won't study itself."
+        ]
+        }
+    }
+
+    private func geophysicsinversionCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those full-waveform inversion and AVO analysis problems won't solve themselves.",
+            "your seismic inversion exam doesn't care that you're scrolling.",
+            "get back to your migration velocity analysis and pre-stack inversion study notes.",
+            "close this and open your geophysical inversion textbook.",
+        ]
+        case 2: return [
+            "no one masters seismic inversion by scrolling.",
+            "close this and work on your geophysical inversion problem set.",
+            "those FWI and impedance inversion problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your seismic inversion textbook.",
+            "CLOSE THIS. those full-waveform inversion and AVO problems won't solve themselves.",
+            "CLOSE THIS. your geophysical inversion exam won't study itself."
+        ]
+        }
+    }
+
+    private func constitutivemodelingCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those plasticity model and hyperelasticity constitutive equations won't derive themselves.",
+            "your constitutive modeling exam doesn't care that you're scrolling.",
+            "get back to your viscoplasticity and material parameter identification study notes.",
+            "close this and open your constitutive modeling textbook.",
+        ]
+        case 2: return [
+            "no one masters constitutive modeling by scrolling.",
+            "close this and work on your constitutive modeling problem set.",
+            "those neo-Hookean and Drucker-Prager plasticity problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your constitutive modeling textbook.",
+            "CLOSE THIS. those hyperelastic and viscoplastic constitutive equations won't derive themselves.",
+            "CLOSE THIS. your constitutive modeling exam won't study itself."
+        ]
+        }
+    }
+
+    private func infraredspectroscopyCallouts(tier: Int) -> [String] {
+        switch tier {
+        case 1: return [
+            "those FTIR peak assignment and ATR-FTIR sampling problems won't solve themselves.",
+            "your infrared spectroscopy exam doesn't care that you're scrolling.",
+            "get back to your Fourier transform infrared and functional group study notes.",
+            "close this and open your infrared spectroscopy textbook.",
+        ]
+        case 2: return [
+            "no one masters FTIR spectroscopy by scrolling.",
+            "close this and work on your infrared spectroscopy problem set.",
+            "those Beer-Lambert and near-infrared quantification problems need your focus now."
+        ]
+        default: return [
+            "CLOSE THIS. open your infrared spectroscopy textbook.",
+            "CLOSE THIS. those FTIR spectrum interpretation and peak assignment problems won't solve themselves.",
+            "CLOSE THIS. your infrared spectroscopy exam won't study itself."
         ]
         }
     }
